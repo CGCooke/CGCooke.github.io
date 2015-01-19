@@ -1,0 +1,223 @@
+html, body, .wrapper { height: 100%; margin: 0; padding: 0; }
+body > .wrapper { height: auto; min-height: 100%; }
+#content { padding-bottom: 300px; }
+#footer { clear: both; position: relative; z-index: 10; height: 250px; margin-top: -250px; }
+
+/* MathJax - pygments fix */
+.math .mo,
+.math .mi { color: inherit; font-weight: normal;}
+
+
+body {
+    font-size: 16px;
+}
+
+a,
+a:hover {
+    color: #c02942;
+}
+
+p {clear: both;}
+h1,h2,h3,h4,h5,h6 {clear: both;}
+
+#header {
+	background: #542437;
+	background: -moz-linear-gradient(-45deg,  #542437 0%, #941e56 100%);
+	background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#542437), color-stop(100%,#941e56));
+	background: -webkit-linear-gradient(-45deg,  #542437 0%,#941e56 100%);
+	background: -o-linear-gradient(-45deg,  #542437 0%,#941e56 100%);
+	background: -ms-linear-gradient(-45deg,  #542437 0%,#941e56 100%);
+	background: linear-gradient(135deg,  #542437 0%,#941e56 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#542437', endColorstr='#941e56',GradientType=1 );
+	border-bottom: 4px solid #c02942;
+	color: #fff;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+#header small {
+	color: #eee;
+	font-size: 0.32em;
+}
+
+#header a,
+#header a:hover {
+    color: #eee;
+}
+
+#content {
+	padding-top: 20px;
+    font-family: 'PT Sans', Helvetica, Arial, sans-serif;
+}
+
+#content h1,
+#content h2,
+#content h3,
+#content h4 {
+    font-family: Arvo, Helvetica, Arial, sans-serif;
+    font-weight: 400;
+}
+
+#content h1 { font-weight: 700; margin-top: 1.0em; }
+#content h2 { margin-top: 1.5em; }
+
+
+#content p {
+    margin-bottom: 1.8em;
+    font-size: 20px;
+    line-height: 1.5em;
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+#content p+ul {
+    margin-top: -1.8em;
+}
+
+#content h1+h2 {
+    margin-top: 0.8em;
+}
+
+#content .posts {
+    margin-top: 1.0em;
+    font-weight: normal;
+    font-size: 20px;
+    list-style: none;
+}
+
+#content .posts h1 {
+    font-weight: normal;
+    font-size: 20px;
+    display: inline;
+    font-family: 'PT Sans', Helvetica, Arial, sans-serif;
+}
+
+
+.highlight pre {
+    background: #FDF9F0;
+}
+
+.highlight pre {
+    margin-bottom: 0;
+    border-radius: 4px 4px 0  0;
+}
+
+i {
+    display: inline-block;
+    width: 64px;
+    height: 64px;
+}
+
+.icon-zip { background: transparent url('/resources/img/icons.png') no-repeat -68px 0; }
+.icon-tar { background: transparent url('/resources/img/icons.png') no-repeat 0 0; }
+.icon-github { background: transparent url('/resources/img/icons.png') no-repeat -134px 0; }
+
+.output pre {
+    background: #f8f8f8;
+    color: #000;
+    border: 1px solid #dad8d8;
+    border-top: 0;
+    border-radius: 0 0 4px 4px;
+    padding-top: 25px;
+}
+
+.output .prompt {
+    color: #999;
+}
+
+
+.pubdate {
+    color: #666;
+    display: block;
+    font-size: 0.9em;
+    margin-bottom: 2.0em;
+}
+
+
+.footnote {
+    display: block;
+    text-align: left;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 11px;
+    line-height: 1.7em;
+    width: 280px;
+    font-style: italic;
+    float: right;
+    margin-top: 20px;
+}
+
+@media (min-width: 1200px) {
+    .footnote {
+        margin-right: -210px;
+        padding-left: 40px;
+        width: 210px;
+    }
+}
+
+.image {
+    border: 1px solid #f0f0f0;
+    padding: 5px;
+}
+
+.image.primary {
+    margin-bottom: 2.0em;
+}
+
+#footer {
+	background: #222 url('/resources/img/border.png') repeat-x 0 0;
+	padding-top: 90px;
+    font-size: 0.9em;
+    color: #aaa;
+    text-shadow: 1px 1px 2px #000;
+}
+
+.github-links {
+	list-style: none;
+	margin:0;
+	padding:0;
+	margin-left: -10px;
+}
+
+.github-links li {
+	display: block;
+	float: left;
+	padding: 0 10px;
+}
+
+#footer .license {
+    display: block;
+    clear: both;
+    margin-top: 175px;
+}
+
+#footer a {
+    color: #ddd;
+}
+
+#social {
+    color: #666;
+}
+
+#social .note {
+    display: block;
+    padding-bottom: 7px;
+}
+
+/* Thingihub */
+.thingdownload {
+    width: 100%;
+    font-size: 1.2em;
+    margin-top: 10px;
+    background-color: #941e56;
+    border-color: #542437;
+}
+
+.thingdownload:hover {
+    background-color: #c02942;
+    border-color: #941e56;
+
+}
+
+#content .thingactions h2 {
+    margin-top: 0;
+}
