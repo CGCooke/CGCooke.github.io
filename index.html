@@ -1,85 +1,18 @@
+---
+layout: default
+---
 
-<!doctype html>
-<html lang="en">
- <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href='http://fonts.googleapis.com/css?family=Arvo:400,700|PT+Sans:400,700,400italic' rel='stylesheet' type='text/css'>
-  <link href="/resources/css/bootstrap.min.css" rel="stylesheet">
-  <link href="/resources/css/pygments.css" rel="stylesheet">
-  <link href="/resources/css/style.css" rel="stylesheet">
-  <script src="/resources/js/jquery-2.0.3.min.js"> </script>
-  <script src="/resources/js/bootstrap.min.js"> </script>
-  <title>Two Shakes</title>
- </head>
- <body>
- <div class="wrapper">
-   <div id="header">
-    <div class="container">
-     <div class="row">
-      <div class="col-lg-10 col-lg-offset-1 col-md-12">
-       <h1><a href="/">CGCooke</a> <small>on github.com</small></h1>
-       <p>Two Shakes<p>
+<div class="posts">
+  {% for post in site.posts %}
+    <article class="post">    
+      
+      <h1><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h1>
+
+      <div class="entry">
+        {{ post.content | truncatewords:40}}
       </div>
-     </div>
-    </div>
-   </div>
-
-   <div id="content">
-    <div class="container">
-     <div class="row">
- <div class="col-lg-10 col-lg-offset-1 col-md-12">
-  <h1 id="blog">Blog</h1>
-
-<ul class="posts">
-  
-    <li>
-      <a href="/blog/2014/gps-spreading">November 2014 &ndash; <h1 id="gps-spreading-properties">GPS Spreading Properties</h1></a>
-    </li>
-</ul>
-
-<hr />
-
-<h1 id="articles">Articles</h1>
-
-<h2 id="iss-photo-locations-readiss-photo-locations">ISS Photo Locations (<a href="/ISS-photo-locations/">read</a>)</h2>
-
-<p>Visualization of the location of nearly every photograph taken from the International Space Station.</p>
-
-<ul>
-  <li><a href="https://github.com/natronics/ISS-photo-locations">View on github</a></li>
-</ul>
-
-<hr />
-
-<h1 id="projects">Projects</h1>
-
-<h2 id="science-hack-day-2014">Science Hack Day 2014</h2>
-
-<p>I was at SHD San Fransisco 2014 and <a href="science-hack-day-2014">worked on these projects</a></p>
-
-<ul>
-  <li><a href="https://github.com/natronics/science-hack-day-2014">View on github</a></li>
-</ul>
-
-
- </div>
+      
+      <a href="{{ site.baseurl }}{{ post.url }}" class="read-more">Read More</a>
+    </article>
+  {% endfor %}
 </div>
-
-    </div>
-   </div>
-  </div>
-  <div id="footer">
-   <div class="container">
-    <p class="pull-right"><a href="#">Back to top</a></p>
-
-    <p>made by <a href="http://twitter.com/CGCooke">@natronics</a> in the fabulous hipster paradise of Portland, Ore.
-    <ul class="github-links">
-     <li><a href="https://github.com/CGCooke">my github</a></li>
-     <li><a href="https://github.com/CGCooke/resume">r&eacute;sum&eacute;</a></li>
-     <li><a href="/aboutme">get in touch</a></li>
-    </ul>
-   </div>
-  </div>
- </body>
-</html>
