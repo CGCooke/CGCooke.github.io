@@ -12,11 +12,11 @@ An insturment called an [Interferometric synthetic aperture radar] (http://en.wi
 The Digital Elevation Map (DEM) produced by this mission is in the public domain, and provides the measured terrain high at ~90 meter resolution. The mission mapped 99.98% of the area between 60 degrees North and 56 degrees South.  
 
 In this post, I will examine how to process the raw DEM so that it is more intuitively interperted, through the use of *slope shading* and *hyposomatic tinting*. 
+The GDAL aspects of this post came from the [Thematic mapping blog] (http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html), and is a very informative read.
 
 ---
 
-A number of different DEM's have been created from the data collected on the SRTM mission, one of the most 
-
+A number of different DEM's have been created from the data collected on the SRTM mission, in this post I will use the CGIAR [SRTM 90m Digital Elevation Database](http://www.cgiar-csi.org/data/srtm-90m-digital-elevation-database-v4-1). Data is provided in 5x5 degree tiles, with each degree of lattitude equal to aproximately 111Km. 
 
 
 The full source code for this project is avalible [here](
@@ -34,10 +34,31 @@ def downloadDEMFromCGIAR(lat,lon):
 {% endhighlight %}
 
 
+{% highlight python %}
+def lonLatToFileName(lon,lat):
+	''' Compute the input file name '''
+	tileX = int(math.ceil((lon+180)/5.0))
+	tileY = -1*int(math.ceil((lat-65)/5.0))
+	inputFileName = 'srtm_'+str(tileX).zfill(2)+'_'+str(tileY).zfill(2)
+	return(inputFileName)
+{% endhighlight %}
+
+{% highlight python %}
+os.system('gdalwarp -q -te -125 48 -122 50 '+inputFileName+' subset.tif')
+{% endhighlight %}
+
+{% highlight python %}
+os.system('gdaldem hillshade -q -az 45 -alt 45 -of PNG warped.tif hillshade.tif')
+{% endhighlight %}
+
+![_config.yml]({{ site.baseurl }}/images/1_hillshade.png)
+
+{% highlight python %}
+os.system('gdaldem color-relief -q warped.tif color_relief.txt color_relief.tif')
+{% endhighlight %}
+
 
 You can choose any colormap from [here] (http://wiki.scipy.org/Cookbook/Matplotlib/Show_colormaps?action=AttachFile&do=get&target=colormaps3.png) 
-	
-
 {% highlight python %}
 def createColorMapLUT(minHeight,maxHeight,cmap = cm.jet,numSteps=256):
 	'''
@@ -59,26 +80,11 @@ def createColorMapLUT(minHeight,maxHeight,cmap = cm.jet,numSteps=256):
 	f.close()
 {% endhighlight %}
 
-{% highlight python %}
-def lonLatToFileName(lon,lat):
-	''' Compute the input file name '''
-	tileX = int(math.ceil((lon+180)/5.0))
-	tileY = -1*int(math.ceil((lat-65)/5.0))
-	inputFileName = 'srtm_'+str(tileX).zfill(2)+'_'+str(tileY).zfill(2)
-	return(inputFileName)
-{% endhighlight %}
 
 
 
-{% highlight python %}
-os.system('gdaldem hillshade -q -az 45 -alt 45 -of PNG warped.tif hillshade.tif')
-{% endhighlight %}
 
-![_config.yml]({{ site.baseurl }}/images/1_hillshade.png)
 
-{% highlight python %}
-os.system('gdaldem color-relief -q warped.tif color_relief.txt color_relief.tif')
-{% endhighlight %}
 
 
 ![_config.yml]({{ site.baseurl }}/images/1_color_relief.png)
@@ -112,14 +118,8 @@ img_enhanced.save(outFileName)
 ![_config.yml]({{ site.baseurl }}/images/1_blended.png)
 
 
-$$ \frac{v}{c}*f $$
-
 Further reading
 ===============
-* The GDAL aspects of this post came from the [Thematic mapping blog] (http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html), and is well worth a read.
-* More information about the CGIAR dataset can be found [here]
-(http://www.cgiar-csi.org/data/srtm-90m-digital-elevation-database-v4-1)
-
 * http://en.wikipedia.org/wiki/Shuttle_Radar_Topography_Mission
 * http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html
 * http://linfiniti.com/2010/12/a-workflow-for-creating-beautiful-relief-shaded-dems-using-gdal/
