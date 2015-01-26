@@ -5,16 +5,13 @@ title: 256 Shades of Grey
 
 ![_config.yml]({{ site.baseurl }}/images/1_header.png)
 
-The inspiration for this post came from [here] (http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html), and is well worth a read.
+Over an 11 day period in mid Febuary 2000, measurements were taken for what would become the most accurate and comprehensive map of the earth's topography ever created. An insturment called an [Interferometric synthetic aperture radar] (http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar) was carried abour the space shuttle Endeavour. The radar system consisted of a transmitter, and two recieving antennas, one of whcih was mounted on a 60 meter long antenna. By comparing the phase of the returning radar signal, a highly accurate terrain model was produced. 
 
-[Interferometric synthetic aperture radar] (http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar)
+
+
 
 The full source code for this project is avalible [here](
 https://github.com/CGCooke/Marinus/tree/master) on GitHub.
-
-More information about the CGIAR dataset can be found [here]
-(http://www.cgiar-csi.org/data/srtm-90m-digital-elevation-database-v4-1)
-
 
 {% highlight python %}
 def downloadDEMFromCGIAR(lat,lon):
@@ -51,8 +48,6 @@ def createColorMapLUT(minHeight,maxHeight,cmap = cm.jet,numSteps=256):
 	f.write('-0.1,135,206,250 \n')
 	f.write('0.1,135,206,250 \n')
 	f.close()
-
-	os.system('unzip '+fileName)
 {% endhighlight %}
 
 {% highlight python %}
@@ -112,6 +107,10 @@ $$ \frac{v}{c}*f $$
 
 Further reading
 ===============
+* The GDAL aspects of this post came from the [Thematic mapping blog] (http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html), and is well worth a read.
+* More information about the CGIAR dataset can be found [here]
+(http://www.cgiar-csi.org/data/srtm-90m-digital-elevation-database-v4-1)
+
 * http://en.wikipedia.org/wiki/Shuttle_Radar_Topography_Mission
 * http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html
 * http://linfiniti.com/2010/12/a-workflow-for-creating-beautiful-relief-shaded-dems-using-gdal/

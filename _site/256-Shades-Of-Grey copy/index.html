@@ -46,13 +46,9 @@
   <div class="entry">
     <p><img src="/images/1_header.png" alt="_config.yml"></p>
 
-<p>The inspiration for this post came from <a href="http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html">here</a>, and is well worth a read.</p>
-
-<p><a href="http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar">Interferometric synthetic aperture radar</a></p>
+<p>Over an 11 day period in mid Febuary 2000, measurements were taken for what would become the most accurate and comprehensive map of the earth&#39;s topography ever created. An insturment called an <a href="http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar">Interferometric synthetic aperture radar</a> was carried abour the space shuttle Endeavour. The radar system consisted of a transmitter, and two recieving antennas, one of whcih was mounted on a 60 meter long antenna. By comparing the phase of the returning radar signal, a highly accurate terrain model was produced. </p>
 
 <p>The full source code for this project is avalible <a href="https://github.com/CGCooke/Marinus/tree/master">here</a> on GitHub.</p>
-
-<p>More information about the CGIAR dataset can be found <a href="http://www.cgiar-csi.org/data/srtm-90m-digital-elevation-database-v4-1">here</a></p>
 
 <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">downloadDEMFromCGIAR</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39; Download a DEM from CGIAR FTP repository &#39;&#39;&#39;</span>
@@ -82,9 +78,7 @@
     <span class="sd">&#39;&#39;&#39; Set sea level to be blue &#39;&#39;&#39;</span>
     <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;-0.1,135,206,250 </span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
     <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;0.1,135,206,250 </span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
-    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&#39;unzip &#39;</span><span class="o">+</span><span class="n">fileName</span><span class="p">)</span></code></pre></div>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></code></pre></div>
 
 <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">lonLatToFileName</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span><span class="n">lat</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39; Compute the input file name &#39;&#39;&#39;</span>
@@ -126,10 +120,12 @@
 <h1>Further reading</h1>
 
 <ul>
-<li>http://en.wikipedia.org/wiki/Shuttle<em>Radar</em>Topography_Mission</li>
-<li>http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html</li>
-<li>http://linfiniti.com/2010/12/a-workflow-for-creating-beautiful-relief-shaded-dems-using-gdal/</li>
-<li>http://www.geophysique.be/2014/02/25/shaded-relief-map-in-python/</li>
+<li>The GDAL aspects of this post came from the <a href="http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html">Thematic mapping blog</a>, and is well worth a read.</li>
+<li><p>More information about the CGIAR dataset can be found <a href="http://www.cgiar-csi.org/data/srtm-90m-digital-elevation-database-v4-1">here</a></p></li>
+<li><p>http://en.wikipedia.org/wiki/Shuttle<em>Radar</em>Topography_Mission</p></li>
+<li><p>http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html</p></li>
+<li><p>http://linfiniti.com/2010/12/a-workflow-for-creating-beautiful-relief-shaded-dems-using-gdal/</p></li>
+<li><p>http://www.geophysique.be/2014/02/25/shaded-relief-map-in-python/</p></li>
 </ul>
 
   </div>

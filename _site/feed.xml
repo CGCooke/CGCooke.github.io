@@ -10,13 +10,9 @@
         <title>256 Shades of Grey</title>
         <description>&lt;p&gt;&lt;img src=&quot;/images/1_header.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
 
-&lt;p&gt;The inspiration for this post came from &lt;a href=&quot;http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html&quot;&gt;here&lt;/a&gt;, and is well worth a read.&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar&quot;&gt;Interferometric synthetic aperture radar&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Over an 11 day period in mid Febuary 2000, measurements were taken for what would become the most accurate and comprehensive map of the earth&amp;#39;s topography ever created. An insturment called an &lt;a href=&quot;http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar&quot;&gt;Interferometric synthetic aperture radar&lt;/a&gt; was carried abour the space shuttle Endeavour. The radar system consisted of a transmitter, and two recieving antennas, one of whcih was mounted on a 60 meter long antenna. By comparing the phase of the returning radar signal, a highly accurate terrain model was produced. &lt;/p&gt;
 
 &lt;p&gt;The full source code for this project is avalible &lt;a href=&quot;https://github.com/CGCooke/Marinus/tree/master&quot;&gt;here&lt;/a&gt; on GitHub.&lt;/p&gt;
-
-&lt;p&gt;More information about the CGIAR dataset can be found &lt;a href=&quot;http://www.cgiar-csi.org/data/srtm-90m-digital-elevation-database-v4-1&quot;&gt;here&lt;/a&gt;&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;downloadDEMFromCGIAR&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lon&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
     &lt;span class=&quot;sd&quot;&gt;&amp;#39;&amp;#39;&amp;#39; Download a DEM from CGIAR FTP repository &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
@@ -46,9 +42,7 @@
     &lt;span class=&quot;sd&quot;&gt;&amp;#39;&amp;#39;&amp;#39; Set sea level to be blue &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;-0.1,135,206,250 &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;0.1,135,206,250 &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;unzip &amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fileName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+    &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;lonLatToFileName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lon&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
     &lt;span class=&quot;sd&quot;&gt;&amp;#39;&amp;#39;&amp;#39; Compute the input file name &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
@@ -90,10 +84,12 @@
 &lt;h1&gt;Further reading&lt;/h1&gt;
 
 &lt;ul&gt;
-&lt;li&gt;http://en.wikipedia.org/wiki/Shuttle&lt;em&gt;Radar&lt;/em&gt;Topography_Mission&lt;/li&gt;
-&lt;li&gt;http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html&lt;/li&gt;
-&lt;li&gt;http://linfiniti.com/2010/12/a-workflow-for-creating-beautiful-relief-shaded-dems-using-gdal/&lt;/li&gt;
-&lt;li&gt;http://www.geophysique.be/2014/02/25/shaded-relief-map-in-python/&lt;/li&gt;
+&lt;li&gt;The GDAL aspects of this post came from the &lt;a href=&quot;http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html&quot;&gt;Thematic mapping blog&lt;/a&gt;, and is well worth a read.&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;More information about the CGIAR dataset can be found &lt;a href=&quot;http://www.cgiar-csi.org/data/srtm-90m-digital-elevation-database-v4-1&quot;&gt;here&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;http://en.wikipedia.org/wiki/Shuttle&lt;em&gt;Radar&lt;/em&gt;Topography_Mission&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;http://linfiniti.com/2010/12/a-workflow-for-creating-beautiful-relief-shaded-dems-using-gdal/&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;http://www.geophysique.be/2014/02/25/shaded-relief-map-in-python/&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
         <pubDate>Sun, 25 Jan 2015 00:00:00 -0800</pubDate>
