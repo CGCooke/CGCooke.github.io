@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
+
+    <title>256 Shades of Grey – Cameron Cooke – Number Cruncher</title>
+
+    <meta name="author" content="Cameron Cooke" />
+    <meta name="description" content="Number Cruncher">
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" type="text/css" href="/style.css" />
+    <link rel="alternate" type="application/rss+xml" title="Cameron Cooke - Number Cruncher" href="/feed.xml" />
+
+    <!-- Created with Jekyll Now - http://github.com/barryclark/jekyll-now -->
+  </head>
+
+  <body>
+    <div class="wrapper-masthead">
+      <div class="container">
+        <header class="masthead clearfix">
+          <a href="/" class="site-avatar"><img src="/images/Logo.png" /></a>
+          
+          <div class="site-info">
+            <h1 class="site-name"><a href="/">Cameron Cooke</a></h1>
+            <p class="site-description">Number Cruncher</p>
+          </div>
+          
+          <nav>
+            <a href="/">Blog</a>
+            <a href="/about">About</a>
+          </nav>
+        </header>
+      </div>
+    </div>
+
+    <div id="main" role="main" class="container">
+      <article class="post">
+  <h1>256 Shades of Grey</h1>
+
+  <div class="entry">
+    <p><img src="/images/1_header.png" alt="_config.yml"></p>
+
+<p>The inspiration for this post came from <a href="http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html">here</a>, and is well worth a read.</p>
+
+<p><a href="http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar">Interferometric synthetic aperture radar</a></p>
+
+<p>The full source code for this project is avalible <a href="https://github.com/CGCooke/Marinus/tree/master">here</a> on GitHub.</p>
+
+<p>More information about the CGIAR dataset can be found <a href="http://www.cgiar-csi.org/data/srtm-90m-digital-elevation-database-v4-1">here</a></p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">downloadDEMFromCGIAR</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Download a DEM from CGIAR FTP repository &#39;&#39;&#39;</span>
+    <span class="n">fileName</span> <span class="o">=</span> <span class="n">lonLatToFileName</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span><span class="n">lat</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;.zip&#39;</span>
+    
+    <span class="sd">&#39;&#39;&#39; Check to see if we have already downloaded the file &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">fileName</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&#39;&#39;&#39;wget --user=data_public --password=&#39;GDdci&#39; http://data.cgiar-csi.org/srtm/tiles/GeoTIFF/&#39;&#39;&#39;</span><span class="o">+</span><span class="n">fileName</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&#39;unzip &#39;</span><span class="o">+</span><span class="n">fileName</span><span class="p">)</span></code></pre></div>
+
+<p>You can choose any colormap from <a href="http://wiki.scipy.org/Cookbook/Matplotlib/Show_colormaps?action=AttachFile&amp;do=get&amp;target=colormaps3.png">here</a> </p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">createColorMapLUT</span><span class="p">(</span><span class="n">minHeight</span><span class="p">,</span><span class="n">maxHeight</span><span class="p">,</span><span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">jet</span><span class="p">,</span><span class="n">numSteps</span><span class="o">=</span><span class="mi">256</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">   Create a colormap for visualization</span>
+<span class="sd">   Pro tip : tacking on _r to the end of the name of any color map reverses it,</span>
+<span class="sd">   for example, YlGn -&gt; YlGn_r </span>
+<span class="sd">   &#39;&#39;&#39;</span>
+    
+    <span class="n">f</span> <span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="s">&#39;color_relief.txt&#39;</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">numSteps</span><span class="p">):</span>
+        <span class="n">r</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">a</span><span class="o">=</span> <span class="n">cmap</span><span class="p">(</span><span class="n">i</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">numSteps</span><span class="p">))</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">minHeight</span> <span class="o">+</span> <span class="p">(</span><span class="n">maxHeight</span><span class="o">-</span><span class="n">minHeight</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">/</span><span class="n">numSteps</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">height</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;,&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">255</span><span class="o">*</span><span class="n">r</span><span class="p">))</span><span class="o">+</span><span class="s">&#39;,&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">255</span><span class="o">*</span><span class="n">g</span><span class="p">))</span><span class="o">+</span><span class="s">&#39;,&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">255</span><span class="o">*</span><span class="n">b</span><span class="p">))</span><span class="o">+</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;,&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">255</span><span class="o">*</span><span class="n">r</span><span class="p">))</span><span class="o">+</span><span class="s">&#39;,&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">255</span><span class="o">*</span><span class="n">g</span><span class="p">))</span><span class="o">+</span><span class="s">&#39;,&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">255</span><span class="o">*</span><span class="n">b</span><span class="p">))</span><span class="o">+</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+    
+    <span class="sd">&#39;&#39;&#39; Set sea level to be blue &#39;&#39;&#39;</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;-0.1,135,206,250 </span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;0.1,135,206,250 </span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&#39;unzip &#39;</span><span class="o">+</span><span class="n">fileName</span><span class="p">)</span></code></pre></div>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">lonLatToFileName</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span><span class="n">lat</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Compute the input file name &#39;&#39;&#39;</span>
+    <span class="n">tileX</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">lon</span><span class="o">+</span><span class="mi">180</span><span class="p">)</span><span class="o">/</span><span class="mf">5.0</span><span class="p">))</span>
+    <span class="n">tileY</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">*</span><span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">lat</span><span class="o">-</span><span class="mi">65</span><span class="p">)</span><span class="o">/</span><span class="mf">5.0</span><span class="p">))</span>
+    <span class="n">inputFileName</span> <span class="o">=</span> <span class="s">&#39;srtm_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">tileX</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">tileY</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">inputFileName</span><span class="p">)</span></code></pre></div>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&#39;gdaldem hillshade -q -az 45 -alt 45 -of PNG warped.tif hillshade.tif&#39;</span><span class="p">)</span></code></pre></div>
+
+<p><img src="/images/1_hillshade.png" alt="_config.yml"></p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&#39;gdaldem color-relief -q warped.tif color_relief.txt color_relief.tif&#39;</span><span class="p">)</span></code></pre></div>
+
+<p><img src="/images/1_color_relief.png" alt="_config.yml"></p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&#39;gdaldem slope -q warped.tif slope.tif&#39;</span><span class="p">)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&#39;gdaldem color-relief -q slope.tif color_slope.txt slopeshade.tif&#39;</span><span class="p">)</span></code></pre></div>
+
+<p><img src="/images/1_slopeshade.png" alt="_config.yml"></p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="sd">&#39;&#39;&#39; Merge components using Python Image Lib &#39;&#39;&#39;</span>
+<span class="n">slopeshade</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;slopeshade.tif&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s">&#39;L&#39;</span><span class="p">)</span>
+<span class="n">hillshade</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;hillshade.tif&quot;</span><span class="p">)</span>
+<span class="n">colorRelief</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;color_relief.tif&quot;</span><span class="p">)</span>
+
+<span class="n">shading</span> <span class="o">=</span> <span class="n">ImageChops</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">slopeshade</span><span class="p">,</span> <span class="n">hillshade</span><span class="p">)</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s">&#39;RGB&#39;</span><span class="p">)</span>
+<span class="n">merged</span> <span class="o">=</span> <span class="n">ImageChops</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">shading</span><span class="p">,</span><span class="n">colorRelief</span><span class="p">)</span>
+
+<span class="sd">&#39;&#39;&#39; Adjust the brightness to take into account the reduction caused by hillshading&#39;&#39;&#39;</span>
+<span class="n">enhancer</span> <span class="o">=</span> <span class="n">ImageEnhance</span><span class="o">.</span><span class="n">Brightness</span><span class="p">(</span><span class="n">merged</span><span class="p">)</span>
+<span class="n">img_enhanced</span> <span class="o">=</span> <span class="n">enhancer</span><span class="o">.</span><span class="n">enhance</span><span class="p">(</span><span class="mf">1.4</span><span class="p">)</span>
+<span class="n">img_enhanced</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">outFileName</span><span class="p">)</span></code></pre></div>
+
+<p><img src="/images/1_blended.png" alt="_config.yml"></p>
+
+<p>$$ \frac{v}{c}*f $$</p>
+
+<h1>Further reading</h1>
+
+<ul>
+<li>http://en.wikipedia.org/wiki/Shuttle<em>Radar</em>Topography_Mission</li>
+<li>http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html</li>
+<li>http://linfiniti.com/2010/12/a-workflow-for-creating-beautiful-relief-shaded-dems-using-gdal/</li>
+<li>http://www.geophysique.be/2014/02/25/shaded-relief-map-in-python/</li>
+</ul>
+
+  </div>
+
+  <div class="date">
+    Written on January 25, 2015
+  </div>
+
+  
+</article>
+
+
+<script type="text/javascript"
+    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+    </div>
+
+    <div class="wrapper-footer">
+      <div class="container">
+        <footer class="footer">
+          
+<a href="mailto:Cameron.G.Cooke@Gmail.com"><i class="svg-icon email"></i></a>
+
+
+<a href="http://github.com/CGCooke"><i class="svg-icon github"></i></a>
+
+
+
+
+<a href="http://twitter.com/CGCooke"><i class="svg-icon twitter"></i></a>
+
+
+        </footer>
+      </div>
+    </div>
+
+    
+
+  </body>
+</html>
