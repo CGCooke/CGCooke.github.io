@@ -5,8 +5,17 @@ title: 256 Shades of Grey
 
 ![_config.yml]({{ site.baseurl }}/images/1_header.png)
 
-Over an 11 day period in mid Febuary 2000, measurements were taken for what would become the most accurate and comprehensive map of the earth's topography ever created. An insturment called an [Interferometric synthetic aperture radar] (http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar) was carried abour the space shuttle Endeavour. The radar system consisted of a transmitter, and two recieving antennas, one of whcih was mounted on a 60 meter long antenna. By comparing the phase of the returning radar signal, a highly accurate terrain model was produced. 
+>On Febuary 22, 2000, after 11 days of measurmenets, the most comprehensive map ever created of the earth's topography was complete. 
 
+An insturment called an [Interferometric synthetic aperture radar] (http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar) was carried aboard the space shuttle Endeavour. The radar system consisted of a transmitter, and two recieving antennas, one of whcih was mounted on a 60 meter long antenna. By comparing the phase of the returning radar signal, a highly accurate terrain model was produced. 
+
+The Digital Elevation Map (DEM) produced by this mission is in the public domain, and provides the measured terrain high at ~90 meter resolution. The mission mapped 99.98% of the area between 60 degrees North and 56 degrees South.  
+
+In this post, I will examine how to process the raw DEM so that it is more intuitively interperted, through the use of *slope shading* and *hyposomatic tinting*. 
+
+---
+
+A number of different DEM's have been created from the data collected on the SRTM mission, one of the most 
 
 
 

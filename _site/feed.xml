@@ -10,7 +10,19 @@
         <title>256 Shades of Grey</title>
         <description>&lt;p&gt;&lt;img src=&quot;/images/1_header.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
 
-&lt;p&gt;Over an 11 day period in mid Febuary 2000, measurements were taken for what would become the most accurate and comprehensive map of the earth&amp;#39;s topography ever created. An insturment called an &lt;a href=&quot;http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar&quot;&gt;Interferometric synthetic aperture radar&lt;/a&gt; was carried abour the space shuttle Endeavour. The radar system consisted of a transmitter, and two recieving antennas, one of whcih was mounted on a 60 meter long antenna. By comparing the phase of the returning radar signal, a highly accurate terrain model was produced. &lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;On Febuary 22, 2000, after 11 days of measurmenets, the most comprehensive map ever created of the earth&amp;#39;s topography was complete. &lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;An insturment called an &lt;a href=&quot;http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar&quot;&gt;Interferometric synthetic aperture radar&lt;/a&gt; was carried aboard the space shuttle Endeavour. The radar system consisted of a transmitter, and two recieving antennas, one of whcih was mounted on a 60 meter long antenna. By comparing the phase of the returning radar signal, a highly accurate terrain model was produced. &lt;/p&gt;
+
+&lt;p&gt;The Digital Elevation Map (DEM) produced by this mission is in the public domain, and provides the measured terrain high at ~90 meter resolution. The mission mapped 99.98% of the area between 60 degrees North and 56 degrees South.  &lt;/p&gt;
+
+&lt;p&gt;In this post, I will examine how to process the raw DEM so that it is more intuitively interperted, through the use of &lt;em&gt;slope shading&lt;/em&gt; and &lt;em&gt;hyposomatic tinting&lt;/em&gt;. &lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;A number of different DEM&amp;#39;s have been created from the data collected on the SRTM mission, one of the most &lt;/p&gt;
 
 &lt;p&gt;The full source code for this project is avalible &lt;a href=&quot;https://github.com/CGCooke/Marinus/tree/master&quot;&gt;here&lt;/a&gt; on GitHub.&lt;/p&gt;
 
@@ -93,8 +105,8 @@
 &lt;/ul&gt;
 </description>
         <pubDate>Sun, 25 Jan 2015 00:00:00 -0800</pubDate>
-        <link>/256-Shades-Of-Grey%20copy/</link>
-        <guid isPermaLink="true">/256-Shades-Of-Grey%20copy/</guid>
+        <link>/256-Shades-Of-Grey/</link>
+        <guid isPermaLink="true">/256-Shades-Of-Grey/</guid>
       </item>
     
       <item>
