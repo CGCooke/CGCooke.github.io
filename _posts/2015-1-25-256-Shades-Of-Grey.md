@@ -16,11 +16,13 @@ The GDAL aspects of this post came from the [Thematic mapping blog] (http://blog
 
 ---
 
-A number of different DEM's have been created from the data collected on the SRTM mission, in this post I will use the CGIAR [SRTM 90m Digital Elevation Database](http://www.cgiar-csi.org/data/srtm-90m-digital-elevation-database-v4-1). Data is provided in 5x5 degree tiles, with each degree of lattitude equal to aproximately 111Km. 
-
-
 The full source code for this project is avalible [here](
 https://github.com/CGCooke/Marinus/tree/master) on GitHub.
+
+
+A number of different DEM's have been created from the data collected on the SRTM mission, in this post I will use the CGIAR [SRTM 90m Digital Elevation Database](http://www.cgiar-csi.org/data/srtm-90m-digital-elevation-database-v4-1). Data is provided in 5x5 degree tiles, with each degree of lattitude equal to aproximately 111Km. 
+
+Our first task is to acquire a tile. Tiles can be downloaded from http://data.cgiar-csi.org/srtm/tiles/GeoTIFF/ using wget. 
 
 {% highlight python %}
 def downloadDEMFromCGIAR(lat,lon):
@@ -43,12 +45,49 @@ def lonLatToFileName(lon,lat):
 	return(inputFileName)
 {% endhighlight %}
 
+
+The tile I have chosen to render covers Washington State and British Columbia, the topograpy 
+
+Lets use [GDAL](http://www.gdal.org/) to extract a subsection of the tile covering Vancouver Island and the Pacific Ranges stretching from 125ºW - 122ºW & 48ºN - 50ºN can be extracted by using gdalwarp. 
+
+
 {% highlight python %}
 os.system('gdalwarp -q -te -125 48 -122 50 '+inputFileName+' subset.tif')
 {% endhighlight %}
 
+
+Our next step is to transform the subsection of the tile to a different projection. Currently the location of the points in the subsection are located on a grid 1/1200th of a degree apart. While degrees of lattitude are always ~110Km in size, resulting in ~92.5M resolution, degrees of longitude decrease in size, from ~111Km at the equator to 0Km at the poles. A deferent scale exists between the lattitude & longitude axis, as well as a longitude scale that depends on the latitude. This effect can clearly be seen in the image below, with the lines of longitude and latitude forming trapozoidal shapes. 
+
+![_config.yml]({{ site.baseurl }}/images/1_Globe.png)
+
+
+Our solution is to project that points so that there is a consistant and equal scale in the X/Y plane. One choice is to use a family of projections called [Universal Transverse Mercator](http://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system). Each UTM projection can map points from longitude & latitude to X & Y coordinates in meters. The UTM projection is useful because it locally preserves both shapes and distances, over a distances of up to several hundred kilometers.
+
+The tradeoff is that a number of different UTM projections are required for different points on earth, 120 to be precise. 
+Fortunately it is relatively trivial to work out the required projection based on the longitude and lattitude. Almost every conceivable projection has been assigned a code by the European Petroleum Survey Group (EPSG). This EPSG code can be used to quickly and unambigiously specify the projection being used, and in the case of UTM, each code starts with either 327 or 326, depending on the hemisphere of the projection. 
+
 {% highlight python %}
-os.system('gdaldem hillshade -q -az 45 -alt 45 -of PNG warped.tif hillshade.tif')
+utmZone = int((math.floor((lon + 180)/6) % 60) + 1)
+
+''' Check to see if file is in northern or southern hemisphere '''
+if lat<0:
+	EPSGCode = 'EPSG:327'+str(utmZone)
+else:
+	EPSGCode = 'EPSG:326'+str(utmZone)
+{% endhighlight %}
+
+
+Once we have identified the correct EPSG code to use, the process of warping the subset to a new projection is relatively straightforward.
+In the following system call to gdalwarp, *t_srs* denotes the target projection, and *tr* specifies the resolution in the X and Y plane. The Y resolution is negative because the in the GDAL file uses a row, column based coordinate system. In this coordinate system, the origin is in the top left hand corner of the file. The row value increases as you move down the file, like an excel spreadsheet, however the UTM Y coordinate decreases. This results in the negative sign in the resolution. The net result of this call is the production of warped.tif.
+
+{% highlight python %}
+os.system('gdalwarp -q -t_srs '+EPSGCode+' -tr 100 -100 -r cubic -srcnodata -32768  subset.tif warped.tif')
+{% endhighlight %}
+
+
+
+{% highlight python %}
+os.system('gdaldem hillshade -q -az 45 -alt 45 warped.tif hillshade.tif')
 {% endhighlight %}
 
 ![_config.yml]({{ site.baseurl }}/images/1_hillshade.png)
