@@ -7,12 +7,11 @@ title: 256 Shades of Grey
 
 >On February 22, 2000, after 11 days of measurements, the most comprehensive map ever created of the earth's topography was complete. 
 
-The space shuttle Endeavor had just completed the Shuttle Radar Topography Mission,using a instrument called an [Interferometric synthetic aperture radar] (http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar) to image the earth surface. The radar system consisted of a transmitter, and two receiving antennas, one of which was mounted on a 60 meter long antenna. By comparing the phase of the returning radar signal, a highly accurate terrain model was produced. 
+The space shuttle Endeavor had just completed the Shuttle Radar Topography Mission, using a instrument called an [Interferometric synthetic aperture radar] (http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar) to image the earth surface. The radar system consisted of a transmitter, and two receiving antennas, one of which was mounted on a 60 meter long antenna. By comparing the phase of the returning radar signal, a highly accurate terrain model was produced. 
 
 The Digital Elevation Map (DEM) produced by this mission is in the public domain, and provides the measured terrain high at ~90 meter resolution. The mission mapped 99.98% of the area between 60 degrees North and 56 degrees South.  
 
-In this post, I will examine how to process the raw DEM so that it is more intuitively interpreted, through the use of *slope shading* and *hypsometric tinting*. 
-The GDAL aspects of this post came from the [Thematic mapping blog] (http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html), and is a very informative read.
+In this post, I will examine how to process the raw DEM so that it is more intuitively interpreted, through the use of *hillshading*,*slopeshading* & *hypsometric tinting*. 
 
 ---
 
@@ -46,7 +45,7 @@ def lonLatToFileName(lon,lat):
 {% endhighlight %}
 
 
-The tile I have chosen to render covers Washington State and British Columbia, the topograpy 
+The area I have chosen to visualize covers Washington State and British Columbia, the topograpy 
 
 Lets use [GDAL](http://www.gdal.org/) to extract a subsection of the tile covering Vancouver Island and the Pacific Ranges stretching from 125ºW - 122ºW & 48ºN - 50ºN can be extracted by using gdalwarp. 
 
@@ -103,7 +102,7 @@ os.system('gdaldem color-relief -q warped.tif color_relief.txt color_relief.tif'
 
 Matplotlib ships with a large number of inbuilt colorschemes, which can be utilized. 
 You can choose any colormap from [here](http://wiki.scipy.org/Cookbook/Matplotlib/Show_colormaps?action=AttachFile&do=get&target=colormaps3.png).
-As an aside, the most accurate colormap may be completely different from the most visually stunning colormap.In general, humans are more sensitive to changes in lightness than hue. Hence good colormaps should have linearly and monotonically changing lightness. Additional thought should be given to how the colormap will be interpreted by those suffering from color-blindness. [This](http://matplotlib.org/users/colormaps.html) excellent article outlines the issues mentioned in significantly more detail.
+As an aside, the most accurate colormap may be completely different from the most visually stunning colormap. In general, humans are more sensitive to changes in lightness than hue. Hence good colormaps should have linearly and monotonically changing lightness. Additional thought should be given to how the colormap will be interpreted by those suffering from color-blindness. [This](http://matplotlib.org/users/colormaps.html) excellent article outlines the issues mentioned in significantly more detail.
 
 {% highlight python %}
 def createColorMapLUT(minHeight,maxHeight,cmap = cm.jet,numSteps=256):
@@ -127,17 +126,33 @@ def createColorMapLUT(minHeight,maxHeight,cmap = cm.jet,numSteps=256):
 {% endhighlight %}
 
 
-
 ![_config.yml]({{ site.baseurl }}/images/1_color_relief.png)
+
+Another technique for visualizing terrain is slopeshading. While hypsometric tinting assigns colors to cells based on elevation, slope shading assigns colors to pixels based on the slope (0º to 90º). In this case, white (255,255,255) is assigned to slopes of 0º and black (0,0,0) is assigned to slopes of 90º, with varying shades of grey for slopes in-between. 
+
+This colorscheme is encoded in a txt file for gdaldem as follows : 
+
+{% highlight python %}
+f =open('color_slope.txt','w')
+f.write('0 255 255 255\n')
+f.write('90 0 0 0\n')
+f.close()
+{% endhighlight %}
+
+
+The computation of the slope shaded dem takes place over two steps. Firstly, the slope of each cell is computed, before a shade of grey is assigned to each cell depending on the slope.
 
 {% highlight python %}
 os.system('gdaldem slope -q warped.tif slope.tif')
 os.system('gdaldem color-relief -q slope.tif color_slope.txt slopeshade.tif')
 {% endhighlight %}
 
-
 ![_config.yml]({{ site.baseurl }}/images/1_slopeshade.png)
 
+
+The final step in producing the final product is to merge the 3 different created images. The python Image Library (PIL) is a quick and dirty way to accomplish this task, with the 3 layers are merged using pixel by pixel multiplication. 
+
+One important detail to note is that the pixel by pixel multiplication occurs in the RGB space. From a theoretical perspective, it is preferable that each pixel is first transformed to the Hue, Saturation,Value (HSV) color space, and the value is then multiplied by the hillshade and slope shade value, before being transformed back into the RGB color space. In practical terms however, the RGB space multiplication is a very reasonable approximation.
 
 
 {% highlight python %}
@@ -159,8 +174,11 @@ img_enhanced.save(outFileName)
 ![_config.yml]({{ site.baseurl }}/images/1_blended.png)
 
 
+
 Further reading
 ===============
+I found the following sources to be invaluable in compiling this post:
+
 * [Creating color relief and slope shading](http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html)
 * [A workflow for creating beautiful relief shaded dems using gdal](http://linfiniti.com/2010/12/a-workflow-for-creating-beautiful-relief-shaded-dems-using-gdal/)
 * [Shaded relief map in python](http://www.geophysique.be/2014/02/25/shaded-relief-map-in-python/)
