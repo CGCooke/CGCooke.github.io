@@ -122,11 +122,6 @@ def createColorMapLUT(minHeight,maxHeight,cmap = cm.jet,numSteps=256):
 
 
 
-
-
-
-
-
 ![_config.yml]({{ site.baseurl }}/images/1_color_relief.png)
 
 {% highlight python %}
