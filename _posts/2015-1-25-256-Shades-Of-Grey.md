@@ -18,6 +18,8 @@ In this post, I will examine how to process the raw DEM so that it is more intui
 The full source code for this project is avalible [here](
 https://github.com/CGCooke/Marinus/tree/master) on GitHub.
 
+DEM
+===============
 
 A number of different DEM's have been created from the data collected on the SRTM mission, in this post I will use the CGIAR [SRTM 90m Digital Elevation Database](http://www.cgiar-csi.org/data/srtm-90m-digital-elevation-database-v4-1). Data is provided in 5x5 degree tiles, with each degree of latitude equal to approximately 111Km. 
 
@@ -45,6 +47,11 @@ def lonLatToFileName(lon,lat):
 {% endhighlight %}
 
 
+---
+
+Slicing
+===============
+
 The area I have chosen to visualize covers Washington State and British Columbia, the topograpy 
 
 Lets use [GDAL](http://www.gdal.org/) to extract a subsection of the tile covering Vancouver Island and the Pacific Ranges stretching from 125ºW - 122ºW & 48ºN - 50ºN can be extracted by using gdalwarp. 
@@ -53,6 +60,12 @@ Lets use [GDAL](http://www.gdal.org/) to extract a subsection of the tile coveri
 {% highlight python %}
 os.system('gdalwarp -q -te -125 48 -122 50 '+inputFileName+' subset.tif')
 {% endhighlight %}
+
+
+---
+
+Reprojection
+===============
 
 
 Our next step is to transform the subsection of the tile to a different projection. Currently the location of the points in the subsection are located on a grid 1/1200th of a degree apart. While degrees of latitude are always ~110Km in size, resulting in ~92.5M resolution, degrees of longitude decrease in size, from ~111Km at the equator to 0Km at the poles. A deferent scale exists between the latitude & longitude axis, as well as a longitude scale that depends on the latitude. This effect can clearly be seen in the image below, with the lines of longitude and latitude forming trapezoidal shapes. 
@@ -84,7 +97,12 @@ os.system('gdalwarp -q -t_srs '+EPSGCode+' -tr 100 -100 -r cubic -srcnodata -327
 {% endhighlight %}
 
 
-At this point we can begin to visualise the DEM. One highly effective method is hillshading, which models the way the surface of the DEM would be illuminated by light projected onto it.  Shading of the slopes allows the DEM to be more intuitively interpreted than just coloring by height alone. Using gdaldem the effect of a light source with an elevation of 45º and an azimuth of 45º  is modelled. 
+---
+
+Hillshading
+===============
+
+At this point we can begin to visualise the DEM. One highly effective method is *hillshading*, which models the way the surface of the DEM would be illuminated by light projected onto it.  Shading of the slopes allows the DEM to be more intuitively interpreted than just coloring by height alone. Using gdaldem the effect of a light source with an elevation of 45º and an azimuth of 45º  is modelled. 
 
 {% highlight python %}
 os.system('gdaldem hillshade -q -az 45 -alt 45 warped.tif hillshade.tif')
@@ -94,7 +112,12 @@ os.system('gdaldem hillshade -q -az 45 -alt 45 warped.tif hillshade.tif')
 
 
 
-Hillshading can also be combined with height information, in a process called hypsometric tinting. The process is relatively simple, with GDAL mapping colors to cell heights, using a provided colorscheme. 
+---
+
+Hypsometric Tinting
+===============
+
+Hillshading can also be combined with height information in order to aid interpretation of the topography. The technical name for the process of coloring a dem based on  height is *hypsometric tinting*. The process is relatively simple, with GDAL mapping colors to cell heights, using a provided colorscheme. 
 
 {% highlight python %}
 os.system('gdaldem color-relief -q warped.tif color_relief.txt color_relief.tif')
@@ -128,6 +151,13 @@ def createColorMapLUT(minHeight,maxHeight,cmap = cm.jet,numSteps=256):
 
 ![_config.yml]({{ site.baseurl }}/images/1_color_relief.png)
 
+
+---
+
+Slope Shading
+===============
+
+
 Another technique for visualizing terrain is slopeshading. While hypsometric tinting assigns colors to cells based on elevation, slope shading assigns colors to pixels based on the slope (0º to 90º). In this case, white (255,255,255) is assigned to slopes of 0º and black (0,0,0) is assigned to slopes of 90º, with varying shades of grey for slopes in-between. 
 
 This colorscheme is encoded in a txt file for gdaldem as follows : 
@@ -150,10 +180,18 @@ os.system('gdaldem color-relief -q slope.tif color_slope.txt slopeshade.tif')
 ![_config.yml]({{ site.baseurl }}/images/1_slopeshade.png)
 
 
+---
+
+Layer Merging
+===============
+
 The final step in producing the final product is to merge the 3 different created images. The python Image Library (PIL) is a quick and dirty way to accomplish this task, with the 3 layers are merged using pixel by pixel multiplication. 
 
 One important detail to note is that the pixel by pixel multiplication occurs in the RGB space. From a theoretical perspective, it is preferable that each pixel is first transformed to the Hue, Saturation,Value (HSV) color space, and the value is then multiplied by the hillshade and slope shade value, before being transformed back into the RGB color space. In practical terms however, the RGB space multiplication is a very reasonable approximation.
 
+In one final tweak, the brightness of the output image is increased by 40%, in order to offset the average reduction in brightness caused by multiplying layers together. 
+
+The final product is visible below:
 
 {% highlight python %}
 ''' Merge components using Python Image Lib '''
@@ -174,6 +212,7 @@ img_enhanced.save(outFileName)
 ![_config.yml]({{ site.baseurl }}/images/1_blended.png)
 
 
+---
 
 Further reading
 ===============
