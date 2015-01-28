@@ -14,7 +14,7 @@
 &lt;p&gt;On February 22, 2000, after 11 days of measurements, the most comprehensive map ever created of the earth&amp;#39;s topography was complete. &lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;An instrument called an &lt;a href=&quot;http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar&quot;&gt;Interferometric synthetic aperture radar&lt;/a&gt; was carried aboard the space shuttle Endeavour. The radar system consisted of a transmitter, and two receiving antennas, one of which was mounted on a 60 meter long antenna. By comparing the phase of the returning radar signal, a highly accurate terrain model was produced. &lt;/p&gt;
+&lt;p&gt;The space shuttle Endeavor had just completed the Shuttle Radar Topography Mission,using a instrument called an &lt;a href=&quot;http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar&quot;&gt;Interferometric synthetic aperture radar&lt;/a&gt; to image the earth surface. The radar system consisted of a transmitter, and two receiving antennas, one of which was mounted on a 60 meter long antenna. By comparing the phase of the returning radar signal, a highly accurate terrain model was produced. &lt;/p&gt;
 
 &lt;p&gt;The Digital Elevation Map (DEM) produced by this mission is in the public domain, and provides the measured terrain high at ~90 meter resolution. The mission mapped 99.98% of the area between 60 degrees North and 56 degrees South.  &lt;/p&gt;
 
@@ -73,19 +73,23 @@ In the following system call to gdalwarp, &lt;em&gt;t_srs&lt;/em&gt; denotes the
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;gdalwarp -q -t_srs &amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;EPSGCode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39; -tr 100 -100 -r cubic -srcnodata -32768  subset.tif warped.tif&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;At this point we can begin to visualise the DEM. One highly effective method is hillshading, &lt;/p&gt;
+&lt;p&gt;At this point we can begin to visualise the DEM. One highly effective method is hillshading, which models the way the surface of the DEM would be illuminated by light projected onto it.  Shading of the slopes allows the DEM to be more intuitively interpreted than just coloring by height alone. Using gdaldem the effect of a light source with an elevation of 45º and an azimuth of 45º  is modelled. &lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;gdaldem hillshade -q -az 45 -alt 45 warped.tif hillshade.tif&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/1_hillshade.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
 
+&lt;p&gt;Hillshading can also be combined with height information, in a process called hypsometric tinting. The process is relatively simple, with GDAL mapping colors to cell heights, using a provided colorscheme. &lt;/p&gt;
+
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;gdaldem color-relief -q warped.tif color_relief.txt color_relief.tif&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;You can choose any colormap from &lt;a href=&quot;http://wiki.scipy.org/Cookbook/Matplotlib/Show_colormaps?action=AttachFile&amp;amp;do=get&amp;amp;target=colormaps3.png&quot;&gt;here&lt;/a&gt; &lt;/p&gt;
+&lt;p&gt;Matplotlib ships with a large number of inbuilt colorschemes, which can be utilized. 
+You can choose any colormap from &lt;a href=&quot;http://wiki.scipy.org/Cookbook/Matplotlib/Show_colormaps?action=AttachFile&amp;amp;do=get&amp;amp;target=colormaps3.png&quot;&gt;here&lt;/a&gt;.
+As an aside, the most accurate colormap may be completely different from the most visually stunning colormap.In general, humans are more sensitive to changes in lightness than hue. Hence good colormaps should have linearly and monotonically changing lightness. Additional thought should be given to how the colormap will be interpreted by those suffering from color-blindness. &lt;a href=&quot;http://matplotlib.org/users/colormaps.html&quot;&gt;This&lt;/a&gt; excellent article outlines the issues mentioned in significantly more detail.&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;createColorMapLUT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;minHeight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;maxHeight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cmap&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;jet&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;numSteps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
     &lt;span class=&quot;sd&quot;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
-&lt;span class=&quot;sd&quot;&gt;   Create a colormap for visualization&lt;/span&gt;
+&lt;span class=&quot;sd&quot;&gt;   Create a colormap for visualisation&lt;/span&gt;
 &lt;span class=&quot;sd&quot;&gt;   Pro tip : tacking on _r to the end of the name of any color map reverses it,&lt;/span&gt;
 &lt;span class=&quot;sd&quot;&gt;   for example, YlGn -&amp;gt; YlGn_r &lt;/span&gt;
 &lt;span class=&quot;sd&quot;&gt;   &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
@@ -127,10 +131,9 @@ In the following system call to gdalwarp, &lt;em&gt;t_srs&lt;/em&gt; denotes the
 &lt;h1&gt;Further reading&lt;/h1&gt;
 
 &lt;ul&gt;
-&lt;li&gt;http://en.wikipedia.org/wiki/Shuttle&lt;em&gt;Radar&lt;/em&gt;Topography_Mission&lt;/li&gt;
-&lt;li&gt;http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html&lt;/li&gt;
-&lt;li&gt;http://linfiniti.com/2010/12/a-workflow-for-creating-beautiful-relief-shaded-dems-using-gdal/&lt;/li&gt;
-&lt;li&gt;http://www.geophysique.be/2014/02/25/shaded-relief-map-in-python/&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html&quot;&gt;Creating color relief and slope shading&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://linfiniti.com/2010/12/a-workflow-for-creating-beautiful-relief-shaded-dems-using-gdal/&quot;&gt;A workflow for creating beautiful relief shaded dems using gdal&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://www.geophysique.be/2014/02/25/shaded-relief-map-in-python/&quot;&gt;Shaded relief map in python&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
         <pubDate>Sun, 25 Jan 2015 00:00:00 -0800</pubDate>

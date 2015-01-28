@@ -7,7 +7,7 @@ title: 256 Shades of Grey
 
 >On February 22, 2000, after 11 days of measurements, the most comprehensive map ever created of the earth's topography was complete. 
 
-An instrument called an [Interferometric synthetic aperture radar] (http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar) was carried aboard the space shuttle Endeavour. The radar system consisted of a transmitter, and two receiving antennas, one of which was mounted on a 60 meter long antenna. By comparing the phase of the returning radar signal, a highly accurate terrain model was produced. 
+The space shuttle Endeavor had just completed the Shuttle Radar Topography Mission,using a instrument called an [Interferometric synthetic aperture radar] (http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar) to image the earth surface. The radar system consisted of a transmitter, and two receiving antennas, one of which was mounted on a 60 meter long antenna. By comparing the phase of the returning radar signal, a highly accurate terrain model was produced. 
 
 The Digital Elevation Map (DEM) produced by this mission is in the public domain, and provides the measured terrain high at ~90 meter resolution. The mission mapped 99.98% of the area between 60 degrees North and 56 degrees South.  
 
@@ -85,7 +85,7 @@ os.system('gdalwarp -q -t_srs '+EPSGCode+' -tr 100 -100 -r cubic -srcnodata -327
 {% endhighlight %}
 
 
-At this point we can begin to visualise the DEM. One highly effective method is hillshading, 
+At this point we can begin to visualise the DEM. One highly effective method is hillshading, which models the way the surface of the DEM would be illuminated by light projected onto it.  Shading of the slopes allows the DEM to be more intuitively interpreted than just coloring by height alone. Using gdaldem the effect of a light source with an elevation of 45º and an azimuth of 45º  is modelled. 
 
 {% highlight python %}
 os.system('gdaldem hillshade -q -az 45 -alt 45 warped.tif hillshade.tif')
@@ -93,16 +93,22 @@ os.system('gdaldem hillshade -q -az 45 -alt 45 warped.tif hillshade.tif')
 
 ![_config.yml]({{ site.baseurl }}/images/1_hillshade.png)
 
+
+
+Hillshading can also be combined with height information, in a process called hypsometric tinting. The process is relatively simple, with GDAL mapping colors to cell heights, using a provided colorscheme. 
+
 {% highlight python %}
 os.system('gdaldem color-relief -q warped.tif color_relief.txt color_relief.tif')
 {% endhighlight %}
 
+Matplotlib ships with a large number of inbuilt colorschemes, which can be utilized. 
+You can choose any colormap from [here](http://wiki.scipy.org/Cookbook/Matplotlib/Show_colormaps?action=AttachFile&do=get&target=colormaps3.png).
+As an aside, the most accurate colormap may be completely different from the most visually stunning colormap.In general, humans are more sensitive to changes in lightness than hue. Hence good colormaps should have linearly and monotonically changing lightness. Additional thought should be given to how the colormap will be interpreted by those suffering from color-blindness. [This](http://matplotlib.org/users/colormaps.html) excellent article outlines the issues mentioned in significantly more detail.
 
-You can choose any colormap from [here] (http://wiki.scipy.org/Cookbook/Matplotlib/Show_colormaps?action=AttachFile&do=get&target=colormaps3.png) 
 {% highlight python %}
 def createColorMapLUT(minHeight,maxHeight,cmap = cm.jet,numSteps=256):
 	'''
-	Create a colormap for visualization
+	Create a colormap for visualisation
 	Pro tip : tacking on _r to the end of the name of any color map reverses it,
 	for example, YlGn -> YlGn_r 
 	'''
@@ -155,7 +161,6 @@ img_enhanced.save(outFileName)
 
 Further reading
 ===============
-* http://en.wikipedia.org/wiki/Shuttle_Radar_Topography_Mission
-* http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html
-* http://linfiniti.com/2010/12/a-workflow-for-creating-beautiful-relief-shaded-dems-using-gdal/
-* http://www.geophysique.be/2014/02/25/shaded-relief-map-in-python/
+* [Creating color relief and slope shading](http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html)
+* [A workflow for creating beautiful relief shaded dems using gdal](http://linfiniti.com/2010/12/a-workflow-for-creating-beautiful-relief-shaded-dems-using-gdal/)
+* [Shaded relief map in python](http://www.geophysique.be/2014/02/25/shaded-relief-map-in-python/)
