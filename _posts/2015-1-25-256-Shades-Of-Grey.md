@@ -5,13 +5,13 @@ title: 256 Shades of Grey
 
 ![_config.yml]({{ site.baseurl }}/images/1_header.png)
 
->On Febuary 22, 2000, after 11 days of measurmenets, the most comprehensive map ever created of the earth's topography was complete. 
+>On February 22, 2000, after 11 days of measurements, the most comprehensive map ever created of the earth's topography was complete. 
 
-An insturment called an [Interferometric synthetic aperture radar] (http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar) was carried aboard the space shuttle Endeavour. The radar system consisted of a transmitter, and two recieving antennas, one of whcih was mounted on a 60 meter long antenna. By comparing the phase of the returning radar signal, a highly accurate terrain model was produced. 
+An instrument called an [Interferometric synthetic aperture radar] (http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar) was carried aboard the space shuttle Endeavour. The radar system consisted of a transmitter, and two receiving antennas, one of which was mounted on a 60 meter long antenna. By comparing the phase of the returning radar signal, a highly accurate terrain model was produced. 
 
 The Digital Elevation Map (DEM) produced by this mission is in the public domain, and provides the measured terrain high at ~90 meter resolution. The mission mapped 99.98% of the area between 60 degrees North and 56 degrees South.  
 
-In this post, I will examine how to process the raw DEM so that it is more intuitively interperted, through the use of *slope shading* and *hyposomatic tinting*. 
+In this post, I will examine how to process the raw DEM so that it is more intuitively interpreted, through the use of *slope shading* and *hypsometric tinting*. 
 The GDAL aspects of this post came from the [Thematic mapping blog] (http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html), and is a very informative read.
 
 ---
@@ -20,7 +20,7 @@ The full source code for this project is avalible [here](
 https://github.com/CGCooke/Marinus/tree/master) on GitHub.
 
 
-A number of different DEM's have been created from the data collected on the SRTM mission, in this post I will use the CGIAR [SRTM 90m Digital Elevation Database](http://www.cgiar-csi.org/data/srtm-90m-digital-elevation-database-v4-1). Data is provided in 5x5 degree tiles, with each degree of lattitude equal to aproximately 111Km. 
+A number of different DEM's have been created from the data collected on the SRTM mission, in this post I will use the CGIAR [SRTM 90m Digital Elevation Database](http://www.cgiar-csi.org/data/srtm-90m-digital-elevation-database-v4-1). Data is provided in 5x5 degree tiles, with each degree of latitude equal to approximately 111Km. 
 
 Our first task is to acquire a tile. Tiles can be downloaded from http://data.cgiar-csi.org/srtm/tiles/GeoTIFF/ using wget. 
 
@@ -56,15 +56,15 @@ os.system('gdalwarp -q -te -125 48 -122 50 '+inputFileName+' subset.tif')
 {% endhighlight %}
 
 
-Our next step is to transform the subsection of the tile to a different projection. Currently the location of the points in the subsection are located on a grid 1/1200th of a degree apart. While degrees of lattitude are always ~110Km in size, resulting in ~92.5M resolution, degrees of longitude decrease in size, from ~111Km at the equator to 0Km at the poles. A deferent scale exists between the lattitude & longitude axis, as well as a longitude scale that depends on the latitude. This effect can clearly be seen in the image below, with the lines of longitude and latitude forming trapozoidal shapes. 
+Our next step is to transform the subsection of the tile to a different projection. Currently the location of the points in the subsection are located on a grid 1/1200th of a degree apart. While degrees of latitude are always ~110Km in size, resulting in ~92.5M resolution, degrees of longitude decrease in size, from ~111Km at the equator to 0Km at the poles. A deferent scale exists between the latitude & longitude axis, as well as a longitude scale that depends on the latitude. This effect can clearly be seen in the image below, with the lines of longitude and latitude forming trapezoidal shapes. 
 
 ![_config.yml]({{ site.baseurl }}/images/1_Globe.png)
 
 
-Our solution is to project that points so that there is a consistant and equal scale in the X/Y plane. One choice is to use a family of projections called [Universal Transverse Mercator](http://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system). Each UTM projection can map points from longitude & latitude to X & Y coordinates in meters. The UTM projection is useful because it locally preserves both shapes and distances, over a distances of up to several hundred kilometers.
+A solution is to project that points so that there is a consistant and equal scale in the X/Y plane. One choice is to use a family of projections called [Universal Transverse Mercator](http://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system). Each UTM projection can map points from longitude & latitude to X & Y coordinates in meters. The UTM projection is useful because it locally preserves both shapes and distances, over a distances of up to several hundred kilometres.
 
 The tradeoff is that a number of different UTM projections are required for different points on earth, 120 to be precise. 
-Fortunately it is relatively trivial to work out the required projection based on the longitude and lattitude. Almost every conceivable projection has been assigned a code by the European Petroleum Survey Group (EPSG). This EPSG code can be used to quickly and unambigiously specify the projection being used, and in the case of UTM, each code starts with either 327 or 326, depending on the hemisphere of the projection. 
+Fortunately it is relatively trivial to work out the required projection based on the longitude and latitude. Almost every conceivable projection has been assigned a code by the European Petroleum Survey Group (EPSG). This EPSG code can be used to quickly and unambiguously specify the projection being used, and in the case of UTM, each code starts with either 327 or 326, depending on the hemisphere of the projection. 
 
 {% highlight python %}
 utmZone = int((math.floor((lon + 180)/6) % 60) + 1)
@@ -85,6 +85,7 @@ os.system('gdalwarp -q -t_srs '+EPSGCode+' -tr 100 -100 -r cubic -srcnodata -327
 {% endhighlight %}
 
 
+At this point we can begin to visualise the DEM. One highly effective method is hillshading, 
 
 {% highlight python %}
 os.system('gdaldem hillshade -q -az 45 -alt 45 warped.tif hillshade.tif')
