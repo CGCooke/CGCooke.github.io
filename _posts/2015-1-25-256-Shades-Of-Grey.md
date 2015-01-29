@@ -14,9 +14,25 @@ The Digital Elevation Map (DEM) produced by this mission is in the public domain
 In this post, I will examine how to process the raw DEM so that it is more intuitively interpreted, through the use of *hillshading*,*slopeshading* & *hypsometric tinting*. 
 
 ---
+Summary
+===============
+
+The process of transforming the raw GeoTIFF into the final imagery product is conceptually simple, with much of the grunt work being carried out by GDAL, the Geospatial Data Abstraction Library. Programming in python allows us to make calls to external programs by using os.system('someprogram -option1 -option2'), essentially we are using python is "glue" to bind together a sequance of calls to run different GDAL programs. 
+
+In order, we need to :
+
+1. Download a DEM in the form of a GeoTIFF
+2. Extract a subsection of the GeoTIFF
+3. Reproject the subsection
+4. Make an image by hillshading
+5. Make an image by coloring the subsection according to altitude
+6. Make an image by coloring the subsection according to slope
+7. Combine the 3 images into a final composite
 
 The full source code for this project is avalible [here](
-https://github.com/CGCooke/Marinus/tree/master) on GitHub.
+https://github.com/CGCooke/Marinus/blob/master/Cartographer.py) on GitHub.
+
+---
 
 DEM
 ===============

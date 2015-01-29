@@ -22,7 +22,25 @@
 
 &lt;hr&gt;
 
-&lt;p&gt;The full source code for this project is avalible &lt;a href=&quot;https://github.com/CGCooke/Marinus/tree/master&quot;&gt;here&lt;/a&gt; on GitHub.&lt;/p&gt;
+&lt;h1&gt;Summary&lt;/h1&gt;
+
+&lt;p&gt;The process of transforming the raw GeoTIFF into the final imagery product is conceptually simple, with much of the grunt work being carried out by GDAL, the Geospatial Data Abstraction Library. Programming in python allows us to make calls to external programs by using os.system(&amp;#39;someprogram -option1 -option2&amp;#39;), essentially we are using python is &amp;quot;glue&amp;quot; to bind together a sequance of calls to run different GDAL programs. &lt;/p&gt;
+
+&lt;p&gt;In order, we need to :&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Download a DEM in the form of a GeoTIFF&lt;/li&gt;
+&lt;li&gt;Extract a subsection of the GeoTIFF&lt;/li&gt;
+&lt;li&gt;Reproject the subsection&lt;/li&gt;
+&lt;li&gt;Make an image by hillshading&lt;/li&gt;
+&lt;li&gt;Make an image by coloring the subsection according to altitude&lt;/li&gt;
+&lt;li&gt;Make an image by coloring the subsection according to slope&lt;/li&gt;
+&lt;li&gt;Combine the 3 images into a final composite&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;The full source code for this project is avalible &lt;a href=&quot;https://github.com/CGCooke/Marinus/blob/master/Cartographer.py&quot;&gt;here&lt;/a&gt; on GitHub.&lt;/p&gt;
+
+&lt;hr&gt;
 
 &lt;h1&gt;DEM&lt;/h1&gt;
 
