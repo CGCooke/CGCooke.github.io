@@ -32,6 +32,7 @@ In order, we need to :
 The full source code for this project is avalible [here](
 https://github.com/CGCooke/Marinus/blob/master/Cartographer.py) on GitHub.
 
+As pre-requisites, GDAL and Anaconda are required to be installed. 
 ---
 
 DEM

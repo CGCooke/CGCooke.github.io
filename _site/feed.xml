@@ -40,7 +40,7 @@
 
 &lt;p&gt;The full source code for this project is avalible &lt;a href=&quot;https://github.com/CGCooke/Marinus/blob/master/Cartographer.py&quot;&gt;here&lt;/a&gt; on GitHub.&lt;/p&gt;
 
-&lt;hr&gt;
+&lt;h2&gt;As pre-requisites, GDAL and Anaconda are required to be installed. &lt;/h2&gt;
 
 &lt;h1&gt;DEM&lt;/h1&gt;
 
