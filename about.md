@@ -5,10 +5,12 @@ permalink: /about/
 ---
 
 Some information about you!
+Studying Electrical Engineering at the University of New South Wales,
+I'm passionate about Engineering,Finance & Computer Science.
 
 ### More Information
 
-A place to include any other types of information that you'd like to include about yourself. 
+I aim to make what I write acessible to an audiance that is reasonably intelligent, but may not have a formal background or education in Engineering/Finance/Programming. 
 
 ### Contact me
 

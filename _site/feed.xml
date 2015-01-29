@@ -14,7 +14,7 @@
 &lt;p&gt;On February 22, 2000, after 11 days of measurements, the most comprehensive map ever created of the earth&amp;#39;s topography was complete. &lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;The space shuttle Endeavor had just completed the Shuttle Radar Topography Mission, using a instrument called an &lt;a href=&quot;http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar&quot;&gt;Interferometric synthetic aperture radar&lt;/a&gt; to image the earth surface. The radar system consisted of a transmitter, and two receiving antennas, one of which was mounted on a 60 meter long antenna. By comparing the phase of the returning radar signal, a highly accurate terrain model was produced. &lt;/p&gt;
+&lt;p&gt;The space shuttle &lt;em&gt;Endeavor&lt;/em&gt; had just completed the Shuttle Radar Topography Mission, using a instrument called an &lt;a href=&quot;http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar&quot;&gt;Interferometric synthetic aperture radar&lt;/a&gt; to image the earth surface. The radar system consisted of a transmitter, and two receiving antennas, one of which was mounted on a 60 meter long antenna. By comparing the phase of the returning radar signal, a highly accurate terrain model was produced. &lt;/p&gt;
 
 &lt;p&gt;The Digital Elevation Map (DEM) produced by this mission is in the public domain, and provides the measured terrain high at ~90 meter resolution. The mission mapped 99.98% of the area between 60 degrees North and 56 degrees South.  &lt;/p&gt;
 
@@ -153,7 +153,7 @@ As an aside, the most accurate colormap may be completely different from the mos
 
 &lt;p&gt;One important detail to note is that the pixel by pixel multiplication occurs in the RGB space. From a theoretical perspective, it is preferable that each pixel is first transformed to the Hue, Saturation,Value (HSV) color space, and the value is then multiplied by the hillshade and slope shade value, before being transformed back into the RGB color space. In practical terms however, the RGB space multiplication is a very reasonable approximation.&lt;/p&gt;
 
-&lt;p&gt;In one final tweak, the brightness of the output image is increased by 40%, in order to offset the average reduction in brightness caused by multiplying layers together. &lt;/p&gt;
+&lt;p&gt;In one final tweak, the brightness of the output image is increased by 40%, in order to offset the average reduction in brightness caused by multiplying the layers together. &lt;/p&gt;
 
 &lt;p&gt;The final product is visible below:&lt;/p&gt;
 

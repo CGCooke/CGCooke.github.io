@@ -7,7 +7,7 @@ title: 256 Shades of Grey
 
 >On February 22, 2000, after 11 days of measurements, the most comprehensive map ever created of the earth's topography was complete. 
 
-The space shuttle Endeavor had just completed the Shuttle Radar Topography Mission, using a instrument called an [Interferometric synthetic aperture radar] (http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar) to image the earth surface. The radar system consisted of a transmitter, and two receiving antennas, one of which was mounted on a 60 meter long antenna. By comparing the phase of the returning radar signal, a highly accurate terrain model was produced. 
+The space shuttle *Endeavor* had just completed the Shuttle Radar Topography Mission, using a instrument called an [Interferometric synthetic aperture radar] (http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar) to image the earth surface. The radar system consisted of a transmitter, and two receiving antennas, one of which was mounted on a 60 meter long antenna. By comparing the phase of the returning radar signal, a highly accurate terrain model was produced. 
 
 The Digital Elevation Map (DEM) produced by this mission is in the public domain, and provides the measured terrain high at ~90 meter resolution. The mission mapped 99.98% of the area between 60 degrees North and 56 degrees South.  
 
@@ -189,7 +189,7 @@ The final step in producing the final product is to merge the 3 different create
 
 One important detail to note is that the pixel by pixel multiplication occurs in the RGB space. From a theoretical perspective, it is preferable that each pixel is first transformed to the Hue, Saturation,Value (HSV) color space, and the value is then multiplied by the hillshade and slope shade value, before being transformed back into the RGB color space. In practical terms however, the RGB space multiplication is a very reasonable approximation.
 
-In one final tweak, the brightness of the output image is increased by 40%, in order to offset the average reduction in brightness caused by multiplying layers together. 
+In one final tweak, the brightness of the output image is increased by 40%, in order to offset the average reduction in brightness caused by multiplying the layers together. 
 
 The final product is visible below:
 
