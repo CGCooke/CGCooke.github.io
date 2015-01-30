@@ -14,22 +14,22 @@
 &lt;p&gt;On February 22, 2000, after 11 days of measurements, the most comprehensive map ever created of the earth&amp;#39;s topography was complete. &lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;The space shuttle &lt;em&gt;Endeavor&lt;/em&gt; had just completed the Shuttle Radar Topography Mission, using a instrument called an &lt;a href=&quot;http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar&quot;&gt;Interferometric synthetic aperture radar&lt;/a&gt; to image the earth surface. The radar system consisted of a transmitter, and two receiving antennas, one of which was mounted on a 60 meter long antenna. By comparing the phase of the returning radar signal, a highly accurate terrain model was produced. &lt;/p&gt;
+&lt;p&gt;The space shuttle &lt;em&gt;Endeavor&lt;/em&gt; had just completed the Shuttle Radar Topography Mission, using an &lt;a href=&quot;http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar&quot;&gt;Interferometric synthetic aperture radar&lt;/a&gt; to image the earth surface. The radar system ccomprises a transmitter, and two receiving antennas, one of which was mounted on a 60 meter long antenna. By comparing the phase of the returning radar signal, a highly accurate terrain model was produced. &lt;/p&gt;
 
-&lt;p&gt;The Digital Elevation Map (DEM) produced by this mission is in the public domain, and provides the measured terrain high at ~90 meter resolution. The mission mapped 99.98% of the area between 60 degrees North and 56 degrees South.  &lt;/p&gt;
+&lt;p&gt;The Digital Elevation Map (DEM) produced by this mission is in the public domain and provides the measured terrain high at ~90 meter resolution. The mission mapped 99.98% of the area between 60 degrees North and 56 degrees South.  &lt;/p&gt;
 
-&lt;p&gt;In this post, I will examine how to process the raw DEM so that it is more intuitively interpreted, through the use of &lt;em&gt;hillshading&lt;/em&gt;,&lt;em&gt;slopeshading&lt;/em&gt; &amp;amp; &lt;em&gt;hypsometric tinting&lt;/em&gt;. &lt;/p&gt;
+&lt;p&gt;In this post, I will examine how to process the raw DEM so it is more intuitively interpreted, through the use of &lt;em&gt;hillshading&lt;/em&gt;,&lt;em&gt;slopeshading&lt;/em&gt; &amp;amp; &lt;em&gt;hypsometric tinting&lt;/em&gt;. &lt;/p&gt;
 
 &lt;hr&gt;
 
 &lt;h1&gt;Summary&lt;/h1&gt;
 
-&lt;p&gt;The process of transforming the raw GeoTIFF into the final imagery product is conceptually simple, with much of the grunt work being carried out by GDAL, the Geospatial Data Abstraction Library. Programming in python allows us to make calls to external programs by using os.system(&amp;#39;someprogram -option1 -option2&amp;#39;), essentially we are using python is &amp;quot;glue&amp;quot; to bind together a sequance of calls to run different GDAL programs. &lt;/p&gt;
+&lt;p&gt;The process of transforming the raw GeoTIFF into the final imagery product is simple. Much of the grunt work being carried out by GDAL, the Geospatial Data Abstraction Library. Programming in python allows us to make calls to external programs by using os.system(&amp;#39;someprogram -option1 -option2&amp;#39;). Essentially we are using python to chain together a sequence of calls to run different GDAL programs. &lt;/p&gt;
 
-&lt;p&gt;In order, we need to :&lt;/p&gt;
+&lt;p&gt;In order, we need to:&lt;/p&gt;
 
 &lt;ol&gt;
-&lt;li&gt;Download a DEM in the form of a GeoTIFF&lt;/li&gt;
+&lt;li&gt;Download a DEM as a GeoTIFF&lt;/li&gt;
 &lt;li&gt;Extract a subsection of the GeoTIFF&lt;/li&gt;
 &lt;li&gt;Reproject the subsection&lt;/li&gt;
 &lt;li&gt;Make an image by hillshading&lt;/li&gt;
@@ -38,13 +38,13 @@
 &lt;li&gt;Combine the 3 images into a final composite&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;The full source code for this project is avalible &lt;a href=&quot;https://github.com/CGCooke/Marinus/blob/master/Cartographer.py&quot;&gt;here&lt;/a&gt; on GitHub.&lt;/p&gt;
+&lt;p&gt;The full source code for this project is available &lt;a href=&quot;https://github.com/CGCooke/Marinus/blob/master/Cartographer.py&quot;&gt;here&lt;/a&gt; on GitHub.&lt;/p&gt;
 
 &lt;h2&gt;As pre-requisites, GDAL and Anaconda are required to be installed. &lt;/h2&gt;
 
 &lt;h1&gt;DEM&lt;/h1&gt;
 
-&lt;p&gt;A number of different DEM&amp;#39;s have been created from the data collected on the SRTM mission, in this post I will use the CGIAR &lt;a href=&quot;http://www.cgiar-csi.org/data/srtm-90m-digital-elevation-database-v4-1&quot;&gt;SRTM 90m Digital Elevation Database&lt;/a&gt;. Data is provided in 5x5 degree tiles, with each degree of latitude equal to approximately 111Km. &lt;/p&gt;
+&lt;p&gt;Several different DEM&amp;#39;s have been created from the data collected on the SRTM mission, in this post I will use the CGIAR &lt;a href=&quot;http://www.cgiar-csi.org/data/srtm-90m-digital-elevation-database-v4-1&quot;&gt;SRTM 90m Digital Elevation Database&lt;/a&gt;. Data is provided in 5x5 degree tiles, with each degree of latitude equal to approximately 111Km. &lt;/p&gt;
 
 &lt;p&gt;Our first task is to acquire a tile. Tiles can be downloaded from http://data.cgiar-csi.org/srtm/tiles/GeoTIFF/ using wget. &lt;/p&gt;
 
@@ -68,9 +68,9 @@
 
 &lt;h1&gt;Slicing&lt;/h1&gt;
 
-&lt;p&gt;The area I have chosen to visualize covers Washington State and British Columbia, the topograpy &lt;/p&gt;
+&lt;p&gt;The area I have selected covers Washington State and British Columbia, with file name &lt;em&gt;srtm&lt;em&gt;12&lt;/em&gt;03.tif&lt;/em&gt;.&lt;/p&gt;
 
-&lt;p&gt;Lets use &lt;a href=&quot;http://www.gdal.org/&quot;&gt;GDAL&lt;/a&gt; to extract a subsection of the tile covering Vancouver Island and the Pacific Ranges stretching from 125ºW - 122ºW &amp;amp; 48ºN - 50ºN can be extracted by using gdalwarp. &lt;/p&gt;
+&lt;p&gt;Let&amp;#39;s use &lt;a href=&quot;http://www.gdal.org/&quot;&gt;GDAL&lt;/a&gt; to extract a subsection of the tile.The subsection covers Vancouver Island and the Pacific Ranges stretching from 125ºW - 122ºW &amp;amp; 48ºN - 50ºN. Using gdalwarp: &lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;gdalwarp -q -te -125 48 -122 50 &amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;inputFileName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39; subset.tif&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
@@ -78,14 +78,14 @@
 
 &lt;h1&gt;Reprojection&lt;/h1&gt;
 
-&lt;p&gt;Our next step is to transform the subsection of the tile to a different projection. Currently the location of the points in the subsection are located on a grid 1/1200th of a degree apart. While degrees of latitude are always ~110Km in size, resulting in ~92.5M resolution, degrees of longitude decrease in size, from ~111Km at the equator to 0Km at the poles. A deferent scale exists between the latitude &amp;amp; longitude axis, as well as a longitude scale that depends on the latitude. This effect can clearly be seen in the image below, with the lines of longitude and latitude forming trapezoidal shapes. &lt;/p&gt;
+&lt;p&gt;Our next step is to transform the subsection of the tile to a different projection. The of the points in the subsection are located on a grid 1/1200th of a degree apart. While degrees of latitude are always ~110Km in size, resulting in ~92.5M resolution, degrees of longitude decrease in size, from ~111Km at the equator to 0Km at the poles. A different scale exists between the latitude &amp;amp; longitude axis and a longitude scale that depends on the latitude. This effect can be seen in the image below, with the lines of longitude and latitude forming trapezoidal shapes. &lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/1_Globe.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
 
-&lt;p&gt;A solution is to project that points so that there is a consistant and equal scale in the X/Y plane. One choice is to use a family of projections called &lt;a href=&quot;http://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system&quot;&gt;Universal Transverse Mercator&lt;/a&gt;. Each UTM projection can map points from longitude &amp;amp; latitude to X &amp;amp; Y coordinates in meters. The UTM projection is useful because it locally preserves both shapes and distances, over a distances of up to several hundred kilometres.&lt;/p&gt;
+&lt;p&gt;A solution is to project that points so that there is a consistent and equal scale in the X/Y plane. One choice is to use a family of projections called &lt;a href=&quot;http://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system&quot;&gt;Universal Transverse Mercator&lt;/a&gt;. Each UTM projection can map points from longitude &amp;amp; latitude to X &amp;amp; Y coordinates in meters. The UTM projection is useful because it locally preserves both shapes and distances, over a distances of up to several hundred kilometres.&lt;/p&gt;
 
-&lt;p&gt;The tradeoff is that a number of different UTM projections are required for different points on earth, 120 to be precise. 
-Fortunately it is relatively trivial to work out the required projection based on the longitude and latitude. Almost every conceivable projection has been assigned a code by the European Petroleum Survey Group (EPSG). This EPSG code can be used to quickly and unambiguously specify the projection being used, and in the case of UTM, each code starts with either 327 or 326, depending on the hemisphere of the projection. &lt;/p&gt;
+&lt;p&gt;The tradeoff is that severalcan different UTM projections are required for different points on earth, 120 to be precise. 
+Fortunately it is relatively trivial to work out the required projection based on the longitude and latitude. Almost every conceivable projection has been assigned a code by the European Petroleum Survey Group (EPSG). This EPSG code can be used to unambiguously specify the projection being used. With UTM, each code starts with either 327 or 326, depending on the hemisphere of the projection. &lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;utmZone&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;math&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;floor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lon&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;180&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;60&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 
@@ -114,18 +114,18 @@ In the following system call to gdalwarp, &lt;em&gt;t_srs&lt;/em&gt; denotes the
 
 &lt;h1&gt;Hypsometric Tinting&lt;/h1&gt;
 
-&lt;p&gt;Hillshading can also be combined with height information in order to aid interpretation of the topography. The technical name for the process of coloring a dem based on  height is &lt;em&gt;hypsometric tinting&lt;/em&gt;. The process is relatively simple, with GDAL mapping colors to cell heights, using a provided colorscheme. &lt;/p&gt;
+&lt;p&gt;Hillshading can also be combined with height information to aid interpretation of the topography. The technical name for the process of coloring a dem based on  height is &lt;em&gt;hypsometric tinting&lt;/em&gt;. The process is simple, with GDAL mapping colors to cell heights, using a provided color scheme. &lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;gdaldem color-relief -q warped.tif color_relief.txt color_relief.tif&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;Matplotlib ships with a large number of inbuilt colorschemes, which can be utilized. 
+&lt;p&gt;Matplotlib ships with a large number of inbuilt color schemes, which can be used. 
 You can choose any colormap from &lt;a href=&quot;http://wiki.scipy.org/Cookbook/Matplotlib/Show_colormaps?action=AttachFile&amp;amp;do=get&amp;amp;target=colormaps3.png&quot;&gt;here&lt;/a&gt;.
-As an aside, the most accurate colormap may be completely different from the most visually stunning colormap. In general, humans are more sensitive to changes in lightness than hue. Hence good colormaps should have linearly and monotonically changing lightness. Additional thought should be given to how the colormap will be interpreted by those suffering from color-blindness. &lt;a href=&quot;http://matplotlib.org/users/colormaps.html&quot;&gt;This&lt;/a&gt; excellent article outlines the issues mentioned in significantly more detail.&lt;/p&gt;
+The most accurate colormap may be differ completely from the most visually stunning colormap. In general, humans are more sensitive to changes in lightness than hue. Hence good colormaps should have linearly and monotonically changing lightness. Consideration should be given to how the colormap will be interpreted by those suffering from color-blindness. &lt;a href=&quot;http://matplotlib.org/users/colormaps.html&quot;&gt;This&lt;/a&gt; excellent article outlines the issues mentioned in more detail.&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;createColorMapLUT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;minHeight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;maxHeight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cmap&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;jet&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;numSteps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
     &lt;span class=&quot;sd&quot;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
 &lt;span class=&quot;sd&quot;&gt;   Create a colormap for visualisation&lt;/span&gt;
-&lt;span class=&quot;sd&quot;&gt;   Pro tip : tacking on _r to the end of the name of any color map reverses it,&lt;/span&gt;
+&lt;span class=&quot;sd&quot;&gt;   Pro tip: tacking on _r to the end of the name of any color map reverses it,&lt;/span&gt;
 &lt;span class=&quot;sd&quot;&gt;   for example, YlGn -&amp;gt; YlGn_r &lt;/span&gt;
 &lt;span class=&quot;sd&quot;&gt;   &amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
     
@@ -149,7 +149,7 @@ As an aside, the most accurate colormap may be completely different from the mos
 
 &lt;p&gt;Another technique for visualizing terrain is slopeshading. While hypsometric tinting assigns colors to cells based on elevation, slope shading assigns colors to pixels based on the slope (0º to 90º). In this case, white (255,255,255) is assigned to slopes of 0º and black (0,0,0) is assigned to slopes of 90º, with varying shades of grey for slopes in-between. &lt;/p&gt;
 
-&lt;p&gt;This colorscheme is encoded in a txt file for gdaldem as follows : &lt;/p&gt;
+&lt;p&gt;This color scheme is encoded in a txt file for gdaldem as follows: &lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;color_slope.txt&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;w&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;0 255 255 255&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
@@ -169,9 +169,9 @@ As an aside, the most accurate colormap may be completely different from the mos
 
 &lt;p&gt;The final step in producing the final product is to merge the 3 different created images. The python Image Library (PIL) is a quick and dirty way to accomplish this task, with the 3 layers are merged using pixel by pixel multiplication. &lt;/p&gt;
 
-&lt;p&gt;One important detail to note is that the pixel by pixel multiplication occurs in the RGB space. From a theoretical perspective, it is preferable that each pixel is first transformed to the Hue, Saturation,Value (HSV) color space, and the value is then multiplied by the hillshade and slope shade value, before being transformed back into the RGB color space. In practical terms however, the RGB space multiplication is a very reasonable approximation.&lt;/p&gt;
+&lt;p&gt;One important detail to note is that the pixel by pixel multiplication occurs in the RGB space. From a theoretical perspective, it is preferable that each pixel is first transformed to the Hue, Saturation, Value (HSV) color space, and the value is then multiplied by the hillshade and slope shade value, before being transformed back into the RGB color space. In practical terms however, the RGB space multiplication is a very reasonable approximation.&lt;/p&gt;
 
-&lt;p&gt;In one final tweak, the brightness of the output image is increased by 40%, in order to offset the average reduction in brightness caused by multiplying the layers together. &lt;/p&gt;
+&lt;p&gt;In one final tweak, the brightness of the output image is increased by 40%, to offset the average reduction in brightness caused by multiplying the layers together. &lt;/p&gt;
 
 &lt;p&gt;The final product is visible below:&lt;/p&gt;
 

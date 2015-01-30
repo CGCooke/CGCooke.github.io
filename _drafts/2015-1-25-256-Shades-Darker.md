@@ -7,21 +7,21 @@ title: 256 Shades of Grey
 
 >On February 22, 2000, after 11 days of measurements, the most comprehensive map ever created of the earth's topography was complete. 
 
-The space shuttle *Endeavor* had just completed the Shuttle Radar Topography Mission, using an [Interferometric synthetic aperture radar] (http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar) to image the earth surface. The radar system ccomprises a transmitter, and two receiving antennas, one of which was mounted on a 60 meter long antenna. By comparing the phase of the returning radar signal, a highly accurate terrain model was produced. 
+The space shuttle *Endeavor* had just completed the Shuttle Radar Topography Mission, using a instrument called an [Interferometric synthetic aperture radar] (http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar) to image the earth surface. The radar system consisted of a transmitter, and two receiving antennas, one of which was mounted on a 60 meter long antenna. By comparing the phase of the returning radar signal, a highly accurate terrain model was produced. 
 
-The Digital Elevation Map (DEM) produced by this mission is in the public domain and provides the measured terrain high at ~90 meter resolution. The mission mapped 99.98% of the area between 60 degrees North and 56 degrees South.  
+The Digital Elevation Map (DEM) produced by this mission is in the public domain, and provides the measured terrain high at ~90 meter resolution. The mission mapped 99.98% of the area between 60 degrees North and 56 degrees South.  
 
-In this post, I will examine how to process the raw DEM so it is more intuitively interpreted, through the use of *hillshading*,*slopeshading* & *hypsometric tinting*. 
+In this post, I will examine how to process the raw DEM so that it is more intuitively interpreted, through the use of *hillshading*,*slopeshading* & *hypsometric tinting*. 
 
 ---
 Summary
 ===============
 
-The process of transforming the raw GeoTIFF into the final imagery product is simple. Much of the grunt work being carried out by GDAL, the Geospatial Data Abstraction Library. Programming in python allows us to make calls to external programs by using os.system('someprogram -option1 -option2'). Essentially we are using python to chain together a sequence of calls to run different GDAL programs. 
+The process of transforming the raw GeoTIFF into the final imagery product is conceptually simple, with much of the grunt work being carried out by GDAL, the Geospatial Data Abstraction Library. Programming in python allows us to make calls to external programs by using os.system('someprogram -option1 -option2'), essentially we are using python is "glue" to bind together a sequance of calls to run different GDAL programs. 
 
-In order, we need to:
+In order, we need to :
 
-1. Download a DEM as a GeoTIFF
+1. Download a DEM in the form of a GeoTIFF
 2. Extract a subsection of the GeoTIFF
 3. Reproject the subsection
 4. Make an image by hillshading
@@ -29,7 +29,7 @@ In order, we need to:
 6. Make an image by coloring the subsection according to slope
 7. Combine the 3 images into a final composite
 
-The full source code for this project is available [here](
+The full source code for this project is avalible [here](
 https://github.com/CGCooke/Marinus/blob/master/Cartographer.py) on GitHub.
 
 As pre-requisites, GDAL and Anaconda are required to be installed. 
@@ -38,7 +38,7 @@ As pre-requisites, GDAL and Anaconda are required to be installed.
 DEM
 ===============
 
-Several different DEM's have been created from the data collected on the SRTM mission, in this post I will use the CGIAR [SRTM 90m Digital Elevation Database](http://www.cgiar-csi.org/data/srtm-90m-digital-elevation-database-v4-1). Data is provided in 5x5 degree tiles, with each degree of latitude equal to approximately 111Km. 
+A number of different DEM's have been created from the data collected on the SRTM mission, in this post I will use the CGIAR [SRTM 90m Digital Elevation Database](http://www.cgiar-csi.org/data/srtm-90m-digital-elevation-database-v4-1). Data is provided in 5x5 degree tiles, with each degree of latitude equal to approximately 111Km. 
 
 Our first task is to acquire a tile. Tiles can be downloaded from http://data.cgiar-csi.org/srtm/tiles/GeoTIFF/ using wget. 
 
@@ -69,9 +69,9 @@ def lonLatToFileName(lon,lat):
 Slicing
 ===============
 
-The area I have selected covers Washington State and British Columbia, with file name *srtm_12_03.tif*.
+The area I have chosen to visualize covers Washington State and British Columbia, the topograpy 
 
-Let's use [GDAL](http://www.gdal.org/) to extract a subsection of the tile.The subsection covers Vancouver Island and the Pacific Ranges stretching from 125ºW - 122ºW & 48ºN - 50ºN. Using gdalwarp: 
+Lets use [GDAL](http://www.gdal.org/) to extract a subsection of the tile covering Vancouver Island and the Pacific Ranges stretching from 125ºW - 122ºW & 48ºN - 50ºN can be extracted by using gdalwarp. 
 
 
 {% highlight python %}
@@ -85,15 +85,15 @@ Reprojection
 ===============
 
 
-Our next step is to transform the subsection of the tile to a different projection. The of the points in the subsection are located on a grid 1/1200th of a degree apart. While degrees of latitude are always ~110Km in size, resulting in ~92.5M resolution, degrees of longitude decrease in size, from ~111Km at the equator to 0Km at the poles. A different scale exists between the latitude & longitude axis and a longitude scale that depends on the latitude. This effect can be seen in the image below, with the lines of longitude and latitude forming trapezoidal shapes. 
+Our next step is to transform the subsection of the tile to a different projection. Currently the location of the points in the subsection are located on a grid 1/1200th of a degree apart. While degrees of latitude are always ~110Km in size, resulting in ~92.5M resolution, degrees of longitude decrease in size, from ~111Km at the equator to 0Km at the poles. A deferent scale exists between the latitude & longitude axis, as well as a longitude scale that depends on the latitude. This effect can clearly be seen in the image below, with the lines of longitude and latitude forming trapezoidal shapes. 
 
 ![_config.yml]({{ site.baseurl }}/images/1_Globe.png)
 
 
-A solution is to project that points so that there is a consistent and equal scale in the X/Y plane. One choice is to use a family of projections called [Universal Transverse Mercator](http://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system). Each UTM projection can map points from longitude & latitude to X & Y coordinates in meters. The UTM projection is useful because it locally preserves both shapes and distances, over a distances of up to several hundred kilometres.
+A solution is to project that points so that there is a consistant and equal scale in the X/Y plane. One choice is to use a family of projections called [Universal Transverse Mercator](http://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system). Each UTM projection can map points from longitude & latitude to X & Y coordinates in meters. The UTM projection is useful because it locally preserves both shapes and distances, over a distances of up to several hundred kilometres.
 
-The tradeoff is that severalcan different UTM projections are required for different points on earth, 120 to be precise. 
-Fortunately it is relatively trivial to work out the required projection based on the longitude and latitude. Almost every conceivable projection has been assigned a code by the European Petroleum Survey Group (EPSG). This EPSG code can be used to unambiguously specify the projection being used. With UTM, each code starts with either 327 or 326, depending on the hemisphere of the projection. 
+The tradeoff is that a number of different UTM projections are required for different points on earth, 120 to be precise. 
+Fortunately it is relatively trivial to work out the required projection based on the longitude and latitude. Almost every conceivable projection has been assigned a code by the European Petroleum Survey Group (EPSG). This EPSG code can be used to quickly and unambiguously specify the projection being used, and in the case of UTM, each code starts with either 327 or 326, depending on the hemisphere of the projection. 
 
 {% highlight python %}
 utmZone = int((math.floor((lon + 180)/6) % 60) + 1)
@@ -134,21 +134,21 @@ os.system('gdaldem hillshade -q -az 45 -alt 45 warped.tif hillshade.tif')
 Hypsometric Tinting
 ===============
 
-Hillshading can also be combined with height information to aid interpretation of the topography. The technical name for the process of coloring a dem based on  height is *hypsometric tinting*. The process is simple, with GDAL mapping colors to cell heights, using a provided color scheme. 
+Hillshading can also be combined with height information in order to aid interpretation of the topography. The technical name for the process of coloring a dem based on  height is *hypsometric tinting*. The process is relatively simple, with GDAL mapping colors to cell heights, using a provided colorscheme. 
 
 {% highlight python %}
 os.system('gdaldem color-relief -q warped.tif color_relief.txt color_relief.tif')
 {% endhighlight %}
 
-Matplotlib ships with a large number of inbuilt color schemes, which can be used. 
+Matplotlib ships with a large number of inbuilt colorschemes, which can be utilized. 
 You can choose any colormap from [here](http://wiki.scipy.org/Cookbook/Matplotlib/Show_colormaps?action=AttachFile&do=get&target=colormaps3.png).
-The most accurate colormap may be differ completely from the most visually stunning colormap. In general, humans are more sensitive to changes in lightness than hue. Hence good colormaps should have linearly and monotonically changing lightness. Consideration should be given to how the colormap will be interpreted by those suffering from color-blindness. [This](http://matplotlib.org/users/colormaps.html) excellent article outlines the issues mentioned in more detail.
+As an aside, the most accurate colormap may be completely different from the most visually stunning colormap. In general, humans are more sensitive to changes in lightness than hue. Hence good colormaps should have linearly and monotonically changing lightness. Additional thought should be given to how the colormap will be interpreted by those suffering from color-blindness. [This](http://matplotlib.org/users/colormaps.html) excellent article outlines the issues mentioned in significantly more detail.
 
 {% highlight python %}
 def createColorMapLUT(minHeight,maxHeight,cmap = cm.jet,numSteps=256):
 	'''
 	Create a colormap for visualisation
-	Pro tip: tacking on _r to the end of the name of any color map reverses it,
+	Pro tip : tacking on _r to the end of the name of any color map reverses it,
 	for example, YlGn -> YlGn_r 
 	'''
 	
@@ -177,7 +177,7 @@ Slope Shading
 
 Another technique for visualizing terrain is slopeshading. While hypsometric tinting assigns colors to cells based on elevation, slope shading assigns colors to pixels based on the slope (0º to 90º). In this case, white (255,255,255) is assigned to slopes of 0º and black (0,0,0) is assigned to slopes of 90º, with varying shades of grey for slopes in-between. 
 
-This color scheme is encoded in a txt file for gdaldem as follows: 
+This colorscheme is encoded in a txt file for gdaldem as follows : 
 
 {% highlight python %}
 f =open('color_slope.txt','w')
@@ -204,9 +204,9 @@ Layer Merging
 
 The final step in producing the final product is to merge the 3 different created images. The python Image Library (PIL) is a quick and dirty way to accomplish this task, with the 3 layers are merged using pixel by pixel multiplication. 
 
-One important detail to note is that the pixel by pixel multiplication occurs in the RGB space. From a theoretical perspective, it is preferable that each pixel is first transformed to the Hue, Saturation, Value (HSV) color space, and the value is then multiplied by the hillshade and slope shade value, before being transformed back into the RGB color space. In practical terms however, the RGB space multiplication is a very reasonable approximation.
+One important detail to note is that the pixel by pixel multiplication occurs in the RGB space. From a theoretical perspective, it is preferable that each pixel is first transformed to the Hue, Saturation,Value (HSV) color space, and the value is then multiplied by the hillshade and slope shade value, before being transformed back into the RGB color space. In practical terms however, the RGB space multiplication is a very reasonable approximation.
 
-In one final tweak, the brightness of the output image is increased by 40%, to offset the average reduction in brightness caused by multiplying the layers together. 
+In one final tweak, the brightness of the output image is increased by 40%, in order to offset the average reduction in brightness caused by multiplying the layers together. 
 
 The final product is visible below:
 
