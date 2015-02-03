@@ -32,7 +32,7 @@ In order, we need to:
 The full source code for this project is available [here](
 https://github.com/CGCooke/Marinus/blob/master/Cartographer.py) on GitHub.
 
-As pre-requisites, GDAL and Anaconda are required to be installed. 
+Pre-requisites: GDAL and Anaconda.
 ---
 
 DEM
@@ -140,9 +140,7 @@ Hillshading can also be combined with height information to aid interpretation o
 os.system('gdaldem color-relief -q warped.tif color_relief.txt color_relief.tif')
 {% endhighlight %}
 
-Matplotlib ships with a large number of inbuilt color schemes, which can be used. 
-You can choose any colormap from [here](http://wiki.scipy.org/Cookbook/Matplotlib/Show_colormaps?action=AttachFile&do=get&target=colormaps3.png).
-The most accurate colormap may be differ completely from the most visually stunning colormap. In general, humans are more sensitive to changes in lightness than hue. Hence good colormaps should have linearly and monotonically changing lightness. Consideration should be given to how the colormap will be interpreted by those suffering from color-blindness. [This](http://matplotlib.org/users/colormaps.html) excellent article outlines the issues mentioned in more detail.
+Matplotlib ships with a large number of inbuilt color schemes. A comprehensive list can be found [here](http://wiki.scipy.org/Cookbook/Matplotlib/Show_colormaps?action=AttachFile&do=get&target=colormaps3.png).
 
 {% highlight python %}
 def createColorMapLUT(minHeight,maxHeight,cmap = cm.jet,numSteps=256):
