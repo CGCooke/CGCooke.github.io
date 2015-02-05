@@ -109,6 +109,48 @@ plt.savefig('Flightpath.png')
 
 ---
 
+Image Plots
+===============
+
+
+{% highlight python %}
+fig = plt.figure()
+levels = np.arange(minCutHeight,maxCutHeight, contourInterval)
+	
+''' Making a KML Plot '''
+fig.set_size_inches(10, 10)
+ax = plt.Axes(fig, [0., 0., 1., 1.])
+ax.set_axis_off()
+fig.add_axes(ax)
+
+plt.contour(meanArray, levels,linewidths=0.2,colors='k')
+levels = np.arange(minCutHeight,10, contourInterval)
+plt.contourf(meanArray, levels,cmap = my_cmap)
+{% endhighlight %}
+
+
+{% highlight python %}
+''' Making a plot with a colorbar for a paper '''
+ax = fig.add_subplot(111)
+levels = np.arange(minCutHeight,maxCutHeight, contourInterval)
+plt.contour(meanArray, levels,linewidths=0.2,colors='k')
+
+levels = np.arange(minCutHeight,10, contourInterval)
+plt.contourf(meanArray, levels,cmap = my_cmap)
+
+plt.colorbar()
+plt.xlabel('East (m)')
+plt.ylabel('North (m)')
+date =directory
+plt.title(date)
+
+ax.set_yticklabels([0,25,50,75,100,125,150,175,200])
+ax.set_xticklabels([0,25,50,75,100,125,150,175,200])   
+{% endhighlight %}
+
+
+---
+
 Colormaps 
 ===============
 
@@ -125,7 +167,6 @@ By feeding in a value, in the range 0-1, the colormap returns a rgba tupple.
 value=0.5
 r,g,b,a= cm.jet(value)
 {% endhighlight %}
-
 ---
 
 Other
