@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>/2015-1-21-The-Dopler-Shift/</loc>
+    <lastmod>2015-02-05T07:53:59-08:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>/2015-1-20-The-Signal-and-the-noise/</loc>
+    <lastmod>2015-02-04T17:02:10-08:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>/2015-1-31-The-Big-Picture/</loc>
+    <lastmod>2015-02-04T16:45:01-08:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>/The-Big-Picture/</loc>
     <lastmod>2015-01-31T00:00:00-08:00</lastmod>
     <priority>0.8</priority>
@@ -12,19 +27,19 @@
   </url>
   <url>
     <loc>/404.html</loc>
-    <lastmod>2015-02-03T22:17:33-08:00</lastmod>
+    <lastmod>2015-02-05T07:57:27-08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>/about/</loc>
-    <lastmod>2015-02-03T22:17:33-08:00</lastmod>
+    <lastmod>2015-02-05T07:57:27-08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>/</loc>
-    <lastmod>2015-02-03T22:17:33-08:00</lastmod>
+    <lastmod>2015-02-05T07:57:27-08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>

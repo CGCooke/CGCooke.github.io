@@ -5,9 +5,9 @@ title: 256 Shades of Grey
 
 ![_config.yml]({{ site.baseurl }}/images/1_header.png)
 
->On February 22, 2000, after 11 days of measurements, the most comprehensive map ever created of the earth's topography was complete. 
+> Ever wondered how to make your own Google Maps terrain layer?
 
-The space shuttle *Endeavor* had just completed the Shuttle Radar Topography Mission, using an [Interferometric synthetic aperture radar] (http://en.wikipedia.org/wiki/Interferometric_synthetic_aperture_radar) to image the earth surface. The radar system ccomprises a transmitter, and two receiving antennas, one of which was mounted on a 60 meter long antenna. By comparing the phase of the returning radar signal, a highly accurate terrain model was produced. 
+On February 22, 2000, after 11 days of measurements, the most comprehensive map ever created of the earth's topography was complete. The space shuttle *Endeavor* had just completed the Shuttle Radar Topography Mission, using a spcialized radar to image the earths surface.
 
 The Digital Elevation Map (DEM) produced by this mission is in the public domain and provides the measured terrain high at ~90 meter resolution. The mission mapped 99.98% of the area between 60 degrees North and 56 degrees South.  
 
