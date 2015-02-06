@@ -3,7 +3,7 @@ layout: post
 title: 256 Shades of Grey
 ---
 
-![_config.yml]({{ site.baseurl }}/images/1_header.png)
+![_config.yml]({{ site.baseurl }}/images/1/header.png)
 
 > Ever wondered how to make your own Google Maps terrain layer?
 
@@ -87,7 +87,7 @@ Reprojection
 
 Our next step is to transform the subsection of the tile to a different projection. The of the points in the subsection are located on a grid 1/1200th of a degree apart. While degrees of latitude are always ~110Km in size, resulting in ~92.5M resolution, degrees of longitude decrease in size, from ~111Km at the equator to 0Km at the poles. A different scale exists between the latitude & longitude axis and a longitude scale that depends on the latitude. This effect can be seen in the image below, with the lines of longitude and latitude forming trapezoidal shapes. 
 
-![_config.yml]({{ site.baseurl }}/images/1_Globe.png)
+![_config.yml]({{ site.baseurl }}/images/1/Globe.png)
 
 
 A solution is to project that points so that there is a consistent and equal scale in the X/Y plane. One choice is to use a family of projections called [Universal Transverse Mercator](http://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system). Each UTM projection can map points from longitude & latitude to X & Y coordinates in meters. The UTM projection is useful because it locally preserves both shapes and distances, over a distances of up to several hundred kilometres.
@@ -125,7 +125,7 @@ At this point we can begin to visualise the DEM. One highly effective method is 
 os.system('gdaldem hillshade -q -az 45 -alt 45 warped.tif hillshade.tif')
 {% endhighlight %}
 
-![_config.yml]({{ site.baseurl }}/images/1_hillshade.png)
+![_config.yml]({{ site.baseurl }}/images/1/hillshade.png)
 
 
 
@@ -164,7 +164,7 @@ def createColorMapLUT(minHeight,maxHeight,cmap = cm.jet,numSteps=256):
 {% endhighlight %}
 
 
-![_config.yml]({{ site.baseurl }}/images/1_color_relief.png)
+![_config.yml]({{ site.baseurl }}/images/1/color_relief.png)
 
 
 ---
@@ -192,7 +192,7 @@ os.system('gdaldem slope -q warped.tif slope.tif')
 os.system('gdaldem color-relief -q slope.tif color_slope.txt slopeshade.tif')
 {% endhighlight %}
 
-![_config.yml]({{ site.baseurl }}/images/1_slopeshade.png)
+![_config.yml]({{ site.baseurl }}/images/1/slopeshade.png)
 
 
 ---
@@ -224,7 +224,7 @@ img_enhanced.save(outFileName)
 {% endhighlight %}
 
 
-![_config.yml]({{ site.baseurl }}/images/1_blended.png)
+![_config.yml]({{ site.baseurl }}/images/1/blended.png)
 
 
 ---

@@ -3,7 +3,7 @@ layout: post
 title: The Big Picture
 ---
 
-![_config.yml]({{ site.baseurl }}/images/2_header.png)
+![_config.yml]({{ site.baseurl }}/images/2/header.png)
 
 >[Matplotlib] (http://matplotlib.org/) is an incredible library for visualising data using python. While they have comprehensive documentation, 90% of the plots I do fall into one of a few cases. This week I step through some common visualisations tasks using Matplotlib. 
 
@@ -47,7 +47,7 @@ plt.savefig('plot1.png')
 {% endhighlight %}
 
 
-![_config.yml]({{ site.baseurl }}/images/2_plot1.png)
+![_config.yml]({{ site.baseurl }}/images/2/plot1.png)
 
 
 This plot has several deficiencies, notably lacking a title, labels and a legend. 
@@ -75,7 +75,7 @@ plt.savefig('plot2.png')
 {% endhighlight %}
 
 
-![_config.yml]({{ site.baseurl }}/images/2_plot2.png)
+![_config.yml]({{ site.baseurl }}/images/2/plot2.png)
 
 
 Something that is implicit, is that the plot function can be used to draw arbitrary shapes.  The shapes we can draw range from the simple: 
@@ -91,7 +91,7 @@ plt.savefig('plot3.png')
 plt.close()
 {% endhighlight %}
 
-![_config.yml]({{ site.baseurl }}/images/2_plot3.png)
+![_config.yml]({{ site.baseurl }}/images/2/plot3.png)
 
 As a more complex example, we can plot the flightpath of an aircraft. An array of latitude values and longitude values representing the path is plotted.
 
@@ -105,7 +105,7 @@ plt.savefig('Flightpath.png')
 {% endhighlight %}
 
 
-![_config.yml]({{ site.baseurl }}/images/2_Flightpath.png)
+![_config.yml]({{ site.baseurl }}/images/2/Flightpath.png)
 
 ---
 
@@ -178,7 +178,7 @@ plt.xkcd()
 
 Applying this to our plot from before, we get the following:
 
-![_config.yml]({{ site.baseurl }}/images/2_plot4.png)
+![_config.yml]({{ site.baseurl }}/images/2/plot4.png)
 
 Further reading
 ===============
