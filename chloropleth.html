@@ -40,8 +40,10 @@ var quantize = d3.scale.quantize()
     .range(d3.range(9).map(function(i) { return "q" + i + "-9"; }));
 
 var projection = d3.geo.orthographic()
-    .scale(1280)
-    .translate([width / 2, height / 2]);
+    .scale(475)
+    .translate([width / 2, height / 2])
+    .clipAngle(90)
+    .precision(.1);
 
 var path = d3.geo.path()
     .projection(projection);
