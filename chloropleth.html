@@ -42,7 +42,7 @@ var quantize = d3.scale.quantize()
 var projection = d3.geo.orthographic()
     .scale(475)
     .translate([width / 2, height / 2])
-    .center([-100,40])
+    .rotate([-100,40])
     .clipAngle(90)
     .precision(.1);
 
