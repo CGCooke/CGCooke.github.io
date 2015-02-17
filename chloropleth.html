@@ -31,7 +31,7 @@
 <script>
 
 var width = 960,
-    height = 600;
+    height = 960;
 
 var rateById = d3.map();
 
@@ -42,7 +42,7 @@ var quantize = d3.scale.quantize()
 var projection = d3.geo.orthographic()
     .scale(475)
     .translate([width / 2, height / 2])
-    .rotate([-100,40])
+    .rotate([0,0,0])
     .clipAngle(90)
     .precision(.1);
 
