@@ -39,7 +39,7 @@ var quantize = d3.scale.quantize()
     .domain([0, .15])
     .range(d3.range(9).map(function(i) { return "q" + i + "-9"; }));
 
-var projection = d3.geo.albersUsa()
+var projection = d3.geo.orthographic()
     .scale(1280)
     .translate([width / 2, height / 2]);
 
