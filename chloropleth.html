@@ -40,7 +40,7 @@ var quantize = d3.scale.quantize()
     .range(d3.range(9).map(function(i) { return "q" + i + "-9"; }));
 
 var projection = d3.geo.orthographic()
-    .scale(475)
+    .scale(200)
     .translate([width / 2, height / 2])
     .rotate([90,-40,0])
     .clipAngle(90)
