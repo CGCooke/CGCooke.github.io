@@ -100,7 +100,7 @@ Careful consideration should be made in choice of color scheme. Issues to consid
 &lt;p&gt;Another issue to consider: In general, humans are more sensitive to changes in lightness than hue. Hence good colormaps should have linearly and monotonically changing lightness. Consideration should be given to how the colormap will be interpreted by those suffering from color-blindness. &lt;a href=&quot;http://matplotlib.org/users/colormaps.html&quot;&gt;This&lt;/a&gt; excellent article outlines the issues mentioned in more detail.&lt;/p&gt;
 
 &lt;p&gt;One neat trick is that the rgb values can be extracted from the color maps.
-By feeding in a value, in the range 0-1, the colormap returns a rgba tupple.&lt;/p&gt;
+By feeding in a value, in the range 0-1, the colormap returns a rgba tuple.&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.5&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;g&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;jet&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
@@ -143,7 +143,7 @@ The chart of the globe centred Vancouver in the previous post was created using 
 &lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;show&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Finally, a disturbing amount of time and effort appears to have been expended to create the option to &amp;quot;XKCDfy&amp;quot; plots.
-To enable the efect, simply place the following line before any other calls to pyplot.&lt;/p&gt;
+To enable the effect, simply place the following line before any other calls to pyplot.&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xkcd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
@@ -166,7 +166,7 @@ To enable the efect, simply place the following line before any other calls to p
 &lt;p&gt;Ever wondered how to make your own Google Maps terrain layer?&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;On February 22, 2000, after 11 days of measurements, the most comprehensive map ever created of the earth&amp;#39;s topography was complete. The space shuttle &lt;em&gt;Endeavor&lt;/em&gt; had just completed the Shuttle Radar Topography Mission, using a spcialized radar to image the earths surface.&lt;/p&gt;
+&lt;p&gt;On February 22, 2000, after 11 days of measurements, the most comprehensive map ever created of the earth&amp;#39;s topography was complete. The space shuttle &lt;em&gt;Endeavor&lt;/em&gt; had just completed the Shuttle Radar Topography Mission, using a specialised radar to image the earths surface.&lt;/p&gt;
 
 &lt;p&gt;The Digital Elevation Map (DEM) produced by this mission is in the public domain and provides the measured terrain high at ~90 meter resolution. The mission mapped 99.98% of the area between 60 degrees North and 56 degrees South.  &lt;/p&gt;
 
@@ -236,7 +236,7 @@ To enable the efect, simply place the following line before any other calls to p
 
 &lt;p&gt;A solution is to project that points so that there is a consistent and equal scale in the X/Y plane. One choice is to use a family of projections called &lt;a href=&quot;http://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system&quot;&gt;Universal Transverse Mercator&lt;/a&gt;. Each UTM projection can map points from longitude &amp;amp; latitude to X &amp;amp; Y coordinates in meters. The UTM projection is useful because it locally preserves both shapes and distances, over a distances of up to several hundred kilometres.&lt;/p&gt;
 
-&lt;p&gt;The tradeoff is that severalcan different UTM projections are required for different points on earth, 120 to be precise. 
+&lt;p&gt;The tradeoff is that several different UTM projections are required for different points on earth, 120 to be precise. 
 Fortunately it is relatively trivial to work out the required projection based on the longitude and latitude. Almost every conceivable projection has been assigned a code by the European Petroleum Survey Group (EPSG). This EPSG code can be used to unambiguously specify the projection being used. With UTM, each code starts with either 327 or 326, depending on the hemisphere of the projection. &lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;utmZone&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;math&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;floor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lon&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;180&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;60&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
@@ -266,7 +266,7 @@ In the following system call to gdalwarp, &lt;em&gt;t_srs&lt;/em&gt; denotes the
 
 &lt;h1&gt;Hypsometric Tinting&lt;/h1&gt;
 
-&lt;p&gt;Hillshading can also be combined with height information to aid interpretation of the topography. The technical name for the process of coloring a dem based on  height is &lt;em&gt;hypsometric tinting&lt;/em&gt;. The process is simple, with GDAL mapping colors to cell heights, using a provided color scheme. &lt;/p&gt;
+&lt;p&gt;Hillshading can also be combined with height information to aid interpretation of the topography. The technical name for the process of coloring a DEM based on  height is &lt;em&gt;hypsometric tinting&lt;/em&gt;. The process is simple, with GDAL mapping colors to cell heights, using a provided color scheme. &lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;gdaldem color-relief -q warped.tif color_relief.txt color_relief.tif&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
@@ -348,7 +348,7 @@ In the following system call to gdalwarp, &lt;em&gt;t_srs&lt;/em&gt; denotes the
 
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html&quot;&gt;Creating color relief and slope shading&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;http://linfiniti.com/2010/12/a-workflow-for-creating-beautiful-relief-shaded-dems-using-gdal/&quot;&gt;A workflow for creating beautiful relief shaded dems using gdal&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://linfiniti.com/2010/12/a-workflow-for-creating-beautiful-relief-shaded-dems-using-gdal/&quot;&gt;A workflow for creating beautiful relief shaded DEMs using gdal&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;http://www.geophysique.be/2014/02/25/shaded-relief-map-in-python/&quot;&gt;Shaded relief map in python&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>

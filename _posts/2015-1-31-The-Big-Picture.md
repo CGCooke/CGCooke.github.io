@@ -119,7 +119,7 @@ Another issue to consider: In general, humans are more sensitive to changes in l
 
 
 One neat trick is that the rgb values can be extracted from the color maps.
-By feeding in a value, in the range 0-1, the colormap returns a rgba tupple.
+By feeding in a value, in the range 0-1, the colormap returns a rgba tuple.
 
 {% highlight python %}
 value=0.5
@@ -171,7 +171,7 @@ plt.show()
 
 
 Finally, a disturbing amount of time and effort appears to have been expended to create the option to "XKCDfy" plots.
-To enable the efect, simply place the following line before any other calls to pyplot.
+To enable the effect, simply place the following line before any other calls to pyplot.
 {% highlight python %}
 plt.xkcd()
 {% endhighlight %}

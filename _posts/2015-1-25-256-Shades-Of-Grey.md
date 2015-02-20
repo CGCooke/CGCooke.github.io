@@ -7,7 +7,7 @@ title: 256 Shades of Grey
 
 > Ever wondered how to make your own Google Maps terrain layer?
 
-On February 22, 2000, after 11 days of measurements, the most comprehensive map ever created of the earth's topography was complete. The space shuttle *Endeavor* had just completed the Shuttle Radar Topography Mission, using a spcialized radar to image the earths surface.
+On February 22, 2000, after 11 days of measurements, the most comprehensive map ever created of the earth's topography was complete. The space shuttle *Endeavor* had just completed the Shuttle Radar Topography Mission, using a specialised radar to image the earths surface.
 
 The Digital Elevation Map (DEM) produced by this mission is in the public domain and provides the measured terrain high at ~90 meter resolution. The mission mapped 99.98% of the area between 60 degrees North and 56 degrees South.  
 
@@ -92,7 +92,7 @@ Our next step is to transform the subsection of the tile to a different projecti
 
 A solution is to project that points so that there is a consistent and equal scale in the X/Y plane. One choice is to use a family of projections called [Universal Transverse Mercator](http://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system). Each UTM projection can map points from longitude & latitude to X & Y coordinates in meters. The UTM projection is useful because it locally preserves both shapes and distances, over a distances of up to several hundred kilometres.
 
-The tradeoff is that severalcan different UTM projections are required for different points on earth, 120 to be precise. 
+The tradeoff is that several different UTM projections are required for different points on earth, 120 to be precise. 
 Fortunately it is relatively trivial to work out the required projection based on the longitude and latitude. Almost every conceivable projection has been assigned a code by the European Petroleum Survey Group (EPSG). This EPSG code can be used to unambiguously specify the projection being used. With UTM, each code starts with either 327 or 326, depending on the hemisphere of the projection. 
 
 {% highlight python %}
@@ -134,7 +134,7 @@ os.system('gdaldem hillshade -q -az 45 -alt 45 warped.tif hillshade.tif')
 Hypsometric Tinting
 ===============
 
-Hillshading can also be combined with height information to aid interpretation of the topography. The technical name for the process of coloring a dem based on  height is *hypsometric tinting*. The process is simple, with GDAL mapping colors to cell heights, using a provided color scheme. 
+Hillshading can also be combined with height information to aid interpretation of the topography. The technical name for the process of coloring a DEM based on  height is *hypsometric tinting*. The process is simple, with GDAL mapping colors to cell heights, using a provided color scheme. 
 
 {% highlight python %}
 os.system('gdaldem color-relief -q warped.tif color_relief.txt color_relief.tif')
@@ -234,5 +234,5 @@ Further reading
 I found the following sources to be invaluable in compiling this post:
 
 * [Creating color relief and slope shading](http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html)
-* [A workflow for creating beautiful relief shaded dems using gdal](http://linfiniti.com/2010/12/a-workflow-for-creating-beautiful-relief-shaded-dems-using-gdal/)
+* [A workflow for creating beautiful relief shaded DEMs using gdal](http://linfiniti.com/2010/12/a-workflow-for-creating-beautiful-relief-shaded-dems-using-gdal/)
 * [Shaded relief map in python](http://www.geophysique.be/2014/02/25/shaded-relief-map-in-python/)
