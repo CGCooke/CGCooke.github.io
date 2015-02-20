@@ -4,7 +4,7 @@
 <style>
 
 .land {
-  fill: rgb(117, 87, 57);
+  fill: rgb(0, 0, 0);
   stroke-opacity: 1;
 }
 
@@ -21,7 +21,6 @@
   stroke-width:1;
   opacity: 1;
 }
-
 
 .graticule {
   fill: none;
@@ -157,18 +156,7 @@ function ready(error, world, places) {
         .attr("class","noclicks")
         .style("fill", "url(#globe_shading)");
 
-    svg.append("g").attr("class","points")
-        .selectAll("text").data(places.features)
-      .enter().append("path")
-        .attr("class", "point")
-        .attr("d", path);
-
-    svg.append("g").attr("class","labels")
-        .selectAll("text").data(places.features)
-      .enter().append("text")
-      .attr("class", "label")
-      .text(function(d) { return d.properties.name })
-
+   
     // uncomment for hover-able country outlines
 
     // svg.append("g").attr("class","countries")
