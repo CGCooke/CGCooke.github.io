@@ -159,11 +159,11 @@ function ready(error, world, places) {
    
     // uncomment for hover-able country outlines
 
-    // svg.append("g").attr("class","countries")
-    //   .selectAll("path")
-    //     .data(topojson.object(world, world.objects.countries).geometries)
-    //   .enter().append("path")
-    //     .attr("d", path); 
+    svg.append("g").attr("class","countries")
+      .selectAll("path")
+      .data(topojson.object(world, world.objects.countries).geometries)
+      .enter().append("path")
+      .attr("d", path); 
 
     position_labels();
 }
