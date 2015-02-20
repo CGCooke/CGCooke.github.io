@@ -157,6 +157,18 @@ function ready(error, world, places) {
         .attr("class","noclicks")
         .style("fill", "url(#globe_shading)");
 
+    svg.append("g").attr("class","points")
+        .selectAll("text").data(places.features)
+      .enter().append("path")
+        .attr("class", "point")
+        .attr("d", path);
+
+    svg.append("g").attr("class","labels")
+        .selectAll("text").data(places.features)
+      .enter().append("text")
+      .attr("class", "label")
+      .text(function(d) { return d.properties.name })
+
     // uncomment for hover-able country outlines
 
     // svg.append("g").attr("class","countries")
@@ -165,9 +177,35 @@ function ready(error, world, places) {
     //   .enter().append("path")
     //     .attr("d", path); 
 
+    position_labels();
 }
 
 
+function position_labels() {
+  var centerPos = proj.invert([width/2,height/2]);
+
+  var arc = d3.geo.greatArc();
+
+  svg.selectAll(".label")
+    .attr("text-anchor",function(d) {
+      var x = proj(d.geometry.coordinates)[0];
+      return x < width/2-20 ? "end" :
+             x < width/2+20 ? "middle" :
+             "start"
+    })
+    .attr("transform", function(d) {
+      var loc = proj(d.geometry.coordinates),
+        x = loc[0],
+        y = loc[1];
+      var offset = x < width/2 ? -5 : 5;
+      return "translate(" + (x+offset) + "," + (y-2) + ")"
+    })
+    .style("display",function(d) {
+      var d = arc.distance({source: d.geometry.coordinates, target: centerPos});
+      return (d > 1.57) ? 'none' : 'inline';
+    })
+    
+}
 
 // modified from http://bl.ocks.org/1392560
 var m0, o0;
@@ -196,6 +234,7 @@ function mouseup() {
 
 function refresh() {
   svg.selectAll(".land").attr("d", path);
+  svg.selectAll(".countries path").attr("d", path);
   svg.selectAll(".graticule").attr("d", path);
   svg.selectAll(".point").attr("d", path);
   position_labels();
