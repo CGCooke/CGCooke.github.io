@@ -81,45 +81,26 @@ function ready(error, world, places) {
       ocean_fill.append("stop").attr("offset", "5%").attr("stop-color", "#ddf");
       ocean_fill.append("stop").attr("offset", "100%").attr("stop-color", "#9ab");
 
-  var globe_highlight = svg.append("defs").append("radialGradient")
-        .attr("id", "globe_highlight")
-        .attr("cx", "75%")
-        .attr("cy", "25%");
-      globe_highlight.append("stop")
-        .attr("offset", "5%").attr("stop-color", "#ffd")
-        .attr("stop-opacity","0.6");
-      globe_highlight.append("stop")
-        .attr("offset", "100%").attr("stop-color", "#ba9")
-        .attr("stop-opacity","0.2");
+    
 
-  var globe_shading = svg.append("defs").append("radialGradient")
-        .attr("id", "globe_shading")
-        .attr("cx", "50%")
-        .attr("cy", "40%");
-      globe_shading.append("stop")
-        .attr("offset","50%").attr("stop-color", "#9ab")
-        .attr("stop-opacity","0")
-      globe_shading.append("stop")
-        .attr("offset","100%").attr("stop-color", "#3e6184")
-        .attr("stop-opacity","0.3")
-        
+    // Ocean
     svg.append("circle")
         .attr("cx", width / 2).attr("cy", height / 2)
         .attr("r", proj.scale())
         .attr("class", "noclicks")
         .style("fill", "url(#ocean_fill)");
     
+    // Land 
     svg.append("path")
         .datum(topojson.object(world, world.objects.land))
         .attr("class", "land")
         .attr("d", path);
 
+    // Graticule
     svg.append("path")
         .datum(graticule)
         .attr("class", "graticule noclicks")
         .attr("d", path);
-
-
    
     // uncomment for hover-able country outlines
 
