@@ -102,8 +102,23 @@ function ready(error, world, places) {
       globe_shading.append("stop")
         .attr("offset","100%").attr("stop-color", "#3e6184")
         .attr("stop-opacity","0.3")
+        
+    svg.append("circle")
+        .attr("cx", width / 2).attr("cy", height / 2)
+        .attr("r", proj.scale())
+        .attr("class", "noclicks")
+        .style("fill", "url(#ocean_fill)");
+    
+    svg.append("path")
+        .datum(topojson.object(world, world.objects.land))
+        .attr("class", "land")
+        .attr("d", path);
 
-  
+    svg.append("path")
+        .datum(graticule)
+        .attr("class", "graticule noclicks")
+        .attr("d", path);
+
 
    
     // uncomment for hover-able country outlines
