@@ -29,12 +29,6 @@
   opacity:.2;
 }
 
-.labels {
-    font: 8px sans-serif;
-    fill: black;
-    opacity: .5;
-}
-
 .noclicks {
   pointer-events:none;
 }
@@ -57,8 +51,8 @@ d3.select(window)
     .on("mousemove", mousemove)
     .on("mouseup", mouseup);
 
-var width = 960,
-    height = 500;
+var width = 1300,
+    height = 960;
 
 var proj = d3.geo.orthographic()
     .scale(220)
