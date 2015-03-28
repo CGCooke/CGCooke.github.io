@@ -59,7 +59,7 @@ The Code
 ===============
 
 All of the satellites are transmitting on the same carrier frequency, which leads to a reasonable question, Won't they all interfere?
-The answer of course is *yes*, however by assigning each satellite a unique code, this problem can be bypassed. 
+The answer of course is *yes*, the signals from each of the visilble satellites are mixed in together, however by assigning each satellite a unique code, this problem can be bypassed. 
 
 ![_config.yml]({{ site.baseurl }}/images/3/header.png)
 
@@ -73,7 +73,20 @@ The Data
 
 The Reciver
 ===============
+At its heart, GPS signal aquisitino is a search problem. 
+In the most general case, when  GPS reciever powers up, It doesn't know which satellites will be visible, what their doppler shift is, or their C/A Code phase. 
 
+A doppler shift in the recieved frequency is induced by the relative motion of the satellite and the reciever. 
+The size of the shift can be computed as follows, where v is the relative velocity between reciever and satellite, c is the speed of light. 
+On thing to keep in mind is that f refers to the L1 transmission frequency 1575.42 MHz, as opposed to the IF frequency of the reciever. 
+
+$$ \Delta f = f\frac{v}{c}$$
+
+As a rule of thumb, the shift is 5.25 Hz per m/s of velocity between the satellite and the reciver. 
+
+The C/A code phase is unknown because initially the GPS reciever does not know the range to each satellite. Each C/A code takes 1ms to trasmit, and is aproximately 0.001 * 3*10**8 m, or 300km long. In general, with the satellites apoximately 20,000km away, each signal takes 60-70ms to travel from the GPS satellite to the reciever.
+
+The reciever can try to identify visible satellites by doing a brute force search, checking each satellites C/A code, for each possible doppler shift, for each possible C/A code shift. 
 
 ![_config.yml]({{ site.baseurl }}/images/3/IQ.png)
 
@@ -84,10 +97,6 @@ The Reciver
 ![_config.yml]({{ site.baseurl }}/images/3/Raw.png)
 
 ![_config.yml]({{ site.baseurl }}/images/3/Local.png)
-
-
-
-
 
 ![_config.yml]({{ site.baseurl }}/images/3/DelayDopplerMap.png)
 
@@ -119,8 +128,9 @@ def integrateAndDump(data,CACode,shift,frequency,reciever):
 
 ---
 
+
 Further reading
 ===============
 
-A Software-Defined GPS and Galileo Receiver : A Single-Frequency Approach
-Kaplan Chapter 5 : Satellite Signal Acquisition, Tracking, and Data Demodulation
+* A Software-Defined GPS and Galileo Receiver : A Single-Frequency Approach
+* Kaplan Chapter 5 : Satellite Signal Acquisition, Tracking, and Data Demodulation
