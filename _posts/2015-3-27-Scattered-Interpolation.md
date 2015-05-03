@@ -30,7 +30,6 @@ import matplotlib.pyplot as plt
 from pyproj import Proj
 {% endhighlight %}
 
-
 We can quickly load the data from a csv using numpy's 'loadtext' function.
 
 {% highlight python %}
@@ -57,24 +56,27 @@ plt.close()
 Interpolation
 ===============
 
+Ultimately, there is no universally correct choice of interpolation method to use. However it is useful to know the mechanics associated with going from scattered points to an interpolated array for a number of different methods. 
+
+
 {% highlight python %}
 numIndexes = 500
 xi = np.linspace(np.min(xArray), np.max(xArray),numIndexes)
 yi = np.linspace(np.min(yArray), np.max(yArray),numIndexes)
 {% endhighlight %}
 
-
-The first method we can try is delauny triangulation, which can be found in matplotlib.mlab. 
+The first method we can try is Delaunay triangulation, which can be found in matplotlib.mlab. 
 {% highlight python %}
 DEM = griddata(xArray, yArray, heightArray, xi, yi)
 {% endhighlight %}
 
 
+Another option is linear interpolation, which can be performed using scipy.interpolate.
 {% highlight python %}
 XI, YI = np.meshgrid(xi, yi)
 points = np.asarray(points)
 values = np.asarray(estimatedHeightList)
-interpolatedArray =scipy.interpolate.griddata(points, values, (XI,YI), method='linear')
+DEM =scipy.interpolate.griddata(points, values, (XI,YI), method='linear')
 {% endhighlight %}
 
 http://wiki.scipy.org/Cookbook/Matplotlib/Gridding_irregularly_spaced_data
@@ -101,7 +103,6 @@ plt.imshow(DEM,cmap ='RdYlGn_r',origin='lower')
 plt.colorbar()
 {% endhighlight %}
 
-
 In this case, it is also useful to draw the location of each point. 
 We first need to normalize the points to be in the range [0-1].
 
@@ -124,3 +125,5 @@ plt.close()
 ![_config.yml]({{ site.baseurl }}/images/6/ContourMap.png)
 
 ---
+
+In the next post, I will discuss how you can create a GeoTiff, so you can overlay a plot in Google Earth.
