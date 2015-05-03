@@ -6,8 +6,8 @@ permalink: /about/
 
 ### About Me
 Currently I'm completing my thesis in Electrical Engineering at the University of New South Wales.
-I'm passionate about Electrical Engineering, Finance & Computer Science.
-I aim to make complex topics or ideas accessible to an audience that is interest but have a formal background in the area.
-I believe that being able to clearly explain a topic is a key step in understanding it.
+I'm passionate about Electrical Engineering, Finance & Computer Science,
+I'm writing a blog because I think the first step to truly understanding something is being able to explain it to someone else.
+
 
 [Cameron.G.Cooke@gmail.com](mailtoCameron.G.Cooke@gmail.com)
