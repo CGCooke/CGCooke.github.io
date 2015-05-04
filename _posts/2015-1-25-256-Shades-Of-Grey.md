@@ -29,8 +29,7 @@ In order, we need to:
 6. Make an image by coloring the subsection according to slope
 7. Combine the 3 images into a final composite
 
-The full source code for this project is available [here](
-https://github.com/CGCooke/Marinus/blob/master/Cartographer.py) on GitHub.
+The full source code for this project is available [here](https://github.com/CGCooke/Blog/tree/master/256ShadesOfGrey) on GitHub.
 
 Pre-requisites: GDAL and Anaconda.
 ---
