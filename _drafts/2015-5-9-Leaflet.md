@@ -1,11 +1,11 @@
 ---
 layout: post
-title: Creating a GeoTIFF in Python
+title: Leflet
 ---
 
 ![_config.yml]({{ site.baseurl }}/images/8/header.png)
 
-> Visualizations need context, lets look at how we can create GeoTIFFs, so we can visualize data in Google Earth.
+> Leaflet Leaflet Leaflet
 
 ---
 Summary

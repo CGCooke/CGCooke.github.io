@@ -1,4 +1,3 @@
-
 ---
 layout: post
 title: Digital Oscillators
@@ -39,10 +38,11 @@ If we set $\rho$ to 1, then both of the poles lie on the unit circle, this will 
 
 Converting from the Z domain, we find that :
 
-$$ y[n] = x[n] + 2 \, \rho \, cos(\omega) 	\cdot y[n] -  \rho^2 \cdot y[n-1]$$
+$$ y[n] = x[n] + 2  \, cos(\omega) 	\cdot y[n] -  \cdot y[n-1]$$
 
 This provides the basis for the implementation.
 
+The reason why this technique is computationally attractive, is that only one value of $cos(\omega)$ needs to be pre-computed. From there, we can compute the next value of the signal using two previous values, and a single multiplication.
 
 ---
 
@@ -57,13 +57,27 @@ import scipy.signal
 import math
 {% endhighlight %}
 
+
+
+The Denominator of the transfer function H(Z) is impemented as above, because the digital oscillator needs two previous outputs, the unit impulse is injected at n=2.
+
 {% highlight python %}
-#http://docs.scipy.org/doc/scipy-0.15.1/reference/generated/scipy.signal.lfilter.html
 omega = 0.1
+numerator = [1]
 denominator = [1,-2*np.cos(omega),1]
+
+#Create input vector to be "filtered"
 x = np.zeros((100))
 x[2]=1
-sineOutput = scipy.signal.lfilter([1],denominator, x)
+{% endhighlight %}
+
+Special attention needs to be paid to [lfilter](#http://docs.scipy.org/doc/scipy-0.15.1/reference/generated/scipy.signal.lfilter.html) is an incredibly useful tool for implementing filters in python. 
+
+{% highlight python %}
+sineOutput = scipy.signal.lfilter(numerator,denominator, x)
+{% endhighlight %}
+
+{% highlight python %}
 plt.plot(sineOutput,'k',label='Digital Oscillator')
 plt.title('Omega = 0.1')
 plt.ylabel('Amplitude')
@@ -73,6 +87,9 @@ plt.savefig('Figure1.png')
 {% endhighlight %}
 
 ![_config.yml]({{ site.baseurl }}/images/11/Figure1.png)
+
+
+By way of comparison, this is an reference singal with the same frequency, implemented in a more traditional manner. It is important to note the phase difference ocours because the impulse response to the digital osciallator n=2, rather than n=0.
 
 {% highlight python %}
 timeBase = np.arange(0,100.0)
