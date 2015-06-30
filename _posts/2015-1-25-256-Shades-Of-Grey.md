@@ -235,3 +235,4 @@ I found the following sources to be invaluable in compiling this post:
 * [Creating color relief and slope shading](http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html)
 * [A workflow for creating beautiful relief shaded DEMs using gdal](http://linfiniti.com/2010/12/a-workflow-for-creating-beautiful-relief-shaded-dems-using-gdal/)
 * [Shaded relief map in python](http://www.geophysique.be/2014/02/25/shaded-relief-map-in-python/)
+* [Stamen Design](http://openterrain.tumblr.com/)
