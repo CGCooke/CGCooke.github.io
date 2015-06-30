@@ -3,7 +3,7 @@ layout: post
 title: Correlation Performance In Python
 ---
 
-![_config.yml]({{ site.baseurl }}/images/3/header.png)
+![_config.yml]({{ site.baseurl }}/images/12/header.png)
 
 > What is the fastest way to correlate two vectors in Python?
 
