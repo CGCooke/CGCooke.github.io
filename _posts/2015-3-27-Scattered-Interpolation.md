@@ -19,7 +19,7 @@ An example of this is Airbourne LiDAR, where a laser range finder is scanned ove
 The Data
 ===============
 
-I've created a test dataset, by sampling randomly sampling the SRTM 90M DEM, the points can be found [here](https://www.dropbox.com/s/inw6rr9bflkkgfi/coordinates.csv?dl=0).
+I've created a test dataset, by sampling randomly sampling the SRTM 90M DEM, the points can be found [here](https://www.dropbox.com/s/msds7t2ilb0lzb4/coordinates.csv?dl=0).
 
 Our first tast is to import the libuaries that we will need later. 
 
