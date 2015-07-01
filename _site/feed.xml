@@ -224,13 +224,7 @@
     
       <item>
         <title>Flask</title>
-        <description>&lt;hr&gt;
-
-&lt;p&gt;layout: post&lt;/p&gt;
-
-&lt;h2&gt;title: Flask&lt;/h2&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/8/header.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+        <description>&lt;p&gt;&lt;img src=&quot;/images/8/header.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
 
 &lt;blockquote&gt;
 &lt;p&gt;Part 2 of 2 in series on online mapping.&lt;/p&gt;
