@@ -182,3 +182,4 @@ Applying this to our plot from before, we get the following:
 
 Further reading
 ===============
+[1](https://bespokeblog.wordpress.com/2011/07/07/basic-data-plotting-with-matplotlib-part-2-lines-points-formatting/)
