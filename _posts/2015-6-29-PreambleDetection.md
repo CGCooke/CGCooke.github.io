@@ -1,4 +1,3 @@
-
 ---
 layout: post
 title: Preamble Detection
@@ -39,8 +38,7 @@ The modified preamble template can be seen below:
 
 At this point, we turn our attention to the structure of the message. 
 
-The most elegant explanation of the message format can be found here, 
-(Link to Read the Docs), check out some of his research, it looks really cool.
+The most elegant explanation of the message format can be found [here](http://adsb-decode-guide.readthedocs.org/en/latest/)
 
 All ADS-B messages have the following structure. 
 
