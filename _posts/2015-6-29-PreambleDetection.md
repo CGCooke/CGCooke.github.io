@@ -3,7 +3,7 @@ layout: post
 title: Preamble Detection
 ---
 
-![_config.yml]({{ site.baseurl }}/images/PeambleDetection/header.png)
+![_config.yml]({{ site.baseurl }}/images/PeambleDetection/header)
 
 > ADS-B Preamble detection
 
