@@ -7,6 +7,139 @@
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Sh***y Redaction</title>
+        <description>&lt;p&gt;&lt;img src=&quot;/images/ShittyRedaction/header.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Reaction is meant to prevent your secrets being revealed, this is what happens when it is done wrong.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr&gt;
+
+&lt;h1&gt;Summary&lt;/h1&gt;
+
+&lt;p&gt;Redaction is a process of obscuring parts of a document or image, in order to obscure key contents. There are a number of ways to achieve this, blurring, pixilating and replacing a section of the image with a uniform color, usually black. In this post, I investigate the potential for security to be merely an illusion when blurring is used. &lt;/p&gt;
+
+&lt;h1&gt;What really is blurring?&lt;/h1&gt;
+
+&lt;p&gt;Before we continue, there are a number of terms to define:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Input image : Input image we want to redact by blurring&lt;br&gt;&lt;/li&gt;
+&lt;li&gt;Output image : Blurred image&lt;/li&gt;
+&lt;li&gt;Kernel : Array that desrcibes the type of blurring that is going to occour.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The first thing we need to understand, is what does blurring really achive? There are a number of different perspectives we can take, all of which are equivilant.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Each pixel in the output iamge is a weighted average of a set of pixels from the input image. The pixels used are determined using the kernel.&lt;/li&gt;
+&lt;li&gt;The contribution of each input pixel to the output image is formed by multiplying the kernel by the input pixel, and centering it on the input pixel.&lt;/li&gt;
+&lt;li&gt;The output image is formed by filtering the input image with the kernel.&lt;/li&gt;
+&lt;li&gt;The output image is formed by pointwise multiplication of the frequency domain representation of the input image, with the frequency domain representation of the kernel.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Of these perspectives, the first or second are the most probably methods of implementation, however the most illuminating perspective is probably the frequency domain method. This raises the question, if we can blur an image by pointwise multiplication in the frequency domain, can we recover it by pointwise division in the frequency domain?&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h1&gt;Deconvolution&lt;/h1&gt;
+
+&lt;p&gt;The answer to the question of &amp;quot;Can we undo the blurring?&amp;quot; is a complex one. In short, the answer is &amp;quot;yes, with an number of astrisks&amp;quot;. The more information we have regarding the situation, then the more impressive the results.  &lt;/p&gt;
+
+&lt;p&gt;In the most trivial situation, There is no noise, and we know the kernel, in reality there will be noise from a nubmer of different sources, and the kernal will be unknown.&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h1&gt;A toy example&lt;/h1&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;scipy&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mgrid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;np&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy.fft&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;PIL&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Image&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/ShittyRedaction/Input.jpg&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/ShittyRedaction/Deconvolved.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;makeGaussianPSF&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;radius&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeX&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;sd&quot;&gt;&amp;quot;&amp;quot;&amp;quot; Returns a normalized 2D gauss kernel array for convolutions &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;   
+    &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mgrid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeX&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeX&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;g&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;float&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;radius&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;float&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;radius&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;g&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;g&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/ShittyRedaction/GaussianPSF.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;convolve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;psf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;epsilon&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;InputFFT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fftn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;psfFFT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fftn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;psf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;epsilon&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;convolved&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ifftn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;InputFFT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;psfFFT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;convolved&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;abs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;convolved&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;convolved&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/ShittyRedaction/GuassianBlur.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;deconvolve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;psf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;epsilon&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;InputFFT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fftn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;psfFFT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fftn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;psf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;epsilon&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;deconvolved&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ifftn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;InputFFT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;psfFFT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;deconvolved&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;abs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;deconvolved&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;deconvolved&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/ShittyRedaction/Deconvolved.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;makeMotionPSF&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeX&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;psf&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zeros&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeX&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;psf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeX&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeX&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;psf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;psf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/ShittyRedaction/MotionBlurPSF.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/ShittyRedaction/MotionBlur.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/ShittyRedaction/Deconvolved.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;We can convert the array to a black and white image as follows : &lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;exportArrayAsImage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;img&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fileName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;img&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;abs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;img&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;img&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;img&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;255&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;255&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;img&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
+    &lt;span class=&quot;n&quot;&gt;img&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;img&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;img&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
+    &lt;span class=&quot;n&quot;&gt;img&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;img&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;astype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;uint8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;img&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Image&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fromarray&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;img&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;img&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fileName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;All together, we have : &lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;epsilon&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.00001&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Input&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;asarray&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Image&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Input.jpg&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;convert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;L&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;sizeY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeX&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Input&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;psf&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;makeGaussianPSF&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeX&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#Visualize the PSF&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;exportArrayAsImage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;psf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;255.0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;psf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;PSF.png&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#Convolve the input&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;InputConv&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;abs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;convolve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;psf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;epsilon&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#Deconvolve the input&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;InputDeconv&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;deconvolve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;InputConv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;psf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;epsilon&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#Visualize the convolved and deconvolved images&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;exportArrayAsImage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fftshift&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;InputConv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Convolved.png&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;exportArrayAsImage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;InputDeconv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Deconvolved.png&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;hr&gt;
+
+&lt;h1&gt;Further reading&lt;/h1&gt;
+</description>
+        <pubDate>Thu, 06 Aug 2015 22:21:17 +1000</pubDate>
+        <link>/2015-28-6-Sh***y-Redaction/</link>
+        <guid isPermaLink="true">/2015-28-6-Sh***y-Redaction/</guid>
+      </item>
+    
+      <item>
         <title>Flask</title>
         <description>&lt;p&gt;&lt;img src=&quot;/images/8/header.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
 
@@ -105,7 +238,7 @@ This is achieved by:
 
 &lt;hr&gt;
 </description>
-        <pubDate>Wed, 01 Jul 2015 00:00:00 -0400</pubDate>
+        <pubDate>Wed, 01 Jul 2015 00:00:00 +1000</pubDate>
         <link>/Flask/</link>
         <guid isPermaLink="true">/Flask/</guid>
       </item>
@@ -122,17 +255,15 @@ This is achieved by:
 
 &lt;h1&gt;Summary&lt;/h1&gt;
 
-&lt;p&gt;Zoomable maps are invaluable for visualising and interpreting large sets of geographical data. Typically individual users will be interested in small subsets of a dataset, and will wish to view them in high resolution. [Leaflet])(http://leafletjs.com/) is an incredibly useful Javascript libuary which abstracts away the process of displaying and navigating a zoomable map. All that is left up to the user is to provide the tiles. &lt;/p&gt;
+&lt;p&gt;Zoomable maps are invaluable for visualising and interpreting large sets of geographical data. Typically individual users will be interested in small subsets of a dataset, and will wish to view them in high resolution. (Leaflet)[(]http://leafletjs.com/] is an incredibly useful Javascript libuary which abstracts away the process of displaying and navigating a zoomable map. All that is left up to the user is to provide the tiles. &lt;/p&gt;
 
 &lt;hr&gt;
 
 &lt;h1&gt;The Tiles&lt;/h1&gt;
 
-&lt;p&gt;The maths behind the tile naming can be found &lt;a href=&quot;http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames&quot;&gt;here&lt;/a&gt;. &lt;/p&gt;
+&lt;p&gt;The maths behind the tile naming scheme can be found &lt;a href=&quot;http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames&quot;&gt;here&lt;/a&gt;, and this &lt;a href=&quot;http://tools.geofabrik.de/map/#11/-33.7964/151.2958&amp;amp;type=Geofabrik_Standard&amp;amp;grid=1&amp;amp;mlat=-33.72878&amp;amp;mlon=151.24564&quot;&gt;website&lt;/a&gt; provides a fantastic interactive map that shows how the tile naming system work.&lt;/p&gt;
 
-&lt;p&gt;This &lt;a href=&quot;http://tools.geofabrik.de/map/#11/-33.7964/151.2958&amp;amp;type=Geofabrik_Standard&amp;amp;grid=1&amp;amp;mlat=-33.72878&amp;amp;mlon=151.24564&quot;&gt;website&lt;/a&gt; provides a fantastic interactive map that shows how the tile naming system work.&lt;/p&gt;
-
-&lt;p&gt;For this example, we are going to use some incredible map tiles created by &lt;a href=&quot;http://stamen.com/&quot;&gt;Stamen design&lt;/a&gt;. The map tiles are an abstract &lt;a href=&quot;http://content.stamen.com/watercolor_process&quot;&gt;watercolor&lt;/a&gt; rendering of Open Street Map data! &lt;/p&gt;
+&lt;p&gt;For this example, we are going to use some incredible map tiles created by &lt;a href=&quot;http://stamen.com/&quot;&gt;Stamen design&lt;/a&gt;. The map tiles are an abstract &lt;a href=&quot;http://content.stamen.com/watercolor_process&quot;&gt;watercolor&lt;/a&gt; rendering of Open Street Map data! By using some pre-generated tiles, we can defer the issues associated with generating our own tiles until another blog post.&lt;/p&gt;
 
 &lt;hr&gt;
 
@@ -220,17 +351,17 @@ This is achieved by:
 &lt;li&gt;&lt;a href=&quot;http://leafletjs.com/examples/quick-start.html&quot;&gt;Leaflet Tutorial&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
-        <pubDate>Tue, 30 Jun 2015 00:00:00 -0400</pubDate>
+        <pubDate>Tue, 30 Jun 2015 00:00:00 +1000</pubDate>
         <link>/Leaflet/</link>
         <guid isPermaLink="true">/Leaflet/</guid>
       </item>
     
       <item>
         <title>Preamble Detection</title>
-        <description>&lt;p&gt;&lt;img src=&quot;/images/3/header.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+        <description>&lt;p&gt;&lt;img src=&quot;/images/PreambleDetection/header.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
 
 &lt;blockquote&gt;
-&lt;p&gt;ADS-B Premamble detection&lt;/p&gt;
+&lt;p&gt;ADS-B Preamble detection&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;hr&gt;
@@ -243,58 +374,100 @@ This is achieved by:
 
 &lt;h1&gt;The Preamble&lt;/h1&gt;
 
-&lt;h2&gt;It&amp;#39;s an box that takes in an RF signal at one end, and uses &lt;del&gt;black magic&lt;/del&gt;  RF electronics to digitize a section of the spectrum. You can then go away and process this digital signal to your hearts content. The fastest and cheapest way to get started is &lt;a href=&quot;http://www.rtl-sdr.com/buy-rtl-sdr-dvb-t-dongles/&quot;&gt;$20 RTL-SDR dongle&lt;/a&gt;. A comparison of a number of SDR&amp;#39;s on the market can be found &lt;a href=&quot;http://www.rtl-sdr.com/roundup-software-defined-radios/&quot;&gt;here&lt;/a&gt;.&lt;/h2&gt;
+&lt;p&gt;The preamble is a special pattern or sequence of pulses that can be easily detected by a receiver. The RTLSDR code looks does this by looking for a sequence of bits which meet a certain criteria, a more sophisticated approach is to correlate the incoming signal with a template of the preamble. When the preamble is encountered, the correlation will be of a maximal value. The technical term for correlating the incoming signal with a template is &amp;#39;matched filtering&amp;#39;.&lt;/p&gt;
 
-&lt;h1&gt;The Preamble&lt;/h1&gt;
+&lt;p&gt;The choice of the threshold used will represent a tradeoff between False negatives and false positives (Type I and Type II errors). &lt;/p&gt;
 
-&lt;p&gt;Camerons-MacBook-Air-2:Korea Cameron$ python PreambleDetection.py 
-(50000,)
-28.5925161839
-Camerons-MacBook-Air-2:Korea Cameron$ source activate py3k
-discarding /Users/Cameron/anaconda/envs/py3k/bin from PATH
-prepending /Users/Cameron/anaconda/envs/py3k/bin to PATH
-(py3k)Camerons-MacBook-Air-2:Korea Cameron$ python PreambleDetection.py 
-(50000,)
-0.03903913497924805&lt;/p&gt;
+&lt;p&gt;The preamble is 8 microseconds long, however we can &amp;quot;extend&amp;quot; it by observing that the first 3 fields of the data are unique to each aircraft, and are the same for every message. &lt;/p&gt;
 
-&lt;h2&gt;(py3k)Camerons-MacBook&lt;/h2&gt;
+&lt;p&gt;An image of the preamble can be seen here:&lt;/p&gt;
 
-&lt;h1&gt;The Airspy&lt;/h1&gt;
+&lt;p&gt;&lt;img src=&quot;/images/PreambleDetection/PreambleTemplate.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
 
-&lt;p&gt;The Airspy is a &lt;a href=&quot;http://imall.iteadstudio.com/im141027001.html&quot;&gt;$200USD&lt;/a&gt; software designed radio, and while it doesn&amp;#39;t beat the bang for buck of an RTL-SDR, It&amp;#39;s a fantastic buy. Initially, I borrowed a RTL-SDR dongle and an antenna from a friend, and a week later made the decision to go for the Airspy. &lt;/p&gt;
+&lt;p&gt;In practice, the preamble template is modified so that the average value is zero. This is to ensure that the average value of the correlation with white gaussian niose is zero. &lt;/p&gt;
 
-&lt;p&gt;By way of comparison:&lt;/p&gt;
+&lt;p&gt;The modified preamble template can be seen below:&lt;/p&gt;
 
-&lt;ul&gt;
-&lt;li&gt;The Airspy can detect effectively the same range of frequencies as a RTL-SDR (24Mhz-1800Mhz), &lt;/li&gt;
-&lt;li&gt;The Airspy has an 12 Bit ADC, the RTL-SDR has a 7 bit ADC.&lt;/li&gt;
-&lt;li&gt;The Airspy can acquire 10M samples a second, an RTL-SDR at about 2.5M samples a second.&lt;/li&gt;
-&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&quot;/images/PreambleDetection/WeightedPreambleTemplate.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
 
-&lt;p&gt;You can find out more information about the different RTL-SDR models &lt;a href=&quot;http://sdr.osmocom.org/trac/wiki/rtl-sdr&quot;&gt;here&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;At this point, we turn our attention to the structure of the message. &lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/images/9/Airspy.jpg&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+&lt;p&gt;The most elegant explanation of the message format can be found &lt;a href=&quot;http://adsb-decode-guide.readthedocs.org/en/latest/&quot;&gt;here&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;Just what can you do with an SDR?&lt;/p&gt;
+&lt;p&gt;All ADS-B messages have the following structure. &lt;/p&gt;
 
 &lt;ul&gt;
-&lt;li&gt;Listen to the radio&lt;/li&gt;
-&lt;li&gt;Track planes in &lt;a href=&quot;http://www.rtl-sdr.com/adsb-aircraft-radar-with-rtl-sdr/&quot;&gt;flight&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Listen to &lt;a href=&quot;http://www.radioreference.com/apps/db/?aid=1117&quot;&gt;Air Traffic Control&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Download live images of the earth from space, off a &lt;a href=&quot;http://www.rtl-sdr.com/rtl-sdr-tutorial-receiving-meteor-m-n2-lrpt-weather-satellite-images-rtl-sdr/&quot;&gt;Russian weather satellite&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;DF = 5 Bits&lt;/li&gt;
+&lt;li&gt;CA = 3 Bits&lt;/li&gt;
+&lt;li&gt;ICAO24 = 24 Bits&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;a href=&quot;http://www.rtl-sdr.com/about-rtl-sdr/&quot;&gt;Here&lt;/a&gt; is a more comprehensive list!&lt;/p&gt;
+&lt;p&gt;The rest of the message consist of data, and a 24 bit CRC which can be used to ensure the integrity of the message. 
+The total length of the data is 112 bits, transmitted at 1Mhz. &lt;/p&gt;
 
-&lt;p&gt;Ultimately, you can pick up anything in the &lt;a href=&quot;http://en.wikipedia.org/wiki/Very_high_frequency&quot;&gt;VHF&lt;/a&gt; band, and a good portion of the &lt;a href=&quot;http://en.wikipedia.org/wiki/Ultra_high_frequency&quot;&gt;UHF&lt;/a&gt; band. Using a SDR is the fastest way to open your eyes to what is happening in the RF spectrum all around you, all the time.&lt;/p&gt;
+&lt;p&gt;Regardless of the ICAO24 identifier, every ADS-B message starts with 0x8D.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://upload.wikimedia.org/wikipedia/commons/4/45/United_States_Frequency_Allocations_Chart_2003_-_The_Radio_Spectrum.jpg&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+&lt;p&gt;The raw hex data from an ADS-B receiver can be seen below. &lt;/p&gt;
 
-&lt;p&gt;A more through overview of the Airspy can be found &lt;a href=&quot;http://airspy.com/downloads/Airspy%20RadioUser%20March%202015.pdf&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Note that: 
+DF &amp;amp; CA = 0x8D
+ICAO24 = 0xA788DB&lt;/p&gt;
+
+&lt;p&gt;8DA788DB99919D0E182C2D0982C8
+8DA788DB586D65697AE244FD3CCB 
+8DA788DB99919C0E18382DD26606
+8DA788DBEA1D6860015F88E057E1 
+8DA788DB586D51D7D475B01D8EEB 
+8DA788DB99919C0E18442D38081D
+8DA788DB586D51D7EE75DD3DEE3B 
+8DA788DB91918C0E185C2DD8F01D
+8DA788DBEA5F6860011F88E857E1
+8DA788DBF8630002004EB8B7D480
+8DA788DB99919C0E18702C21761D
+8DA788DB5A6AE56A2AE383678416&lt;/p&gt;
+
+&lt;p&gt;From this we can conclude that a series of ADS-B messages from the same aircraft have been detected. &lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h1&gt;Extending the preamble&lt;/h1&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;By extending the preamble with these extra bits, messages can be more effectively detected, because we are extending the length of the matched filter. &lt;/p&gt;
+
+&lt;p&gt;If we wish to look for an ADS-B message, as opposed to other types of messages transmitted at 1090Mhz, then we can append 0x8D to the preamble. 
+Thinking in terms of bits, the preamble is 8us long, so has 8 bits worth of &amp;quot;correlation power&amp;quot;. 0x8D represents another 8 bits that is common to all ADS-B messages. &lt;/p&gt;
+
+&lt;p&gt;An example can seen below.
+&lt;img src=&quot;/images/PreambleDetection/SignalVsTemplate.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/PreambleDetection/SignalVsTemplate2.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;If we want to search for a message from a particular aircraft, we can use both 0x8D and the ICAO24 identifier for the aircraft. &lt;/p&gt;
+
+&lt;p&gt;We end up with an extra&lt;br&gt;
+32 bits = 4 Bytes = 8 Hex characters.&lt;/p&gt;
+
+&lt;p&gt;The impact of extending the preamble can be seen below. &lt;/p&gt;
+
+&lt;p&gt;Using just the preamble
+&lt;img src=&quot;/images/PreambleDetection/8bitpreamble.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;Using the preamble + 0x8D
+&lt;img src=&quot;/images/PreambleDetection/16bitpreamble.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;Using the preamble + 0x8D + ICAO24
+&lt;img src=&quot;/images/PreambleDetection/40bitpreamble.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;Using the preamble + 0x8D + ICAO24 + The data + CRC
+&lt;img src=&quot;/images/PreambleDetection/120bitpreamble.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;In the final case, all of the bits were used. Obviously, this represents a ceiling in terms of performance. While it initially looks like a somewhat philosophical question &amp;#39;Why bother trying to detect the message if you already know what it says?&amp;#39;, on possibility is attempting to guess as many of the bits in a message as possible, based on the contents of previous messages, and then searching for, and decoding the message. &lt;/p&gt;
 </description>
-        <pubDate>Mon, 29 Jun 2015 14:40:35 -0400</pubDate>
-        <link>/2015-6-29-PreambleDetection/</link>
-        <guid isPermaLink="true">/2015-6-29-PreambleDetection/</guid>
+        <pubDate>Mon, 29 Jun 2015 00:00:00 +1000</pubDate>
+        <link>/PreambleDetection/</link>
+        <guid isPermaLink="true">/PreambleDetection/</guid>
       </item>
     
       <item>
@@ -397,7 +570,7 @@ prepending /Users/Cameron/anaconda/envs/py3k/bin to PATH
 
 &lt;p&gt;Interestingly, there were no significant differences in this suite of examples between Python 2.x and Python 3.x, so I am still trying to distill what exactly causes significant performance differences in my original application. &lt;/p&gt;
 </description>
-        <pubDate>Mon, 29 Jun 2015 00:00:00 -0400</pubDate>
+        <pubDate>Mon, 29 Jun 2015 00:00:00 +1000</pubDate>
         <link>/Correlation-Performance-In-Python/</link>
         <guid isPermaLink="true">/Correlation-Performance-In-Python/</guid>
       </item>
@@ -455,7 +628,7 @@ prepending /Users/Cameron/anaconda/envs/py3k/bin to PATH
 
 &lt;p&gt;A more through overview of the Airspy can be found &lt;a href=&quot;http://airspy.com/downloads/Airspy%20RadioUser%20March%202015.pdf&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
 </description>
-        <pubDate>Thu, 25 Jun 2015 03:28:44 -0400</pubDate>
+        <pubDate>Thu, 25 Jun 2015 17:28:44 +1000</pubDate>
         <link>/2015-6-8-Airspy/</link>
         <guid isPermaLink="true">/2015-6-8-Airspy/</guid>
       </item>
@@ -550,7 +723,7 @@ prepending /Users/Cameron/anaconda/envs/py3k/bin to PATH
 
 &lt;p&gt;&lt;img src=&quot;/images/11/Figure2.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
 </description>
-        <pubDate>Sun, 21 Jun 2015 00:00:00 -0400</pubDate>
+        <pubDate>Sun, 21 Jun 2015 00:00:00 +1000</pubDate>
         <link>/Digital-Oscillators/</link>
         <guid isPermaLink="true">/Digital-Oscillators/</guid>
       </item>
@@ -640,7 +813,7 @@ If &amp;quot;I and Q&amp;quot; sounds a bit mysterious, a good place to start is
 the signal with a frequency of 121.7 Mhz is &amp;#39;Sydney Ground - East of Rwy 16R/34L&amp;#39;, and uses AM modulation. The next task, for another day is to hear what the tower has to say. 
 &lt;img src=&quot;/images/10/Tower.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
 </description>
-        <pubDate>Tue, 09 Jun 2015 00:00:00 -0400</pubDate>
+        <pubDate>Tue, 09 Jun 2015 00:00:00 +1000</pubDate>
         <link>/Field-Trip/</link>
         <guid isPermaLink="true">/Field-Trip/</guid>
       </item>
@@ -723,7 +896,7 @@ the signal with a frequency of 121.7 Mhz is &amp;#39;Sydney Ground - East of Rwy
 
 &lt;hr&gt;
 </description>
-        <pubDate>Thu, 02 Apr 2015 00:00:00 -0400</pubDate>
+        <pubDate>Thu, 02 Apr 2015 00:00:00 +1100</pubDate>
         <link>/GDAL/</link>
         <guid isPermaLink="true">/GDAL/</guid>
       </item>
@@ -831,143 +1004,9 @@ We first need to normalize the points to be in the range [0-1].&lt;/p&gt;
 
 &lt;p&gt;In the next post, I will discuss how you can create a GeoTiff, so you can overlay a plot in Google Earth.&lt;/p&gt;
 </description>
-        <pubDate>Fri, 27 Mar 2015 00:00:00 -0400</pubDate>
+        <pubDate>Fri, 27 Mar 2015 00:00:00 +1100</pubDate>
         <link>/Scattered-Interpolation/</link>
         <guid isPermaLink="true">/Scattered-Interpolation/</guid>
-      </item>
-    
-      <item>
-        <title>The signal and the noise</title>
-        <description>&lt;p&gt;&lt;img src=&quot;/images/3/header.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;What does Sputnik and your 90&amp;#39;s cellphone have to do with how GPS works?&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;hr&gt;
-
-&lt;h1&gt;Summary&lt;/h1&gt;
-
-&lt;p&gt;How does GPS &lt;em&gt;actually&lt;/em&gt; work?
-Most people know that it invovles by &lt;del&gt;triangulation&lt;/del&gt; trilateration, but how does it actually work in practice?&lt;/p&gt;
-
-&lt;p&gt;This week we go down deep into the nitty gritty, and hopefully detect a GPS satellite!&lt;/p&gt;
-
-&lt;h2&gt;Pre-requisites: Anaconda&lt;/h2&gt;
-
-&lt;h1&gt;The Satellite&lt;/h1&gt;
-
-&lt;p&gt;The GPS system currently comprises of 32 satellites which orbit the earth aproximately 20,200km above ground level. 
-It&amp;#39;s a little hard to concieve of exactly how far away, but the diagram below should make things clearer.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/3/Orbit.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
-
-&lt;p&gt;Each GPS satellite produces a very modest amount of radio power, aproximately 25 watts. &lt;/p&gt;
-
-&lt;hr&gt;
-
-&lt;h1&gt;The Signal&lt;/h1&gt;
-
-&lt;p&gt;Each GPS satellite simultaniously transmits a number of different signals at two frequencies.&lt;/p&gt;
-
-&lt;p&gt;The signal of interest to us is called &amp;quot;L1&amp;quot; and is broadcast at 1575.42 MHz.&lt;/p&gt;
-
-&lt;p&gt;It is important to note that signal from the satellite that we will be decoding today is made up of three components. Each component is generated at a different rate :&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;Carrier :  1575.42 MHz&lt;/li&gt;
-&lt;li&gt;Chipping :  1.023 MHz&lt;/li&gt;
-&lt;li&gt;Data : 50 Hz&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;hr&gt;
-
-&lt;h1&gt;The Carrier&lt;/h1&gt;
-
-&lt;p&gt;The carrier is essentially the part of the signal that determines how it travels. GPS signals behavin in a similar matter to other signals in the Gigahertz band, for example &lt;em&gt;WiFi&lt;/em&gt;. Like &lt;em&gt;WiFi&lt;/em&gt;, GPS signal can bend around obsticles and pass through non-conducting surfaces.  &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/3/CarrierSinewave.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
-
-&lt;hr&gt;
-
-&lt;h1&gt;The Code&lt;/h1&gt;
-
-&lt;p&gt;All of the satellites are transmitting on the same carrier frequency, which leads to a reasonable question, Won&amp;#39;t they all interfere?
-The answer of course is &lt;em&gt;yes&lt;/em&gt;, the signals from each of the visilble satellites are mixed in together, however by assigning each satellite a unique code, this problem can be bypassed. &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/3/header.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
-
-&lt;hr&gt;
-
-&lt;h1&gt;The Data&lt;/h1&gt;
-
-&lt;hr&gt;
-
-&lt;h1&gt;The Reciver&lt;/h1&gt;
-
-&lt;p&gt;At its heart, GPS signal aquisitino is a search problem. 
-In the most general case, when  GPS reciever powers up, It doesn&amp;#39;t know which satellites will be visible, what their doppler shift is, or their C/A Code phase. &lt;/p&gt;
-
-&lt;p&gt;A doppler shift in the recieved frequency is induced by the relative motion of the satellite and the reciever. 
-The size of the shift can be computed as follows, where v is the relative velocity between reciever and satellite, c is the speed of light. 
-On thing to keep in mind is that f refers to the L1 transmission frequency 1575.42 MHz, as opposed to the IF frequency of the reciever. &lt;/p&gt;
-
-&lt;p&gt;$$ \Delta f = f\frac{v}{c}$$&lt;/p&gt;
-
-&lt;p&gt;As a rule of thumb, the shift is 5.25 Hz per m/s of velocity between the satellite and the reciver. &lt;/p&gt;
-
-&lt;p&gt;The C/A code phase is unknown because initially the GPS reciever does not know the range to each satellite. Each C/A code takes 1ms to trasmit, and is aproximately 0.001 * 3&lt;em&gt;10&lt;/em&gt;*8 m, or 300km long. In general, with the satellites apoximately 20,000km away, each signal takes 60-70ms to travel from the GPS satellite to the reciever.&lt;/p&gt;
-
-&lt;p&gt;The reciever can try to identify visible satellites by doing a brute force search, checking each satellites C/A code, for each possible doppler shift, for each possible C/A code shift. &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/3/IQ.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/3/IQModulated.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/3/Local.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/3/Raw.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/3/Local.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/3/DelayDopplerMap.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/3/DelayDopplerMapSubsection.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;integrateAndDump&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CACode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shift&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;frequency&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reciever&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    
-    &lt;span class=&quot;n&quot;&gt;time_base&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reciever&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ADC_sampling_frequency&lt;/span&gt;
-    
-    &lt;span class=&quot;c&quot;&gt;#Create time base for this frequency            &lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;I_cos&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;math&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pi&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;frequency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time_base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;Q_sin&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;math&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pi&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;frequency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time_base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-     
-    &lt;span class=&quot;c&quot;&gt;#create code for this shift&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;shifted_CA&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;roll&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CACode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shift&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;modulated_Data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shifted_CA&lt;/span&gt;
-
-    &lt;span class=&quot;c&quot;&gt;#modulate signal with local sinusoids&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;I_value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;modulated_Data&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;I_cos&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;Q_value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;modulated_Data&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Q_sin&lt;/span&gt;
-    
-    &lt;span class=&quot;c&quot;&gt;#compute lock strength&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;lockStrength&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;I_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Q_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
-    
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lockStrength&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;hr&gt;
-
-&lt;h1&gt;Further reading&lt;/h1&gt;
-
-&lt;ul&gt;
-&lt;li&gt;A Software-Defined GPS and Galileo Receiver : A Single-Frequency Approach&lt;/li&gt;
-&lt;li&gt;Kaplan Chapter 5 : Satellite Signal Acquisition, Tracking, and Data Demodulation&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Thu, 19 Mar 2015 19:32:51 -0400</pubDate>
-        <link>/2015-1-20-The-Signal-and-the-noise/</link>
-        <guid isPermaLink="true">/2015-1-20-The-Signal-and-the-noise/</guid>
       </item>
     
   </channel>
