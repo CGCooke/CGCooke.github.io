@@ -1,17 +1,16 @@
 ---
 layout: post
-title: Sh***y Redaction
+title: Image Deconvolution
 ---
 
 ![_config.yml]({{ site.baseurl }}/images/ShittyRedaction/header.png)
 
-> Reaction is meant to prevent your secrets being revealed, this is what happens when it is done wrong.
-
+> An introduction to Image Deconvolution
 ---
 Summary
 ===============
 
-Redaction is a process of obscuring parts of a document or image, in order to obscure key contents. There are a number of ways to achieve this, blurring, pixilating and replacing a section of the image with a uniform color, usually black. In this post, I investigate the potential for security to be merely an illusion when blurring is used. 
+In this post, I have a look at image deconvolution in python.
 
 What really is blurring?
 ===============
@@ -138,14 +137,6 @@ InputDeconv = deconvolve(InputConv, psf, epsilon)
 exportArrayAsImage(fftshift(InputConv),'Convolved.png')
 exportArrayAsImage(InputDeconv,'Deconvolved.png')
 {% endhighlight %}
-
-
-
-
-
-
-
-
 
 
 ---
