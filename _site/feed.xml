@@ -7,30 +7,22 @@
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
-        <title>Sh***y Redaction</title>
+        <title>Image Deconvolution</title>
         <description>&lt;p&gt;&lt;img src=&quot;/images/ShittyRedaction/header.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
 
 &lt;blockquote&gt;
-&lt;p&gt;Reaction is meant to prevent your secrets being revealed, this is what happens when it is done wrong.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;hr&gt;
+&lt;h2&gt;An introduction to Image Deconvolution&lt;/h2&gt;
 
 &lt;h1&gt;Summary&lt;/h1&gt;
 
-&lt;p&gt;Redaction is a process of obscuring parts of a document or image, in order to obscure key contents. There are a number of ways to achieve this, blurring, pixilating and replacing a section of the image with a uniform color, usually black. In this post, I investigate the potential for security to be merely an illusion when blurring is used. &lt;/p&gt;
+&lt;p&gt;In this post, I have a look at image deconvolution in python.&lt;/p&gt;
+&lt;/blockquote&gt;
 
-&lt;h1&gt;What really is blurring?&lt;/h1&gt;
+&lt;h1&gt;What really is convolution in practice?&lt;/h1&gt;
 
-&lt;p&gt;Before we continue, there are a number of terms to define:&lt;/p&gt;
+&lt;p&gt;In reality, convolution in images appears as some some kind of blurring. The type of blurring is described by the kernel of the convolution. When convolution is carried out in software, the kernel is typically and array. &lt;/p&gt;
 
-&lt;ul&gt;
-&lt;li&gt;Input image : Input image we want to redact by blurring&lt;br&gt;&lt;/li&gt;
-&lt;li&gt;Output image : Blurred image&lt;/li&gt;
-&lt;li&gt;Kernel : Array that desrcibes the type of blurring that is going to occour.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;The first thing we need to understand, is what does blurring really achive? There are a number of different perspectives we can take, all of which are equivilant.&lt;/p&gt;
+&lt;p&gt;There are a number of different perspectives we can take, all of which are equivilant, for how convolution occours. &lt;/p&gt;
 
 &lt;ol&gt;
 &lt;li&gt;Each pixel in the output iamge is a weighted average of a set of pixels from the input image. The pixels used are determined using the kernel.&lt;/li&gt;
@@ -39,19 +31,23 @@
 &lt;li&gt;The output image is formed by pointwise multiplication of the frequency domain representation of the input image, with the frequency domain representation of the kernel.&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;Of these perspectives, the first or second are the most probably methods of implementation, however the most illuminating perspective is probably the frequency domain method. This raises the question, if we can blur an image by pointwise multiplication in the frequency domain, can we recover it by pointwise division in the frequency domain?&lt;/p&gt;
+&lt;p&gt;Of these perspectives, the first or second are the most probably methods of implementation, however the most illuminating perspective is the frequency domain method. This raises the question, if we can blur an image by pointwise multiplication in the frequency domain, can we recover it by pointwise division in the frequency domain? &lt;/p&gt;
 
 &lt;hr&gt;
 
 &lt;h1&gt;Deconvolution&lt;/h1&gt;
 
-&lt;p&gt;The answer to the question of &amp;quot;Can we undo the blurring?&amp;quot; is a complex one. In short, the answer is &amp;quot;yes, with an number of astrisks&amp;quot;. The more information we have regarding the situation, then the more impressive the results.  &lt;/p&gt;
+&lt;p&gt;The answer to the question of &amp;quot;Can we undo the blurring?&amp;quot; is a complex one. In short, the answer is &amp;quot;yes, with an number of astrisks&amp;quot;. &lt;/p&gt;
 
-&lt;p&gt;In the most trivial situation, There is no noise, and we know the kernel, in reality there will be noise from a nubmer of different sources, and the kernal will be unknown.&lt;/p&gt;
+&lt;p&gt;In the most trivial situation, There is no noise, and we know the kernel that was using during convolution, in reality there will be noise from a nubmer of different sources, and the kernal will be unknown.&lt;/p&gt;
 
 &lt;hr&gt;
 
 &lt;h1&gt;A toy example&lt;/h1&gt;
+
+&lt;p&gt;We can generate a toy example in Python, where we know the Kernel exactly. The image I&amp;#39;ve used is from &lt;a href=&quot;http://www.spacex.com/sites/spacex/files/styles/media_gallery_large/public/dragon_in_orbit_crs5_.jpg?itok=XVn1uhhg&quot;&gt;here&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;First off, lets import all the stuff we will need.&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;scipy&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mgrid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;
 &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;np&lt;/span&gt;
@@ -60,7 +56,13 @@
 
 &lt;p&gt;&lt;img src=&quot;/images/ShittyRedaction/Input.jpg&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
 
+&lt;p&gt;Using PIL we can open the image and convert it to black and white (Luminance). This simplifies the processing later. &lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;Input&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;asarray&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Image&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Input.jpg&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;convert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;L&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
 &lt;p&gt;&lt;img src=&quot;/images/ShittyRedaction/Deconvolved.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;Now the fun starts, lets create a Gaussian Kernel, which results in a &lt;a href=&quot;https://en.wikipedia.org/wiki/Gaussian_blur&quot;&gt;gaussian blur&lt;/a&gt;.&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;makeGaussianPSF&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;radius&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeX&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
     &lt;span class=&quot;sd&quot;&gt;&amp;quot;&amp;quot;&amp;quot; Returns a normalized 2D gauss kernel array for convolutions &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;   
@@ -68,7 +70,11 @@
     &lt;span class=&quot;n&quot;&gt;g&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;exp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;float&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;radius&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;float&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;radius&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;g&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;g&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
+&lt;p&gt;We can see the point spread function (PSF) of the gaussian kernel below:&lt;/p&gt;
+
 &lt;p&gt;&lt;img src=&quot;/images/ShittyRedaction/GaussianPSF.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;The next step is to convolve the image. Using the &lt;a href=&quot;https://en.wikipedia.org/wiki/Convolution_theorem&quot;&gt;convolution theorm&lt;/a&gt;, we can perform the convolution using pointwise multiplication. To make the deconvolution easier we add a small value epislon to the frequency domain representation of the PSF. &lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;convolve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;psf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;epsilon&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;InputFFT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fftn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
@@ -77,7 +83,10 @@
     &lt;span class=&quot;n&quot;&gt;convolved&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;abs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;convolved&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;convolved&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img src=&quot;/images/ShittyRedaction/GuassianBlur.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+&lt;p&gt;The results of the convolution can be seen below : 
+&lt;img src=&quot;/images/ShittyRedaction/GuassianBlur.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;Now it&amp;#39;s time to deconvolve the original image. By doing pointwise division in the frequency domain, we are able to undo the original convolution. It is now clear why a small value epislon was applied during convolution. Because we are dividing using the frequency domain representation of the point spread function, the result would be undefined wherever the denominator was zero. The application of epsilon prevents the eventuality. &lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;deconvolve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;psf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;epsilon&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;InputFFT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fftn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
@@ -86,20 +95,27 @@
     &lt;span class=&quot;n&quot;&gt;deconvolved&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;abs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;deconvolved&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;deconvolved&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img src=&quot;/images/ShittyRedaction/Deconvolved.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Finally, we can see the recovered image. Obviously this is an artificially engineered situation, and in a real world situation, this simplistic approach is likely to fail, due to either noise, or impferfect knowlege of the PSF.
+&lt;img src=&quot;/images/ShittyRedaction/Deconvolved.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;Motion blur is another type of blur that is commonly experienced. The kernel of motion blur is most commonly a stright line, which we can generate as follows : &lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;makeMotionPSF&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeX&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;psf&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zeros&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeX&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;psf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeX&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sizeX&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;psf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;psf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img src=&quot;/images/ShittyRedaction/MotionBlurPSF.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+&lt;p&gt;The kernel : 
+&lt;img src=&quot;/images/ShittyRedaction/MotionBlurPSF.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;Applying the kernel to the original image using convolution : &lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/images/ShittyRedaction/MotionBlur.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/images/ShittyRedaction/Deconvolved.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Finally, we can again recover the initial image perfectly. 
+&lt;img src=&quot;/images/ShittyRedaction/Deconvolved.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
 
-&lt;p&gt;We can convert the array to a black and white image as follows : &lt;/p&gt;
+&lt;p&gt;In order to output the arrays as images, I created the following function : &lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;exportArrayAsImage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;img&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fileName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;img&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;abs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;img&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
@@ -130,13 +146,18 @@
 &lt;span class=&quot;n&quot;&gt;exportArrayAsImage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fftshift&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;InputConv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Convolved.png&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;exportArrayAsImage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;InputDeconv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Deconvolved.png&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
+&lt;p&gt;Hope you enjoyed!,
+Cameron&lt;/p&gt;
+
 &lt;hr&gt;
 
 &lt;h1&gt;Further reading&lt;/h1&gt;
+
+&lt;p&gt;&lt;a href=&quot;PSF&quot;&gt;https://en.wikipedia.org/wiki/Point&lt;em&gt;spread&lt;/em&gt;function&lt;/a&gt;&lt;/p&gt;
 </description>
-        <pubDate>Thu, 06 Aug 2015 22:21:17 +1000</pubDate>
-        <link>/2015-28-6-Sh***y-Redaction/</link>
-        <guid isPermaLink="true">/2015-28-6-Sh***y-Redaction/</guid>
+        <pubDate>Fri, 28 Aug 2015 00:00:00 +1000</pubDate>
+        <link>/Image-Deconvolution/</link>
+        <guid isPermaLink="true">/Image-Deconvolution/</guid>
       </item>
     
       <item>
