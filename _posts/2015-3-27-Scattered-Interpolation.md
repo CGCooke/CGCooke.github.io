@@ -28,6 +28,7 @@ import numpy as np
 from matplotlib.mlab import griddata
 import matplotlib.pyplot as plt
 from pyproj import Proj
+from scipy import interpolate
 {% endhighlight %}
 
 We can quickly load the data from a csv using numpy's 'loadtext' function.
@@ -74,9 +75,11 @@ DEM = griddata(xArray, yArray, heightArray, xi, yi)
 Another option is linear interpolation, which can be performed using scipy.interpolate.
 {% highlight python %}
 XI, YI = np.meshgrid(xi, yi)
+points = np.vstack((xArray,yArray)).T
+values = np.asarray(heightArray)
 points = np.asarray(points)
 values = np.asarray(estimatedHeightList)
-DEM =scipy.interpolate.griddata(points, values, (XI,YI), method='linear')
+DEM = interpolate.griddata(points, values, (XI,YI), method='linear')
 {% endhighlight %}
 
 http://wiki.scipy.org/Cookbook/Matplotlib/Gridding_irregularly_spaced_data
@@ -126,4 +129,5 @@ plt.close()
 
 ---
 
+The code for both of these methods can be found at [here](https://www.dropbox.com/sh/pdz1ni655gvroa0/AAAcIR-squ_GNBRY9GuxB0RCa?dl=0)
 In the next post, I will discuss how you can create a GeoTiff, so you can overlay a plot in Google Earth.
