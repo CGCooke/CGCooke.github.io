@@ -7,56 +7,24 @@
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
-        <title>A Matter of Perspective</title>
-        <description>&lt;p&gt;&lt;img src=&quot;/images/AMatterOfPerspective/header.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+        <title>Interesting datasets</title>
+        <description>&lt;p&gt;&lt;img src=&quot;/images/4/header.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
 
 &lt;blockquote&gt;
-&lt;p&gt;How far we can see is only limited by the horizon, which raises the question, how do we see further?&lt;/p&gt;
+&lt;p&gt;A holding pen for all the awesome datasets I find.&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;hr&gt;
 
-&lt;h1&gt;The Horizon&lt;/h1&gt;
+&lt;h1&gt;Geospatial&lt;/h1&gt;
 
-&lt;p&gt;The distance to the horizon is a simple matter of geometry, the straight line distance to the horizon (d) is a function of your height above the horizon (h), and the radius of the earth (R), which is ~6,371Km. &lt;/p&gt;
-
-&lt;p&gt;$$ d = \sqrt{h \times (2\times R + h)}$$&lt;/p&gt;
-
-&lt;p&gt;This results in a distance along the surface of the earth (s) of : &lt;/p&gt;
-
-&lt;p&gt;$$ s =  R \times tan^{-1} \frac{d}{R}$$&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Horizon#Geometrical_model&quot;&gt;Thanks Wiki&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/toddwschneider/nyc-taxi-data&quot;&gt;NY TaxiData&lt;/a&gt;&lt;/p&gt;
 
 &lt;hr&gt;
-
-&lt;h1&gt;Limitations&lt;/h1&gt;
-
-&lt;p&gt;The horizon ultimately limits what we can see, and while this sounds rather metaphysical, it has practical real world consequences. Radar is typically limited to line of sight, with some notable &lt;a href=&quot;https://en.wikipedia.org/wiki/Jindalee_Operational_Radar_Network&quot;&gt;exceptions&lt;/a&gt;. This results in what is called a &lt;a href=&quot;https://en.wikipedia.org/wiki/Radar_horizon&quot;&gt;Radar Horizon&lt;/a&gt;.  Ships, aircraft and missiles below the horizon are essentially invisible to the radar. &lt;/p&gt;
-
-&lt;p&gt;One of my projects has been the construction of an ADS-B receiver, using a Airspy SDR.  Through the use of a high gain antenna and a low noise amplifier, it has become apparent that the ultimate limit to detection range of aircraft is the horizon, approximately 225 nautical miles for an aircraft at 45,000 feet. One solution for removing this fundamental limitation, is to dramatically increase the height of the receiver.&lt;/p&gt;
-
-&lt;hr&gt;
-
-&lt;h1&gt;The Solution&lt;/h1&gt;
-
-&lt;p&gt;By going to space, it is possible to go arbitrarily high. If you go high enough, then an entire hemisphere of the planet will be visible, with a distance of 20,000km from horizon to horizon. &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/AMatterOfPerspective/ViewFromOrbit.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
-
-&lt;p&gt;From a more practical perspective, a satellite with an orbital height of 400km, or roughly the same orbital height as the ISS will be able to see any point on the earths surface within 2,200Km. From the following figure, we can observe that a single satellite can instantaneously observe either continental Europe, the US or Australia. While this may seem prohibitively expensive proposal, &lt;a href=&quot;http://aireon.com/&quot;&gt;Aireon&lt;/a&gt; is currently in the process of developing receivers that will fly aboard the next generation of Iridium satellites. &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/AMatterOfPerspective/Footprints.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
-
-&lt;hr&gt;
-
-&lt;h1&gt;Further reading&lt;/h1&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://what-if.xkcd.com/42/&quot;&gt;Obligatory XKCD what if?&lt;/a&gt;&lt;/p&gt;
 </description>
-        <pubDate>Sat, 21 Nov 2015 14:36:11 +1100</pubDate>
-        <link>/2015-8-17-A-Matter-Of-Perspective/</link>
-        <guid isPermaLink="true">/2015-8-17-A-Matter-Of-Perspective/</guid>
+        <pubDate>Sat, 21 Nov 2015 14:59:23 +1100</pubDate>
+        <link>/2015-20-2-Awesome-Datasets/</link>
+        <guid isPermaLink="true">/2015-20-2-Awesome-Datasets/</guid>
       </item>
     
       <item>
@@ -163,9 +131,10 @@
 
 &lt;p&gt;&lt;img src=&quot;/images/AMatterOfPerspective/ViewFromOrbit.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
 
-&lt;p&gt;From a more practical perspective, a satellite with an orbital height of 400km, or roughly the same orbital height as the ISS will be able to see any point on the earths surface within 2,200Km. From the following figure, we can observe that a single satellite can instantaneously observe either continental Europe, the US or Australia. While this may seem prohibitively expensive proposal, &lt;a href=&quot;http://aireon.com/&quot;&gt;Aireon&lt;/a&gt; is currently in the process of developing receivers that will fly aboard the next generation of Iridium satellites. &lt;/p&gt;
+&lt;p&gt;From a more practical perspective, a satellite with an orbital height of 400km, or roughly the same orbital height as the ISS will be able to see any point on the earths surface within 2,200Km. From the following figure, we can observe that a single satellite can instantaneously observe either continental Europe, the US or Australia. &lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/images/AMatterOfPerspective/Footprints.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/images/AMatterOfPerspective/Footprints.png&quot; alt=&quot;_config.yml&quot;&gt;
+While placing an ADS-B receiver into orbit may initially sound like a prohibitively expensive proposal, &lt;a href=&quot;http://aireon.com/&quot;&gt;Aireon&lt;/a&gt; is currently in the process of developing receivers that will fly aboard the next generation of Iridium satellites.  &lt;/p&gt;
 
 &lt;hr&gt;
 
