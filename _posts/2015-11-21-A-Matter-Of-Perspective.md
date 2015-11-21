@@ -43,9 +43,10 @@ By going to space, it is possible to go arbitrarily high. If you go high enough,
 ![_config.yml]({{ site.baseurl }}/images/AMatterOfPerspective/ViewFromOrbit.png)
 
 
-From a more practical perspective, a satellite with an orbital height of 400km, or roughly the same orbital height as the ISS will be able to see any point on the earths surface within 2,200Km. From the following figure, we can observe that a single satellite can instantaneously observe either continental Europe, the US or Australia. While this may seem prohibitively expensive proposal, [Aireon](http://aireon.com/) is currently in the process of developing receivers that will fly aboard the next generation of Iridium satellites. 
+From a more practical perspective, a satellite with an orbital height of 400km, or roughly the same orbital height as the ISS will be able to see any point on the earths surface within 2,200Km. From the following figure, we can observe that a single satellite can instantaneously observe either continental Europe, the US or Australia. 
 
 ![_config.yml]({{ site.baseurl }}/images/AMatterOfPerspective/Footprints.png)
+While placing an ADS-B receiver into orbit may initially sound like a prohibitively expensive proposal, [Aireon](http://aireon.com/) is currently in the process of developing receivers that will fly aboard the next generation of Iridium satellites.  
 
 
 
