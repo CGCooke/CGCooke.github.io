@@ -7,6 +7,178 @@
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>A Matter of Perspective</title>
+        <description>&lt;p&gt;&lt;img src=&quot;/images/AMatterOfPerspective/header.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;How far we can see is only limited by the horizon, which raises the question, how do we see further?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr&gt;
+
+&lt;h1&gt;The Horizon&lt;/h1&gt;
+
+&lt;p&gt;The distance to the horizon is a simple matter of geometry, the straight line distance to the horizon (d) is a function of your height above the horizon (h), and the radius of the earth (R), which is ~6,371Km. &lt;/p&gt;
+
+&lt;p&gt;$$ d = \sqrt{h \times (2\times R + h)}$$&lt;/p&gt;
+
+&lt;p&gt;This results in a distance along the surface of the earth (s) of : &lt;/p&gt;
+
+&lt;p&gt;$$ s =  R \times tan^{-1} \frac{d}{R}$$&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Horizon#Geometrical_model&quot;&gt;Thanks Wiki&lt;/a&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h1&gt;Limitations&lt;/h1&gt;
+
+&lt;p&gt;The horizon ultimately limits what we can see, and while this sounds rather metaphysical, it has practical real world consequences. Radar is typically limited to line of sight, with some notable &lt;a href=&quot;https://en.wikipedia.org/wiki/Jindalee_Operational_Radar_Network&quot;&gt;exceptions&lt;/a&gt;. This results in what is called a &lt;a href=&quot;https://en.wikipedia.org/wiki/Radar_horizon&quot;&gt;Radar Horizon&lt;/a&gt;.  Ships, aircraft and missiles below the horizon are essentially invisible to the radar. &lt;/p&gt;
+
+&lt;p&gt;One of my projects has been the construction of an ADS-B receiver, using a Airspy SDR.  Through the use of a high gain antenna and a low noise amplifier, it has become apparent that the ultimate limit to detection range of aircraft is the horizon, approximately 225 nautical miles for an aircraft at 45,000 feet. One solution for removing this fundamental limitation, is to dramatically increase the height of the receiver.&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h1&gt;The Solution&lt;/h1&gt;
+
+&lt;p&gt;By going to space, it is possible to go arbitrarily high. If you go high enough, then an entire hemisphere of the planet will be visible, with a distance of 20,000km from horizon to horizon. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/AMatterOfPerspective/ViewFromOrbit.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;From a more practical perspective, a satellite with an orbital height of 400km, or roughly the same orbital height as the ISS will be able to see any point on the earths surface within 2,200Km. From the following figure, we can observe that a single satellite can instantaneously observe either continental Europe, the US or Australia. While this may seem prohibitively expensive proposal, &lt;a href=&quot;http://aireon.com/&quot;&gt;Aireon&lt;/a&gt; is currently in the process of developing receivers that will fly aboard the next generation of Iridium satellites. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/AMatterOfPerspective/Footprints.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h1&gt;Further reading&lt;/h1&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://what-if.xkcd.com/42/&quot;&gt;Obligatory XKCD what if?&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Sat, 21 Nov 2015 14:36:11 +1100</pubDate>
+        <link>/2015-8-17-A-Matter-Of-Perspective/</link>
+        <guid isPermaLink="true">/2015-8-17-A-Matter-Of-Perspective/</guid>
+      </item>
+    
+      <item>
+        <title>A Matter of Perspective</title>
+        <description>&lt;p&gt;&lt;img src=&quot;/images/AMatterOfPerspective/header.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;How far we can see is only limited by the horion, which raises the question, how do we see further?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr&gt;
+
+&lt;h1&gt;The Horizon&lt;/h1&gt;
+
+&lt;p&gt;The distance to the horizon is a simple matter of geometry, the straight line distance to the horizon (d) is a function of your height above the horizon (h), and the radius of the earth (R). &lt;/p&gt;
+
+&lt;p&gt;$$ d = \sqrt{h \times (2\times R + h)}$$&lt;/p&gt;
+
+&lt;p&gt;This results in a distance along the surface of the earth (s) of : &lt;/p&gt;
+
+&lt;p&gt;$$ s =  R \times tan^{-1} \frac{d}{R}$$&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Horizon#Geometrical_model&quot;&gt;Thanks Wiki&lt;/a&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h1&gt;Limitations&lt;/h1&gt;
+
+&lt;p&gt;The horizon ultimately limits what we can see, and while this sounds rather metaphysical, it has practical real world consequences. &lt;/p&gt;
+
+&lt;p&gt;Radar is typically limited to line of sight, with some notable &lt;a href=&quot;https://en.wikipedia.org/wiki/Jindalee_Operational_Radar_Network&quot;&gt;exceptions&lt;/a&gt;. This results in what is called a &lt;a href=&quot;https://en.wikipedia.org/wiki/Radar_horizon&quot;&gt;Radar Horizon&lt;/a&gt;.  Ships, aircraft and missiles below the horizon are essnetially invisible to the radar. This has the practical consequence that a &lt;/p&gt;
+
+&lt;p&gt;Some more information can be found (here)[http://www.tscm.com/rdr-hori.pdf]&lt;/p&gt;
+
+&lt;p&gt;Talk about Falklands war/Exocert&lt;/p&gt;
+
+&lt;p&gt;Talk about flying radar&lt;/p&gt;
+
+&lt;p&gt;The logical solution to this problem, is to increase the height of the radar above the earths surface. 
+&lt;img src=&quot;/images/AMatterOfPerspective/E-2C_Hawkeye.png&quot; alt=&quot;_config.yml&quot;&gt;
+&lt;img src=&quot;/images/AMatterOfPerspective/USN_E-2C_Scewtops.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;http://www.faqs.org/docs/air/avs70_2.html &lt;/p&gt;
+
+&lt;p&gt;Talking about ADS-B
+&lt;img src=&quot;/images/AMatterOfPerspective/header.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h1&gt;The Solution&lt;/h1&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/AMatterOfPerspective/out.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/AMatterOfPerspective/ViewFromOrbit.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;h1&gt;Gaining New Perspectives&lt;/h1&gt;
+
+&lt;hr&gt;
+
+&lt;h1&gt;Further reading&lt;/h1&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://what-if.xkcd.com/42/&quot;&gt;Obligatory XKCD what if?&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Sat, 21 Nov 2015 11:07:32 +1100</pubDate>
+        <link>/RadarHorizon/</link>
+        <guid isPermaLink="true">/RadarHorizon/</guid>
+      </item>
+    
+      <item>
+        <title>A Matter of Perspective</title>
+        <description>&lt;p&gt;&lt;img src=&quot;/images/AMatterOfPerspective/header.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;How far we can see is only limited by the horizon, which raises the question, how do we see further?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;hr&gt;
+
+&lt;h1&gt;The Horizon&lt;/h1&gt;
+
+&lt;p&gt;The distance to the horizon is a simple matter of geometry, the straight line distance to the horizon (d) is a function of your height above the horizon (h), and the radius of the earth (R), which is ~6,371Km. &lt;/p&gt;
+
+&lt;p&gt;$$ d = \sqrt{h \times (2\times R + h)}$$&lt;/p&gt;
+
+&lt;p&gt;This results in a distance along the surface of the earth (s) of : &lt;/p&gt;
+
+&lt;p&gt;$$ s =  R \times tan^{-1} \frac{d}{R}$$&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Horizon#Geometrical_model&quot;&gt;Thanks Wiki&lt;/a&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h1&gt;Limitations&lt;/h1&gt;
+
+&lt;p&gt;The horizon ultimately limits what we can see, and while this sounds rather metaphysical, it has practical real world consequences. Radar is typically limited to line of sight, with some notable &lt;a href=&quot;https://en.wikipedia.org/wiki/Jindalee_Operational_Radar_Network&quot;&gt;exceptions&lt;/a&gt;. This results in what is called a &lt;a href=&quot;https://en.wikipedia.org/wiki/Radar_horizon&quot;&gt;Radar Horizon&lt;/a&gt;.  Ships, aircraft and missiles below the horizon are essentially invisible to the radar. &lt;/p&gt;
+
+&lt;p&gt;One of my projects has been the construction of an ADS-B receiver, using a Airspy SDR.  Through the use of a high gain antenna and a low noise amplifier, it has become apparent that the ultimate limit to detection range of aircraft is the horizon, approximately 225 nautical miles for an aircraft at 45,000 feet. One solution for removing this fundamental limitation, is to dramatically increase the height of the receiver.&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h1&gt;The Solution&lt;/h1&gt;
+
+&lt;p&gt;By going to space, it is possible to go arbitrarily high. If you go high enough, then an entire hemisphere of the planet will be visible, with a distance of 20,000km from horizon to horizon. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/AMatterOfPerspective/ViewFromOrbit.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;From a more practical perspective, a satellite with an orbital height of 400km, or roughly the same orbital height as the ISS will be able to see any point on the earths surface within 2,200Km. From the following figure, we can observe that a single satellite can instantaneously observe either continental Europe, the US or Australia. While this may seem prohibitively expensive proposal, &lt;a href=&quot;http://aireon.com/&quot;&gt;Aireon&lt;/a&gt; is currently in the process of developing receivers that will fly aboard the next generation of Iridium satellites. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/AMatterOfPerspective/Footprints.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;h1&gt;Further reading&lt;/h1&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://what-if.xkcd.com/42/&quot;&gt;Obligatory XKCD what if?&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Sat, 21 Nov 2015 00:00:00 +1100</pubDate>
+        <link>/A-Matter-Of-Perspective/</link>
+        <guid isPermaLink="true">/A-Matter-Of-Perspective/</guid>
+      </item>
+    
+      <item>
         <title>Image Deconvolution</title>
         <description>&lt;p&gt;&lt;img src=&quot;/images/ShittyRedaction/header.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
 
@@ -158,57 +330,6 @@ Cameron&lt;/p&gt;
         <pubDate>Fri, 28 Aug 2015 00:00:00 +1000</pubDate>
         <link>/Image-Deconvolution/</link>
         <guid isPermaLink="true">/Image-Deconvolution/</guid>
-      </item>
-    
-      <item>
-        <title>A Matter of Perspective</title>
-        <description>&lt;p&gt;&lt;img src=&quot;/images/AMatterOfPerspective/header.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;How far we can see is only limited by the horion, which raises the question, how do we see further?&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;hr&gt;
-
-&lt;h1&gt;The Horizon&lt;/h1&gt;
-
-&lt;p&gt;The distance to the horizon is a simple matter of geometry, the straight line distance to the horizon (d) is a function of your height above the horizon (h), and the radius of the earth (R). &lt;/p&gt;
-
-&lt;p&gt;$$ d = \sqrt{h \times (2\times R + h)}$$&lt;/p&gt;
-
-&lt;p&gt;This results in a distance along the surface of the earth (s) of : &lt;/p&gt;
-
-&lt;p&gt;$$ s =  R \times tan^{-1} \frac{d}{R}$$&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Horizon#Geometrical_model&quot;&gt;Thanks Wiki&lt;/a&gt;&lt;/p&gt;
-
-&lt;hr&gt;
-
-&lt;h1&gt;Limitations&lt;/h1&gt;
-
-&lt;p&gt;Talk about flying radar
-&lt;img src=&quot;/images/AMatterOfPerspective/header.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
-
-&lt;p&gt;Talking about ADS-B
-&lt;img src=&quot;/images/AMatterOfPerspective/header.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
-
-&lt;p&gt;Talk about optical sensing&lt;/p&gt;
-
-&lt;hr&gt;
-
-&lt;h1&gt;The Solution&lt;/h1&gt;
-
-&lt;h1&gt;Gaining New Perspectives&lt;/h1&gt;
-
-&lt;hr&gt;
-
-&lt;h1&gt;Further reading&lt;/h1&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://what-if.xkcd.com/42/&quot;&gt;Obligatory XKCD what if?&lt;/a&gt;&lt;/p&gt;
-</description>
-        <pubDate>Tue, 18 Aug 2015 11:12:25 +1000</pubDate>
-        <link>/2015-8-17-A-Matter-Of-Perspective/</link>
-        <guid isPermaLink="true">/2015-8-17-A-Matter-Of-Perspective/</guid>
       </item>
     
       <item>
@@ -798,179 +919,6 @@ Thinking in terms of bits, the preamble is 8us long, so has 8 bits worth of &amp
         <pubDate>Sun, 21 Jun 2015 00:00:00 +1000</pubDate>
         <link>/Digital-Oscillators/</link>
         <guid isPermaLink="true">/Digital-Oscillators/</guid>
-      </item>
-    
-      <item>
-        <title>A field trip to YSSY</title>
-        <description>&lt;p&gt;&lt;img src=&quot;/images/10/header.jpg&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;Today I do what all normal people do when they go to the airport: bring a laptop, some antennas and a Software Defined Radio.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;hr&gt;
-
-&lt;h1&gt;Summary&lt;/h1&gt;
-
-&lt;p&gt;I&amp;#39;m looking to acquire a number of signals, in particular, some AM &lt;a href=&quot;http://en.wikipedia.org/wiki/Airband&quot;&gt;Airband&lt;/a&gt; signals, as well as some 
-&lt;a href=&quot;http://en.wikipedia.org/wiki/Automatic_dependent_surveillance_%E2%80%93_broadcast&quot;&gt;ADS-B&lt;/a&gt; signals. While I already have some ADS-B data from planes flying past my house, I&amp;#39;m interested in what happens when you have a situation with high dynamics range, ie, When you are receiving a signal from a plane 50m away, and simultaneously another signal from a plane 50km away. I&amp;#39;m also interested in frame collision, which occurs when the messages from two planes overlap, and the fastest way to ensure this happens, is to go to the highest concentration of aircraft. &lt;/p&gt;
-
-&lt;hr&gt;
-
-&lt;h1&gt;Getting some data&lt;/h1&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/10/Laptop.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
-
-&lt;p&gt;My first task is to get some data, I&amp;#39;m using airspy_rx, the Airspy command-line tool to grab data using the default sampling rate (10M samples per second, per I and Q channel).
-If &amp;quot;I and Q&amp;quot; sounds a bit mysterious, a good place to start is &lt;a href=&quot;https://www.youtube.com/watch?v=h_7d-m1ehoY&quot;&gt;here&lt;/a&gt;. First of all, lets grab 10 seconds worth of data, centred on 120.5Mhz.&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;np&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;matplotlib.pyplot&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;plt&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;samplingFrequency&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#Hz&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;numSamples&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#Samples&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;targetFreq&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;120.5&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#Mhz&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;airspy_rx -r temp.bin -f &amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;targetFreq&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;2.5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;  -n &amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;numSamples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;hr&gt;
-
-&lt;h1&gt;Loading the data&lt;/h1&gt;
-
-&lt;p&gt;The Airspy outputs signed 16 bits I and Q samples by default, and we can easily load this data, and split it into a stream of I and Q samples. I think the Airspy takes a small amount of time to stabilise, so I&amp;#39;ve made a habit of throwing away the first 1000 samples. &lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;120_5.bin&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;r&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fromfile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dtype&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;int16&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;#Split the stream into I and Q&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;I&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; 
-&lt;span class=&quot;n&quot;&gt;Q&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;#Remove the first 1000 samples&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;I&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;I&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:]&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Q&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Q&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/10/LiftOff2.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
-
-&lt;hr&gt;
-
-&lt;h1&gt;Creating a waterfall display&lt;/h1&gt;
-
-&lt;p&gt;After you have acquired some data, the next task is to see if anything is there. Typically, you use a SDR in conjunction with some visualisation software like GQRX, SDR# or Baudline. This software uses the Discrete Time Fourier Transform in order to visualise the spectrum of the signal. By breaking the signal up into blocks, and taking the DTFT of each block, and then recombining the spectrums we can visualise the signal over time. This type of visualisation is called a &amp;quot;Waterfall display&amp;quot;.&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;c&quot;&gt;#Create a waterfall display&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;windowSize&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4096&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;numWindows&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;I&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;windowSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;waterfallDisplay&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zeros&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;numWindows&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;windowSize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;numWindows&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;IWindowed&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;I&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;windowSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;windowSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;QWindowed&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Q&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;windowSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;windowSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;spectrum&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;abs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fft&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fft&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;IWindowed&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;QWindowed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;waterfallDisplay&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,:]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spectrum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;windowSize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;The final step is to visualise the waterfall display using imshow.&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;c&quot;&gt;#Visualize the waterfall display&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;imshow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;waterfallDisplay&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;aspect&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;auto&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;extent&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;centerFreq&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;2.5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;centerFreq&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;2.5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cmap&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Blues_r&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Waterfall Display&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xlabel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Frequency (Mhz)&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ylabel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;Time (S)&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;grid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;show&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/10/Waterfall.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
-
-&lt;p&gt;We can see 4 different signals in the waterfall display. The strongest signal at 120Mhz is actually an artefact, produced by the internal 20Mhz clock used by the receiver. From &lt;a href=&quot;http://www.radioreference.com/apps/db/?aid=1117&quot;&gt;here&lt;/a&gt; we can find that 
-the signal with a frequency of 121.7 Mhz is &amp;#39;Sydney Ground - East of Rwy 16R/34L&amp;#39;, and uses AM modulation. The next task, for another day is to hear what the tower has to say. 
-&lt;img src=&quot;/images/10/Tower.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
-</description>
-        <pubDate>Tue, 09 Jun 2015 00:00:00 +1000</pubDate>
-        <link>/Field-Trip/</link>
-        <guid isPermaLink="true">/Field-Trip/</guid>
-      </item>
-    
-      <item>
-        <title>Creating a GeoTIFF in Python</title>
-        <description>&lt;p&gt;&lt;img src=&quot;/images/7/header.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;Visualizations need context, lets look at how we can create GeoTIFFs, so we can visualize data in Google Earth.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;hr&gt;
-
-&lt;h1&gt;Summary&lt;/h1&gt;
-
-&lt;p&gt;Starting with the DEM from the last post, we will first make some changes to the plotting, so that we can plot it without a boarder. After this, we can then add a coordinate system to the image, allowing it to be viewed in Google Earth.&lt;/p&gt;
-
-&lt;hr&gt;
-
-&lt;h1&gt;Contour plots&lt;/h1&gt;
-
-&lt;p&gt;Our first step is to completely remove any border surrounding the plot. This can be acoumplished with the following &lt;a href=&quot;http://stackoverflow.com/questions/9295026/matplotlib-plots-removing-axis-legends-and-white-spaces&quot;&gt;hack&lt;/a&gt;: &lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;fig&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;figure&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;fig&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_size_inches&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Axes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fig&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;1.&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;1.&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_axis_off&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;fig&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add_axes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;We can now proceeed to plot the DEM from the last post: &lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contour&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DEM&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;levels&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;linewidths&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;colors&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;k&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;imshow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DEM&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cmap&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;RdYlGn_r&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;origin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;lower&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;savefig&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;ContourMapTight.png&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dpi&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;900&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/7/ContourMapTight.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
-
-&lt;hr&gt;
-
-&lt;h1&gt;GeoTIFFs&lt;/h1&gt;
-
-&lt;p&gt;&lt;a href=&quot;http://en.wikipedia.org/wiki/GeoTIFF&quot;&gt;GeoTIFF&lt;/a&gt; is a file format that allows spatial information to be embedded inside an TIFF file. Essentially, it allows you to store all the spatial information required to properly display the image. &lt;/p&gt;
-
-&lt;p&gt;Our first step in generating a GeoTIFF is to load the .png created by Matplotlib as an numpy array called img. &lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;img&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;asarray&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Image&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;ContourMapTight.png&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;EPSG code &lt;a href=&quot;http://spatialreference.org/ref/epsg/wgs-84/&quot;&gt;4326&lt;/a&gt; is the WGS84 projection.&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;EPSGCode&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4326&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;numBands&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;arrayToRaster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;img&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;OUT.TIF&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;EPSGCode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;min&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xArray&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xArray&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;min&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;yArray&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;yArray&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;numBands&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;I developed the boilderplate code from this &lt;a href=&quot;http://gis.stackexchange.com/questions/58517/python-gdal-save-array-as-raster-with-projection-from-other-file&quot;&gt;example&lt;/a&gt;&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;arrayToRaster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fileName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;EPSGCode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xMin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xMax&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;yMin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;yMax&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;numBands&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;xPixels&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;  &lt;span class=&quot;c&quot;&gt;# number of pixels in x&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;yPixels&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;  &lt;span class=&quot;c&quot;&gt;# number of pixels in y&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;pixelXSize&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xMax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xMin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xPixels&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# size of the pixel in X direction     &lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;pixelYSize&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;yMax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;yMin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;yPixels&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# size of the pixel in Y direction&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;driver&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gdal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GetDriverByName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;GTiff&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;dataset&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;driver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fileName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xPixels&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;yPixels&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;numBands&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;gdal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GDT_Byte&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;options&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;PHOTOMETRIC=RGB&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;dataset&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SetGeoTransform&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xMin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pixelXSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;yMax&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pixelYSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;  
-
-    &lt;span class=&quot;n&quot;&gt;datasetSRS&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;osr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SpatialReference&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;datasetSRS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ImportFromEPSG&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;EPSGCode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;dataset&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SetProjection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;datasetSRS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ExportToWkt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
-    
-    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;numBands&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;dataset&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GetRasterBand&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;WriteArray&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[:,:,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;dataset&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;FlushCache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;  &lt;span class=&quot;c&quot;&gt;# Write to disk.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/7/GoogleEarth.png&quot; alt=&quot;_config.yml&quot;&gt;&lt;/p&gt;
-
-&lt;p&gt;Finally, we are left with a TIFF file called &amp;quot;OUT.TIFF&amp;quot; which we can open in Google Earth. Simply go to File -&amp;gt; Import, and open the GeoTIFF. &lt;/p&gt;
-
-&lt;hr&gt;
-</description>
-        <pubDate>Thu, 02 Apr 2015 00:00:00 +1100</pubDate>
-        <link>/GDAL/</link>
-        <guid isPermaLink="true">/GDAL/</guid>
       </item>
     
   </channel>
