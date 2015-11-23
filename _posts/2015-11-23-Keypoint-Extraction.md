@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Keypoint Extraction
+title: Keypoint Extraction with Mahotas
 ---
 
 ![_config.yml]({{ site.baseurl }}/images/KeypointExtraction/header.png)
