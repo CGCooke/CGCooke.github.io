@@ -54,7 +54,9 @@ for i in range(0,points.shape[0]):
 img.save('Points.png')
 {% endhighlight %}
 
-![_config.yml]({{ site.baseurl }}/images/KeypointExtraction/Points.png)
+![_config.yml]({{ site.baseurl }}/images/KeypointExtraction/points.png)
+
+In the processed image, we can note that there are plently of keypoints extracted in the lower half of the image, where there are many sharp edges, however very few in the sky. 
 
 
 ---
