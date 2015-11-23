@@ -16,7 +16,7 @@ While there are a whole family of keypoint extraction algorithms, of which the m
 
 In the example below, we can extract the keypoints from a stunning painting by [Frederic Edwin Church](https://en.wikipedia.org/wiki/Frederic_Edwin_Church). 
 
-![_config.yml]({{ site.baseurl }}/images/KeypointExtraction/Resized.png)
+![_config.yml]({{ site.baseurl }}/images/KeypointExtraction/Rescaled.png)
 
 ---
 
