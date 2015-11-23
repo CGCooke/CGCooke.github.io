@@ -9,7 +9,18 @@ title: Keypoint Extraction with Mahotas
 
 Keypoint extraction
 ===============
-Some of the more interesting applications of image processing rely in being able to identify the same point or object in different images. The challenges to being able to achieve this include changes in scale, rotation, lighting and noise. Fortunately a class of algorithms have been developed which can extract "keypoints" or "descriptors" from images. These keypoint extraction algorithms detect corners in the image. From an intuitive point of view, a corner is where two sharp edges meet. each "corner" in the image generates a vector, and by comparing vectors using some similarity metric, for example Euclidean distance, it is possible to work out how similar two points are. If two points in different images have very similar vectors, it is possible to assume that they may represent the same point.
+Some of the more interesting applications of image processing rely in being able to identify the same point or object in different images. The challenges to being able to achieve this include changes in scale, rotation, lighting and noise. Fortunately a class of algorithms have been developed which can extract "keypoints" or "descriptors" from images. 
+
+These descriptors are useful for the following applications:
+* 3D reconstruction
+* Motion tracking
+* Robot navigation (Visual Odometry / SLAM)
+* Object recognition
+* Image alignment (panoramas) 
+
+
+
+These keypoint extraction algorithms detect corners in the image. From an intuitive point of view, a corner is where two sharp edges meet. each "corner" in the image generates a vector, and by comparing vectors using some similarity metric, for example Euclidean distance, it is possible to work out how similar two points are. If two points in different images have very similar vectors, it is possible to assume that they may represent the same point.
 
 While there are a whole family of keypoint extraction algorithms, of which the most famous is arguable [SIFT](https://en.wikipedia.org/wiki/Scale-invariant_feature_transform) (Scale Invariant Feature Transform). However, SURF, which is included in the [Mahotas](http://mahotas.readthedocs.org/en/latest/) image processing library is an efficient substitute.  
 
@@ -56,7 +67,7 @@ img.save('Points.png')
 
 ![_config.yml]({{ site.baseurl }}/images/KeypointExtraction/points.png)
 
-In the processed image, we can note that there are plently of keypoints extracted in the lower half of the image, where there are many sharp edges, however very few in the sky. 
+In the processed image, we can note that there are plently of keypoints extracted (421) in the lower half of the image, where there are many sharp edges, however very few in the sky where the texture is smooth. 
 
 
 ---
