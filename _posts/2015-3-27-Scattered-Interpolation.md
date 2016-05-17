@@ -82,7 +82,7 @@ values = np.asarray(estimatedHeightList)
 DEM = interpolate.griddata(points, values, (XI,YI), method='linear')
 {% endhighlight %}
 
-http://wiki.scipy.org/Cookbook/Matplotlib/Gridding_irregularly_spaced_data
+[http://wiki.scipy.org/Cookbook/Matplotlib/Gridding\_irregularly\_spaced\_data](http://wiki.scipy.org/Cookbook/Matplotlib/Gridding_irregularly_spaced_data)
 
 "IDW is a terrible choice in almost every case. It assumes that all of your input data points are local minimums or maximums! I'm not sure at all people use it as a general interpolation technique... (Lots of people certainly do, though!)"
 
