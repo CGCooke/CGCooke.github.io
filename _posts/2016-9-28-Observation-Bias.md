@@ -26,7 +26,7 @@ Both the passengers and the executive are looking at the same sitation from diff
 Taking an extreme example, let's say your airline flys Boeing 717's with 125 seats. 
 
 
-![_config.yml]({{ site.baseurl }}/images/KeypointExtraction/rescaled.png)
+![_config.yml]({{ site.baseurl }}/images/14/LOPA.jpg)
 
 
 If 90% of your flights fly empty, and 10% of your flights fly at 100% capacity, then over 10 flights, you have flown 125 people. From the executive's perspective, only 10% of flights are crowded, but from the passengers perspective, 100% of flights are crowded. 
