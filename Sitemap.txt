@@ -13,5 +13,5 @@ http://cgcooke.github.io/Correlation-Performance-In-Python/
 http://cgcooke.github.io/Leaflet/
 http://cgcooke.github.io/Flask/
 http://cgcooke.github.io/Image-Deconvolution/
-http://cgcooke.github.io/Observation-Biase/
+http://cgcooke.github.io/Observation-Bias/
 http://cgcooke.github.io/D3/chloropleth.html
