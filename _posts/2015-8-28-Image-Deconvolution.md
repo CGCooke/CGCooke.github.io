@@ -166,4 +166,3 @@ Cameron
 
 Further reading
 ===============
-[https://en.wikipedia.org/wiki/Point_spread_function](PSF)
