@@ -1,0 +1,51 @@
+
+
+```python
+fig = plt.figure()
+fig.set_size_inches(10, 10)
+ax = plt.Axes(fig, [0., 0., 1., 1.])
+ax.set_axis_off()
+fig.add_axes(ax)
+```
+
+
+```python
+plt.contour(DEM, levels,linewidths=0.2,colors='k')
+plt.imshow(DEM,cmap ='RdYlGn_r',origin='lower')
+plt.savefig('ContourMapTight.png',dpi=900)
+plt.close()
+```
+
+
+```python
+img  = np.asarray(Image.open('ContourMapTight.png'))
+```
+
+
+```python
+def arrayToRaster(array,fileName,EPSGCode,xMin,xMax,yMin,yMax,numBands):
+    xPixels = array.shape[1]  # number of pixels in x
+    yPixels = array.shape[0]  # number of pixels in y
+    pixelXSize =(xMax-xMin)/xPixels # size of the pixel in X direction     
+    pixelYSize = -(yMax-yMin)/yPixels # size of the pixel in Y direction
+
+    driver = gdal.GetDriverByName('GTiff')
+    dataset = driver.Create(fileName,xPixels,yPixels,numBands,gdal.GDT_Byte, options = [ 'PHOTOMETRIC=RGB' ])
+    dataset.SetGeoTransform((xMin,pixelXSize,0,yMax,0,pixelYSize))  
+
+    datasetSRS = osr.SpatialReference()
+    datasetSRS.ImportFromEPSG(EPSGCode)
+    dataset.SetProjection(datasetSRS.ExportToWkt())
+    
+    for i in range(0,numBands):
+        dataset.GetRasterBand(i+1).WriteArray(array[:,:,i])
+
+    dataset.FlushCache()  # Write to disk.
+```
+
+
+```python
+EPSGCode = 4326
+numBands = 3
+arrayToRaster(img,'OUT.TIF',EPSGCode,np.min(xArray),np.max(xArray),np.min(yArray),np.max(yArray),numBands)
+```
