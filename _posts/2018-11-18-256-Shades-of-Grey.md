@@ -77,13 +77,6 @@ Let's use [GDAL](http://www.gdal.org/) to extract a subsection of the tile.The s
 !! gdalwarp -q -te -125 48 -122 50 -srcnodata -32768 -dstnodata 0 srtm_12_03.tif subset.tif
 ```
 
-
-
-
-    []
-
-
-
 Our next step is to transform the subsection of the tile to a different projection. The of the points in the subsection are located on a grid 1/1200th of a degree apart. While degrees of latitude are always ~110Km in size, resulting in ~92.5M resolution, degrees of longitude decrease in size, from ~111Km at the equator to 0Km at the poles. A different scale exists between the latitude & longitude axis and a longitude scale that depends on the latitude.
 
 A solution is to project that points so that there is a consistent and equal scale in the X/Y plane. One choice is to use a family of projections called [Universal Transverse Mercator](http://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system). Each UTM projection can map points from longitude & latitude to X & Y coordinates in meters. The UTM projection is useful because it locally preserves both shapes and distances, over a distances of up to several hundred kilometres.
@@ -114,18 +107,12 @@ os.system('gdalwarp -q -t_srs '+EPSGCode+' -tr 100 -100 -r cubic subset.tif warp
 ```
 
 
-
-
-    0
-
-
-
 Hillshading
 ===============
 
 At this point we can begin to visualise the DEM. One highly effective method is *hillshading*, which models the way the surface of the DEM would be illuminated by light projected onto it.  Shading of the slopes allows the DEM to be more intuitively interpreted than just coloring by height alone. 
 
-![hillshade.png](attachment:hillshade.png)
+![_config.yml]({{ site.baseurl }}/images/256_Shades_of_Grey/hillshade.png)
 
 
 ```python
@@ -135,16 +122,12 @@ At this point we can begin to visualise the DEM. One highly effective method is 
 
 
 
-    []
-
-
-
 Hypsometric Tinting
 ===============
 
 Hillshading can also be combined with height information to aid interpretation of the topography. The technical name for the process of coloring a DEM based on  height is *hypsometric tinting*. The process is simple, with GDAL mapping colors to cell heights, using a provided color scheme. 
 
-![color_relief.png](attachment:color_relief.png)
+![_config.yml]({{ site.baseurl }}/images/256_Shades_of_Grey/color_relief.png)
 
 
 ```python
@@ -173,18 +156,13 @@ createColorMapLUT(minHeight=10,maxHeight=2658)
 
 
 
-
-    []
-
-
-
 Slope Shading
 ===============
 
 
 Another technique for visualizing terrain is slopeshading. While hypsometric tinting assigns colors to cells based on elevation, slope shading assigns colors to pixels based on the slope (0º to 90º). In this case, white (255,255,255) is assigned to slopes of 0º and black (0,0,0) is assigned to slopes of 90º, with varying shades of grey for slopes in-between. 
 
-![slopeshade.png](attachment:slopeshade.png)
+![_config.yml]({{ site.baseurl }}/images/256_Shades_of_Grey/slopeshade.png)
 
 This color scheme is encoded in a txt file for gdaldem as follows: 
 
@@ -210,12 +188,6 @@ The computation of the slope shaded dem takes place over two steps.
 ```
 
 
-
-
-    []
-
-
-
 Layer Merging
 ===============
 
@@ -225,8 +197,7 @@ One important detail to note is that the pixel by pixel multiplication occurs in
 
 In one final tweak, the brightness of the output image is increased by 40%, to offset the average reduction in brightness caused by multiplying the layers together. 
 
-![blended.png](attachment:blended.png)
-
+![_config.yml]({{ site.baseurl }}/images/256_Shades_of_Grey/blended.png)
 
 ```python
 ''' Merge components using Python Image Lib '''
