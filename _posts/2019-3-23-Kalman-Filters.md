@@ -60,7 +60,16 @@ In summary, SORT creates a Kalman filter for each object it wants to track, and 
 Alex Bewley, one of the creators of SORT has developed a fantastic (implementation)[https://github.com/abewley/sort] of SORT, which uses *Filterpy*.
 
 
+
+
+$`\sqrt{2}`$
+
+$x = [u, v, s, r, u, v, s]$
+
+
 Let's take a look at his implementation, through the lens of what I've discussed above:
+
+
 
 ```python
 kf = KalmanFilter(dim_x=7, dim_z=4)
