@@ -28,7 +28,7 @@ One of the challenges with Kalman filters is that it's easy to be initially over
 
 6. *F* : The state transition matrix. How the system evolves over time. IE, if we know the position and velocity of an object, then in the absence of any error or external influence we can predict it's next position from it's current position and velocity.
 
-7. *B* : The control matrix. This matrix allows us to tell the filter about how we expect any inputs we provide the system (*u*) to update the state of the system. In many cases, especially when we are taking measurments of a system we don't control, the control matrix is not required.
+7. *B* : The control matrix. This matrix allows us to tell the filter about how we expect any inputs we provide the system (*u*) to update the state of the system. In many cases, especially when we are taking measurements of a system we don't control, the control matrix is not required.
 
 
 
@@ -97,9 +97,9 @@ kf.F = np.array([[1,0,0,0,1,0,0],
 
 The state transition matrix tells us that at each timestep, we update our state as follows:
 
-* $$u = u + \dot u$$
-* $$v = v + \dot v$$
-* $$s = s + \dot s$$
+$$u = u + \dot u$$
+$$v = v + \dot v$$
+$$s = s + \dot s$$
 
 
 ```python
@@ -109,12 +109,46 @@ kf.H = np.array([[1,0,0,0,0,0,0],
                  [0,0,0,1,0,0,0]])
 ```
 
+The sensor matrix tells us that we are directly measuring $$[u, v, s, r] $$.
+
+
 ```python
-kf.R[2:,2:] *= 10.
-kf.P[4:,4:] *= 1000. #give high uncertainty to the unobservable initial velocities
-kf.P *= 10.
-kf.Q[-1,-1] *= 0.01
-kf.Q[4:,4:] *= 0.01
+kf.R = np.array([[ 1,  0,  0,  0],
+                 [ 0,  1,  0,  0,],
+                 [ 0,  0, 10,  0,],
+                 [ 0,  0,  0, 10,]])
+```
+
+The sensor noise matrix tells us that we can measure $$u$$ and $$v$$ with a much higher degree of certainty than $$s$$ and $$r$$.
+
+```python
+kf.P = np.array([[   10,    0,     0,     0,     0,     0,     0],
+                 [    0,   10,     0,     0,     0,     0,     0],
+                 [    0,    0,    10,     0,     0,     0,     0],
+                 [    0,    0,     0,    10,     0,     0,     0],
+                 [    0,    0,     0,     0, 10000,     0,     0],
+                 [    0,    0,     0,     0,     0, 10000,     0],
+                 [    0,    0,     0,     0,     0,     0, 10000]])
+```
+
+The covariance matrix tells us that the filter should have a very high initial uncertinty for each of the velocity components.
+
+
+```python
+kf.Q = np.array([[1.e+00, 0.e+00, 0.e+00, 0.e+00, 0.e+00, 0.e+00, 0.e+00]
+                 [0.e+00, 1.e+00, 0.e+00, 0.e+00, 0.e+00, 0.e+00, 0.e+00]
+                 [0.e+00, 0.e+00, 1.e+00, 0.e+00, 0.e+00, 0.e+00, 0.e+00]
+                 [0.e+00, 0.e+00, 0.e+00, 1.e+00, 0.e+00, 0.e+00, 0.e+00]
+                 [0.e+00, 0.e+00, 0.e+00, 0.e+00, 1.e-02, 0.e+00, 0.e+00]
+                 [0.e+00, 0.e+00, 0.e+00, 0.e+00, 0.e+00, 1.e-02, 0.e+00]
+                 [0.e+00, 0.e+00, 0.e+00, 0.e+00, 0.e+00, 0.e+00, 1.e-04]])
+```
+
+The Process uncertainty matrix tells us how much "uncertainty" there is in each component of the systems behaviour. 
+
+Filterpy has a function which can be very useful for generating Q.
+```python
+filterpy.common.Q_discrete_white_noise
 ```
 
 
