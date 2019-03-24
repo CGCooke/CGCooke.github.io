@@ -98,7 +98,9 @@ kf.F = np.array([[1,0,0,0,1,0,0],
 The state transition matrix tells us that at each timestep, we update our state as follows:
 
 $$u = u + \dot u$$
+
 $$v = v + \dot v$$
+
 $$s = s + \dot s$$
 
 
@@ -109,7 +111,7 @@ kf.H = np.array([[1,0,0,0,0,0,0],
                  [0,0,0,1,0,0,0]])
 ```
 
-The sensor matrix tells us that we are directly measuring $$[u, v, s, r] $$.
+The sensor matrix tells us that we are directly measuring $$[u, v, s, r]$$.
 
 
 ```python
@@ -146,7 +148,7 @@ kf.Q = np.array([[1.e+00, 0.e+00, 0.e+00, 0.e+00, 0.e+00, 0.e+00, 0.e+00]
 
 The Process uncertainty matrix tells us how much "uncertainty" there is in each component of the systems behaviour. 
 
-Filterpy has a function which can be very useful for generating Q.
+Filterpy has a function which can be very useful for generating *Q*.
 ```python
 filterpy.common.Q_discrete_white_noise
 ```
