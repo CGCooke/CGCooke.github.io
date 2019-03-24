@@ -26,9 +26,9 @@ One of the challenges with Kalman filters is that it's easy to be initially over
 
 5. *H* : How to each measurement is related to the internal state of our system, in addition to scaling measurements. IE, If we have a GPS receiver, it tells us about our position, while an accelerometer tells us about our position.
 
-6. *F* : How the system evolves over time. IE, if we know the position and velocity of an object, then in the absence of any error or external influence we can predict it's next position from it's current position and velocity.
+6. *F* : The state transition matrix. How the system evolves over time. IE, if we know the position and velocity of an object, then in the absence of any error or external influence we can predict it's next position from it's current position and velocity.
 
-7. *B* : A control matrix. This matrix allows us to tell the filter about how we expect any inputs we provide the system (*u*) to update the state of the system. In many cases, especially when we are taking measurments of a system we don't control, the control matrix is not required.
+7. *B* : The control matrix. This matrix allows us to tell the filter about how we expect any inputs we provide the system (*u*) to update the state of the system. In many cases, especially when we are taking measurments of a system we don't control, the control matrix is not required.
 
 
 
@@ -54,26 +54,36 @@ Looking at the relationships between all of the matrices,
 A real world example:
 ===============
 
-Lets look at a real world example. In computer vision, object tracking is the process of associating different detections of an object from different images/frames into a single "track". Many algorihtms have been developed for this task (Simple Online and Realtime Tracking)[https://arxiv.org/abs/1602.00763] is particularly elegant.
+Let's look at a real world example. In computer vision, object tracking is the process of associating different detections of an object from different images/frames into a single "track". Many algorithms have been developed for this task (Simple Online and Realtime Tracking)[https://arxiv.org/abs/1602.00763] is particularly elegant.
 In summary, SORT creates a Kalman filter for each object it wants to track, and then predicts the location and size of each object, in each frame using the filter. 
 
-Alex Bewley, one of the creators of SORT has developed a fantastic (implementation)[https://github.com/abewley/sort] of SORT, which uses *Filterpy*.
-
-
-
-
-$$`\sqrt{2}`$$
-
-$$x = [u, v, s, r, u, v, s]$$
-
+*Alex Bewley*, one of the creators of SORT has developed a fantastic (implementation)[https://github.com/abewley/sort] of SORT, which uses *Filterpy*.
 
 Let's take a look at his implementation, through the lens of what I've discussed above:
 
+Quickly defining some nomenclature,
+
+* *u* and *v* are the x and y pixel coordinates of the center of the bounding box around an object being tracked.
+
+* *s* and *r* are tha scale and aspect ratio of the bounding box surrounding the object.
+
+* $$\dot u, \dot v$$ are the x and y velocity of the bounding box.
+
+* $$\dot s$$ is the rate at which the scale of the bounding box is changing.
 
 
 ```python
 kf = KalmanFilter(dim_x=7, dim_z=4)
 ```
+
+Our internal state is 7 dimensional:
+
+$$[u, v, s, r, \dot u, \dot v , \dot s] $$
+
+While our input vector is 4 dimensional:
+
+$$[u, v, s, r]$$
+
 
 ```python
 kf.F = np.array([[1,0,0,0,1,0,0],
@@ -84,6 +94,13 @@ kf.F = np.array([[1,0,0,0,1,0,0],
                  [0,0,0,0,0,1,0],
                  [0,0,0,0,0,0,1]])
 ```
+
+The state transition matrix tells us that at each timestep, we update our state as follows:
+
+* $$u = u + \dot u$$
+* $$v = v + \dot v$$
+* $$s = s + \dot s$$
+
 
 ```python
 kf.H = np.array([[1,0,0,0,0,0,0],
@@ -104,4 +121,3 @@ kf.Q[4:,4:] *= 0.01
 Further reading
 ===============
 Control theory is a broad an intellectually stimulating area, with broad applications.  (Brian Douglas)[https://www.youtube.com/user/ControlLectures] has an incredible YouTube channel which I strongly recommend. 
-
