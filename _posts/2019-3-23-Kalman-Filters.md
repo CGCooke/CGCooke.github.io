@@ -62,9 +62,9 @@ Alex Bewley, one of the creators of SORT has developed a fantastic (implementati
 
 
 
-$`\sqrt{2}`$
+$$`\sqrt{2}`$$
 
-$x = [u, v, s, r, u, v, s]$
+$$x = [u, v, s, r, u, v, s]$$
 
 
 Let's take a look at his implementation, through the lens of what I've discussed above:
