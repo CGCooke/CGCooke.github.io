@@ -66,7 +66,7 @@ To provide a practical worked example,
 
 Taking the case of an A330, weighing 200,000 kg, with an  L/D ratio of approximately 18,  then:
 
-$$D_{Lift Induced}  = \frac{200,000 x 9.8}{18}$$
+$$D_{Lift Induced}  = \frac{2\times10^{6}  \times 9.81}{18}$$
 
 
 If the L/D ratio could be doubled, then the thrust, and fuel burn required to support the weight of the aircraft would halve.
