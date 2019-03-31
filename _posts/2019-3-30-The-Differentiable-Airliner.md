@@ -75,7 +75,7 @@ If the L/D ratio could be doubled, then the thrust, and fuel burn required to su
 Unconstrained Optimisation: The Virgin Atlantic GlobalFlyer
 ===============
 
-Optimising purely for minimum thrust, and thus fuel consumption, we end up with an aircraft with a fuselage made entirely out of composite materials, with minimal drag, and long slender wings, in order to maximise the L/D ratio. This is the design used by the Virgin Atlantic GlobalFlyer, which holds the FAI record for longest flight by an aircraft ever, at 41,466 km.
+Optimising purely for minimum thrust, and thus fuel consumption, we end up with an aircraft with a fuselage made entirely out of composite materials, with minimal drag, and long slender wings, in order to maximise the L/D ratio. This is the design used by the Virgin Atlantic GlobalFlyer, with a L/D ratio of 37,  which holds the FAI record for longest flight by an aircraft ever, at 41,466 km.
 
 
 ![_config.yml]({{ site.baseurl }}/images/The-Differentiable-Airliner/Virgin-globalflyer-040408-06cr.jpg)
