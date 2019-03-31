@@ -1,4 +1,4 @@
-It's hard to conceive of something more carefully designed than an Aircraft. Millions of parts, Hundreds of kilometers of wiring, all designed with by thousands of engineers. 
+It's hard to conceive of something more carefully designed than an aircraft. Millions of parts, Hundreds of kilometers of wiring, all designed with by thousands of engineers. 
 
 What I find particularly fascinating however, is that the core design principles of an aircraft can be elicited through a relatively simple thought experiment,
 
