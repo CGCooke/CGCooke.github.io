@@ -30,7 +30,7 @@ Y\\
 Z\\
 1
 \end{bmatrix}
-
+$$
 
 
 
