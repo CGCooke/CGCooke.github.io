@@ -1,5 +1,13 @@
 I've always found classical multiple view geometry to be magic. Starting from a position where we know very little, we use physical constraints to simultaniously infer both 3D scene geometry, as well as camera positions.
 
+
+
+$$r = \sqrt{(x-c_x)^2 + (y-c_y)^2}$$ 
+$$x_{corrected} = x (1 + k_1r^2)$$
+$$y_{corrected} = y (1 + k_1r^2)$$
+
+
+
 $$
 \lambda
 
