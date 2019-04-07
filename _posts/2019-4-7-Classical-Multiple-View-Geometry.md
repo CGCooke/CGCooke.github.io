@@ -1,11 +1,40 @@
 I've always found classical multiple view geometry to be magic. Starting from a position where we know very little, we use physical constraints to simultaniously infer both 3D scene geometry, as well as camera positions.
 
 $$
+\Lambda
+
+
+\begin{bmatrix} 
+x\\
+y\\
+1
+\end{bmatrix}
+
+=
+
+\begin{bmatrix} 
+fs_{x} & fs_{\theta} &  o_{x}\\
+0 & fs_{y} & o_{y}\\
+0 & 0 & 1
+\end{bmatrix}
+
+
 \begin{bmatrix} 
 r_{11} & r_{12} & r_{13} & t_{x}\\
 r_{21} & r_{22} & r_{23} & t_{y}\\
-r_{31} & r_{32} & r_{33} & t_{z}\\
+r_{31} & r_{32} & r_{33} & t_{z}
 \end{bmatrix}
+
+\begin{bmatrix} 
+X\\
+Y\\
+Z\\
+1
+\end{bmatrix}
+
+
+
+
 $$
 
 
