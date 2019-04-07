@@ -1,11 +1,14 @@
-I've always found classical multiple view geometry to be magic. Starting from a position where we know very little, we use physical constraints to simultaniously infer both 3D scene geometry, as well as camera positions.
+I've always found classical multiple view geometry to be magic. Starting from a position where we know very little, we can simultaniously infer both 3D scene geometry, as well as camera positions.
 
+Like all good magic tricks, which are simple once you know what is going on, we can use linear algebra to structure what we can mesure (pixel correspondences between images) to infer the 3D structure of the scene.
 
+However, there are limits to this magic trick, without any addional information, we can only reconstruct the scene up to scale. That is, there is still an unknown rotation and translation between what we reconstruct and reality. 
 
-$$r = \sqrt{(x-c_x)^2 + (y-c_y)^2}$$ 
+$$r = \sqrt{(x-o_x)^2 + (y-o_y)^2}$$ 
+
 $$x_{corrected} = x (1 + k_1r^2)$$
-$$y_{corrected} = y (1 + k_1r^2)$$
 
+$$y_{corrected} = y (1 + k_1r^2)$$
 
 
 $$
@@ -25,7 +28,6 @@ fs_{x} & fs_{\theta} &  o_{x}\\
 0 & 0 & 1
 \end{bmatrix}
 
-
 \begin{bmatrix} 
 r_{11} & r_{12} & r_{13} & t_{x}\\
 r_{21} & r_{22} & r_{23} & t_{y}\\
@@ -41,6 +43,7 @@ Z\\
 $$
 
 
+[https://web.stanford.edu/class/cs231a/course_notes/01-camera-models.pdf](Camera Models)
 
 Reducing the aircraft weight
 ===============
