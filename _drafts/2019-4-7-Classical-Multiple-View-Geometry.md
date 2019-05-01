@@ -14,8 +14,6 @@ R & T
 P
 $$
 
-
-
 $$r = \sqrt{(x-o_x)^2 + (y-o_y)^2}$$ 
 
 $$x_{corrected} = x (1 + k_1r^2)$$
@@ -55,14 +53,13 @@ Z\\
 $$
 
 
-(https://web.stanford.edu/class/cs231a/course_notes/01-camera-models.pdf)[Camera Models]
+(Camera Models)[https://web.stanford.edu/class/cs231a/course_notes/01-camera-models.pdf]
 
 The Intrinsic Matrix
 ===============
 
 One of the current trends is the increasing use of composite materials in the design of aircraft. The higher the strength to weight ratio, allowing the same structural outcomes to be achieved, at a lower weight. 
-(http://ksimek.github.io/2013/08/13/intrinsic/)[Intrinsic matrix]
-
+(Intrinsic matrix)[http://ksimek.github.io/2013/08/13/intrinsic/]
 
 
 The Extrinsic Matrix
@@ -70,7 +67,7 @@ The Extrinsic Matrix
 
 From this, we can see that fuel consumption is intricately linked to both the percentage of the aircraft which can be constructed from composite materials, as well as their strength. 
 
-(http://ksimek.github.io/2012/08/22/extrinsic/)[Extrinisic matrix]
+(Extrinisic matrix)[http://ksimek.github.io/2012/08/22/extrinsic/]
 
 
 ![_config.yml]({{ site.baseurl }}/images/Classical-Multiple-View-Geometry/IMG.jpg)
