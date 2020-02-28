@@ -1,4 +1,6 @@
 # About
 
-This is where you put the contents of your *About* page. Like all your pages, it's in [Markdown](https://guides.github.com/features/mastering-markdown/) format.
+I'm passionate about AI (Computer Vision in particular), Robotics and the future of Aerospace.
 
+
+Writing a blog because the first step to truly understanding something is being able to explain it to someone else.
