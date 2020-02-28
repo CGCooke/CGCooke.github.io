@@ -1,72 +1,43 @@
+# Welcome to Jekyll!
 #
-# This file contains configuration flags to customize your site
+# This config file is meant for settings that affect your whole blog.
 #
+# If you need help with YAML syntax, here are some quick references for you:
+# https://learn-the-web.algonquindesign.ca/topics/markdown-yaml-cheat-sheet/#yaml
+# https://learnxinyminutes.com/docs/yaml/
 
-# Name of your site (displayed in the header)
-name: Cameron Cooke
+title: Edit _config.yml to set your title!
+description: This is where the description of your site will go. You should change it by editing the _config.yml file. It can be as long as you like! Happy blogging... ❤
+github_username: jph00
 
-# Short bio or description (displayed in the header)
-description: Number Cruncher
+# Email and twitter are optional:
+email:
+twitter_username:
 
-# URL of your avatar or profile pic (you could use your GitHub profile pic)
-avatar: /images/Logo.png
+# Set this to true to get LaTeX math equation support
+use_math:
 
-#
-# Flags below are optional
-#
+# Add your Google Analytics ID here if you have one and want to use it
+google_analytics:
 
-# Includes an icon in the footer for each username you enter
-footer-links:
-  dribbble: 
-  email: Cameron.G.Cooke@Gmail.com
-  facebook: 
-  flickr: 
-  github: CGCooke
-  instagram: 
-  linkedin: 
-  pinterest: 
-  rss: # just type anything here for a working RSS icon, make sure you set the "url" above!
-  twitter: CGCooke
-  stackoverflow: # your stackoverflow profile, e.g. "users/50476/bart-kiers"
+# Everything below here can be ignored, unless you want to change the theme entirely
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-gist
+  - jekyll-octicons
+  - jekyll-github-metadata
 
-# Your disqus shortname, entering this will enable commenting on posts
-disqus: 
-
-# Enter your Google Analytics web tracking code (e.g. UA-2110908-2) to activate tracking
-google_analytics: UA-59953722-1
-
-# Your website URL (e.g. http://barryclark.github.io or http://www.barryclark.co)
-# Used for Sitemap.xml and your RSS feed
-url: 
-
-# If you're hosting your site at a Project repository on GitHub pages 
-# (http://yourusername.github.io/repository-name)
-# and NOT your User repository (http://yourusername.github.io)
-# then add in the baseurl here, like this: "/repository-name"
-baseurl: ""
-
-#
-# !! You don't need to change any of the configuration flags below !!
-#
+titles_from_headings:
+  enabled:     true
+  strip_title: true
+  collections: true
 
 highlighter: rouge
-permalink: /:title/
-
-# The release of Jekyll Now that you're using
-version: v1.0.0
-
-# Set the Sass partials directory, as we're using @imports
-sass:
-  sass_dir: _scss
-  style: :expanded # You might prefer to minify using :compressed
-
-# Use the following plug-ins
-gems:
-  - jekyll-sitemap # Create a sitemap using the official Jekyll sitemap gem
-
-# Exclude these files from your production _site
-exclude:
-    - Gemfile
-    - Gemfile.lock
-    - LICENSE
-    - README.md
+markdown: kramdown
+kramdown:
+  math_engine: katex
+  input: GFM
+  auto_ids: true
+  hard_wrap: false
+  syntax_highlighter: rouge

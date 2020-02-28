@@ -1,7 +1,0 @@
-http://cgcooke.github.io/index.html
-http://cgcooke.github.io/about/
-http://cgcooke.github.io/Scattered-Interpolation/
-http://cgcooke.github.io/The-Differentiable-Airliner/
-http://cgcooke.github.io/Three-Interesting-Paper/
-http://cgcooke.github.io/Kalman-Filters/
-http://cgcooke.github.io/256-Shades-of-Grey/
