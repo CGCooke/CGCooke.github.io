@@ -1,8 +1,13 @@
 # About
+Hi, I'm Cameron,
 
 I'm passionate about AI (Computer Vision in particular), Robotics and the future of Aerospace.
 
 Writing a blog because the first step to truly understanding something is being able to explain it to someone else.
 
+Plus I love communicating about the incredible world around us,
 
-!(images/me.jpg)
+Until next time!
+Cameron
+
+![](images/me.jpg)
