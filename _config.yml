@@ -11,14 +11,14 @@ description: Number Cruncher
 github_username: CGCooke
 
 # Email and twitter are optional:
-email:Cameron.G.Cooke@Gmai.com
-twitter_username:CGCooke
+email: Cameron.G.Cooke@Gmai.com
+twitter_username: CGCooke
 
 # Set this to true to get LaTeX math equation support
 use_math:true
 
 # Add your Google Analytics ID here if you have one and want to use it
-google_analytics:UA-59953722-1
+google_analytics: UA-59953722-1
 
 # Everything below here can be ignored, unless you want to change the theme entirely
 theme: minima
