@@ -6,7 +6,7 @@ It's Febrary 1972, the A300 airliner is being unviled in Toulouse, let's go on a
 
 ![A300.jpg](attachment:A300.jpg)
 
-Let's keep things interesting, and pretend that we work for Boeing, and we have seen this photo published in a magazine, and we want to try and learn as much about the dimensions of Airbus's new aircraft as possible. In order to do so, we will need to mathematically reconstruct the camera used to take the photo, as well as the scene itself.
+Let's keep things interesting, and pretend that we work for an aicraft manufacturer, Norton Aircraft, headquaretered in Burbank, Califaunia. Lets say we have seen this photo published in a magazine, and we want to try and learn as much about the dimensions of Airbus's new aircraft as possible. In order to do so, we will need to mathematically reconstruct the camera used to take the photo, as well as the scene itself.
 
 Now, In this case, we are lucky, because we notice the hexagonal pattern on the floor. In particular, we notice that it's a tessalating hexagonal pattern, which can only happen if all the hexagons have identical dimensions.
 
@@ -143,7 +143,7 @@ points_3d[:,1] -= Y_mean
 ```
 
 
-![png](An-Adventure-In-Markerless-Camera-Calibration_files/output_8_0.png)
+![png](2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/output_8_0.png)
 
 
 ```python
@@ -274,11 +274,11 @@ plt.show()
 ```
 
 
-![png](An-Adventure-In-Markerless-Camera-Calibration_files/output_14_0.png)
+![png](2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/output_14_0.png)
 
 
 
-![png](An-Adventure-In-Markerless-Camera-Calibration_files/output_14_1.png)
+![png](2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/output_14_1.png)
 
 
 ```python
@@ -293,7 +293,7 @@ plt.savefig('A300_points.png',dpi = 900)
 ```
 
 
-![png](An-Adventure-In-Markerless-Camera-Calibration_files/output_15_0.png)
+![png](2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/output_15_0.png)
 
 
 ```python
@@ -347,7 +347,7 @@ plt.savefig('A300.png',dpi = 900,bbox_inches='tight')
 
 
 
-![png](An-Adventure-In-Markerless-Camera-Calibration_files/output_16_1.png)
+![png](2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/output_16_1.png)
 
 
 Again, huge thanks to *Nikolay Mayorov* who created the awsome demo of optimization in Scipy that I built upon, find the original code here https://scipy-cookbook.readthedocs.io/items/bundle_adjustment.html.
