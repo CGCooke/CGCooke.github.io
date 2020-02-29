@@ -2,6 +2,83 @@
 > summary
 
 
+It's Febrary 1972, the A300 airliner is being unviled in Toulouse, let's go on an adventure!
+
+![A300.jpg](attachment:A300.jpg)
+
+Let's keep things interesting, and pretend that we work for Boeing, and we have seen this photo published in a magazine, and we want to try and learn as much about the dimensions of Airbus's new aircraft as possible. In order to do so, we will need to mathematically reconstruct the camera used to take the photo, as well as the scene itself.
+
+Now, In this case, we are lucky, because we notice the hexagonal pattern on the floor. In particular, we notice that it's a tessalating hexagonal pattern, which can only happen if all the hexagons have identical dimensions.
+
+While we don't know the dimensions of the hexagon, we guess that each side is approximately 1.6m long, based on the high of the people in the photo. If we assume some point on the ground, say the center of a polygon is the point 0,0, we can work out the X & Y location of each other polygon vertex we can see. Furthermore, we could also assume that the factory floor is flat and level. Hence the Z coordinate of each point is 0.
+
+Let's spend ±5 minutes annotating the image, using an annotation tool like label me. I've generated a file, which you can find attached here:
+
+![Hexagons.png](attachment:Hexagons.png)
+
+
+Firstly, lets load in all of the x and y points
+
+```python
+import json
+
+JSON = json.loads(open('A300.json','r').read())
+
+polygons = {}
+for shape in JSON['shapes']:
+    coords = shape['label'].split(',')
+    x,y = int(coords[0]),int(coords[1])
+    polygons[x,y] = shape['points']
+    
+    
+```
+
+Ok, now doing some maths....
+
+```python
+f = open('COORDS_A300.CSV','w')
+f.write('i,j,X,Y,Z\n')
+for key in sorted(polygons.keys()):
+    poly = polygons[key]    
+    (pts_x, pts_y) = zip(*poly)
+    
+    pts_x = list(pts_x)
+    pts_y = list(pts_y)
+    
+    #Magic analytic formula for working out the location of each point, based on which vertex, of which polygon it is.
+    x_vertex = 0.5 * np.array([1,2,1,-1,-2,-1])
+    y_vertex = 0.5 * np.array([np.sqrt(3),0,-np.sqrt(3),-np.sqrt(3),0,np.sqrt(3)])
+    
+    row,col = key
+    x = row * 1.5 + x_vertex
+    y = col * 0.5 * np.sqrt(3) + y_vertex
+    
+    #From before, we assume the sides of each polygon is 1.6m
+    x*=1.6 #meters
+    y*=1.6 #meters
+    
+    for idx in range(0,6):
+        i = pts_x[idx]
+        j = pts_y[idx]
+        X = x[idx]
+        Y = y[idx]
+        Z = 0.0
+        out_str = str(i)+','+str(j)+','+ str(X)+','+str(Y)+','+str(Z)+''+'\n'
+        f.write(out_str)
+f.close()
+```
+
+So, now we have a bunch of 3D points, and corresponding 2D points in the photo.
+
+
+
+
+I've always been interested in structure from motion/bundle adjustment/markerless camera calibration, given we start with a problem that seems intractable, but we find a solution, as if by magic.
+
+Like all good magic tricks, it all comes down to diligant and careful planning behind the scenes.
+
+To be clear, I'm building on the shoulders of giants, I've heavily adpated this example from this incredible demo by *Nikolay Mayorov* which you can find here: https://scipy-cookbook.readthedocs.io/items/bundle_adjustment.html
+
 ```python
 from __future__ import print_function
 ```
@@ -18,27 +95,30 @@ from scipy.spatial.transform import Rotation as Rot
 
 %matplotlib inline
 
-plt.rcParams["figure.figsize"] = (20,20)
+plt.rcParams["figure.figsize"] = (10,10)
 ```
 
 ```python
 camera_params = np.zeros(12)
+
 #camera_matrix
 #T
 camera_params[3] = 0
 camera_params[4] = 0
 camera_params[5] = 5
 
-#f,k1,k2,c_x,c_y
+#f,k1,k2,
 camera_params[6] = 1000
 camera_params[7] = 0
 camera_params[8] = 0
 camera_params[9] = 0
 
+#c_x,c_y
 camera_params[10] = 2251/2.0
 camera_params[11] = 1508/2.0
+```
 
-
+```python
 df = pd.read_csv('COORDS_A300.CSV', sep=',')
 
 points_2d = df.values[:,0:2]
@@ -60,11 +140,10 @@ Y_mean = points_3d[:,1].mean()
 
 points_3d[:,0] -= X_mean
 points_3d[:,1] -= Y_mean
-
 ```
 
 
-![png](/images/A300_files/output_2_0.png)
+![png](An-Adventure-In-Markerless-Camera-Calibration_files/output_8_0.png)
 
 
 ```python
@@ -195,11 +274,11 @@ plt.show()
 ```
 
 
-![png](/images/A300_files/output_8_0.png)
+![png](An-Adventure-In-Markerless-Camera-Calibration_files/output_14_0.png)
 
 
 
-![png](/images/A300_files/output_8_1.png)
+![png](An-Adventure-In-Markerless-Camera-Calibration_files/output_14_1.png)
 
 
 ```python
@@ -214,7 +293,7 @@ plt.savefig('A300_points.png',dpi = 900)
 ```
 
 
-![png](/images/A300_files/output_9_0.png)
+![png](An-Adventure-In-Markerless-Camera-Calibration_files/output_15_0.png)
 
 
 ```python
@@ -268,5 +347,7 @@ plt.savefig('A300.png',dpi = 900,bbox_inches='tight')
 
 
 
-![png](/images/A300_files/output_10_1.png)
+![png](An-Adventure-In-Markerless-Camera-Calibration_files/output_16_1.png)
 
+
+Again, huge thanks to *Nikolay Mayorov* who created the awsome demo of optimization in Scipy that I built upon, find the original code here https://scipy-cookbook.readthedocs.io/items/bundle_adjustment.html.
