@@ -1,5 +1,6 @@
-# Title
+# Finding the inverse of a radial distortion function
 > summary
+
 
 
 ```python
@@ -35,7 +36,7 @@ plt.show()
 ```
 
 
-![png](Inverse Radial Distortion_files/output_2_0.png)
+![png](Inverse-Radial-Distortion_files/output_2_0.png)
 
 
 ```python
@@ -77,7 +78,7 @@ plt.show()
 ```
 
 
-![png](Inverse Radial Distortion_files/output_5_0.png)
+![png](Inverse-Radial-Distortion_files/output_5_0.png)
 
 
 ```python
