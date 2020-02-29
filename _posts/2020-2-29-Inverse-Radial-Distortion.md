@@ -36,7 +36,7 @@ plt.show()
 ```
 
 
-![png](Inverse-Radial-Distortion_files/output_2_0.png)
+![png](/images/Inverse-Radial-Distortion/output_2_0.png)
 
 
 ```python
@@ -78,7 +78,7 @@ plt.show()
 ```
 
 
-![png](Inverse-Radial-Distortion_files/output_5_0.png)
+![png](/images/Inverse-Radial-Distortion/output_5_0.png)
 
 
 ```python
