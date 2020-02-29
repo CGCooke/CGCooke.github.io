@@ -41,3 +41,6 @@ kramdown:
   auto_ids: true
   hard_wrap: false
   syntax_highlighter: rouge
+
+# Set this to true to display tags on each post
+show_tags: true

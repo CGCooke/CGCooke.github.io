@@ -1,3 +1,5 @@
+- categories: [Deep Learning,Computer Vision]
+
 Over the past couple of months, 3 incredibly exciting papers have come out, and I want to take the opportunity to share them with you.
 
 The papers, in no particular order are [MixMatch](https://arxiv.org/abs/1905.02249), [Selfie](https://arxiv.org/abs/1906.02940) and [Unsupervised Data Augmentation](https://arxiv.org/abs/1904.12848), however let's first discuss why they are exciting.
