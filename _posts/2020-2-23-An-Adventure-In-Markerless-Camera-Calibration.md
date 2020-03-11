@@ -496,10 +496,6 @@ plt.savefig('A300.png',dpi = 900,bbox_inches='tight')
 
 ```
 
-    /Users/cooke_c/.local/lib/python3.7/site-packages/ipykernel_launcher.py:32: MatplotlibDeprecationWarning: Support for uppercase single-letter colors is deprecated since Matplotlib 3.1 and will be removed in 3.3; please use lowercase instead.
-
-
-
 ![_config.yml]({{ site.baseurl }}/images/2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/output_33_1.png)
 
 
