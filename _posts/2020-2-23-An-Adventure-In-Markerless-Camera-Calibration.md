@@ -193,7 +193,7 @@ Now we come to the real magic. This function models the camera, taking points in
 
 There are lots of things going on here,
 
-![Diagram of a pinhole camera](pinholeCamera.png)
+![_config.yml]({{ site.baseurl }}/images/2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/pinholeCamera.png)
 
 
 Firstly, let's talk about the camera's intrinsic matrix.
