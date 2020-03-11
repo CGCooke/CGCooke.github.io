@@ -200,14 +200,14 @@ Firstly, let's talk about the camera's intrinsic matrix.
 
 Basically, it converts points from 3D space to 2D space.
 
-\begin{equation*}
+$$\begin{equation*}
 K = 
 \begin{bmatrix}
 f & 0 & c_{x} \\
 0 & f & c_{y} \\
 0 & 0 & 1 
 \end{bmatrix}
-\end{equation*}
+\end{equation*}$$
 
 
 We have the focal length, $f$, and the camera optical center $c_x$ and $c_y$.
@@ -243,32 +243,32 @@ rotation_vector = camera_params[:3]
 R = Rot.from_rotvec(rotation_vector).as_matrix()
 ```
 
-\begin{equation*}
+$$\begin{equation*}
 R = 
 \begin{bmatrix}
 R_1 & R_2 & R_3 \\
 R_4 & R_5 & R_6 \\
 R_7 & R_8 & R_9 
 \end{bmatrix}
-\end{equation*}
+\end{equation*}$$
 
 Now, let's talk about the Project Matrix $P$ of the camera. This takes the points all the way from their location in 3D world coordinates, to pixel coordinates, assuming we have a camera without radial distortion. There are two main ways this could be formulated.
 
 Firstly:
-\begin{equation*}
+$$\begin{equation*}
 P = KR[I|−C]
-\end{equation*}
+\end{equation*}$$
 
 Secondly:
-\begin{equation*}
+$$\begin{equation*}
 P = K[R | t]
-\end{equation*}
+\end{equation*}$$
 
 
 Where $t$ is:
-\begin{equation*}
+$$\begin{equation*}
 t = −RC
-\end{equation*}
+\end{equation*}$$
 
 
 
