@@ -193,7 +193,7 @@ Now we come to the real magic. This function models the camera, taking points in
 
 There are lots of things going on here,
 
-![_config.yml]({{ site.baseurl }}/images/2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/pinholeCamera.jpg)
+![_config.yml]({{ site.baseurl }}/images/2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/pinholeCamera.png)
 
 
 Firstly, let's talk about the camera's intrinsic matrix.
@@ -220,14 +220,13 @@ That's 3 degrees for the position, and 3 for the orientation. At its heart, what
 
 There are so many ways to represent our setup:
 1. Coordinate systems: 2D and 3D.
-  * Left Handed or Right Handed?
-   
+  * Left Handed or Right Handed?
 2. Rotations:
-  * Quaternions?
-  * Proper Euler angles (6 different ways)?
-  * Tait–Bryan angles (6 different ways)?
-  * Rodrigues rotation formula?
-  * A rotation matrix? 
+  * Quaternions?
+  * Proper Euler angles (6 different ways)?
+  * Tait–Bryan angles (6 different ways)?
+  * Rodrigues rotation formula?
+  * A rotation matrix? 
 3. The location of the camera in to the world. (2 Different ways).
 
 
