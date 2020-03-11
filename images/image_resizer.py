@@ -1,7 +1,7 @@
 from PIL import Image
 import glob
 
-path = '2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/*'
+path = 'about/*'
 f_list = glob.glob(path)
 
 for f in f_list:
