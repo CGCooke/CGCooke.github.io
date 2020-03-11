@@ -275,26 +275,26 @@ t = −RC
 
 Let's go with the first method, where C is :
 
-\begin{equation*}
+$$\begin{equation*}
 C = 
 \begin{bmatrix}
 -C_X\\
 -C_Y\\
 -C_Z 
 \end{bmatrix}
-\end{equation*}
+\end{equation*}$$
 
 
 However, there is one subtlety alluded to before, which is the impact of radial distortion. Simply, the camera's lens distorts the rays of light coming in, in a non-linear way. 
 
 We can model it using a [Taylor series](https://en.wikipedia.org/wiki/Taylor_series):
 
-\begin{equation*}
+$$\begin{equation*}
 x_c = x(1 + k_1  r^2 + k_2  r^4 + k_3 r^6)
-\end{equation*}
-\begin{equation*}
+\end{equation*}$$
+$$\begin{equation*}
 y_c = y(1 + k_1  r^2 + k_2 r^4 + k_3 r^6)
-\end{equation*}
+\end{equation*}$$
 
 
 
