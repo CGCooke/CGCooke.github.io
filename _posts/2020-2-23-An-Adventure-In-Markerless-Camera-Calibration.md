@@ -291,6 +291,8 @@ We can model it using a [Taylor series](https://en.wikipedia.org/wiki/Taylor_ser
 $$\begin{equation*}
 x_c = x(1 + k_1  r^2 + k_2  r^4 + k_3 r^6)
 \end{equation*}$$
+
+
 $$\begin{equation*}
 y_c = y(1 + k_1  r^2 + k_2 r^4 + k_3 r^6)
 \end{equation*}$$
@@ -498,13 +500,15 @@ plt.savefig('A300.jpg',dpi = 900,bbox_inches='tight')
 ![_config.yml]({{ site.baseurl }}/images/2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/output_33_1.jpg)
 
 
-Thanks for reading all the way to the end,
+Thanks for reading all the way to the end!
 
 In the future, Let's look more about how we can extract useful information from this image, and understand how confident we can be in our solution.
 
 Thanks to *Nikolay Mayorov* who created the awesome demo of optimization in Scipy that I built upon, please find the original code [here](https://scipy-cookbook.readthedocs.io/items/bundle_adjustment.html).
 
 
-> Tip: Multiple View Geometry in Computer Vision is an incredible book, that I learn more from, each time I read it. in particular, for further information see: 
+Multiple View Geometry in Computer Vision is an incredible book, that I learn more from, each time I read it. in particular, for further information see: 
 * Finite cameras. Page 153, Multiple View Geometry in Computer Vision (Second edition)
 * Minimizing geometric error. Page 176, Multiple View Geometry in Computer Vision (Second edition)
+
+Photos by André Cros, preserved by the city archives of Toulouse and released under CC BY-SA 4.0 license by the deliberation n°27.3 of June 23rd, 2017 of the Town Council of the City of Toulouse.
