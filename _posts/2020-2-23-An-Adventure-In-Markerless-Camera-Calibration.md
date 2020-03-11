@@ -504,7 +504,7 @@ In the future, Let's look more about how we can extract useful information from 
 
 Thanks to *Nikolay Mayorov* who created the awesome demo of optimization in Scipy that I built upon, please find the original code [here](https://scipy-cookbook.readthedocs.io/items/bundle_adjustment.html).
 
-Multiple View Geometry in Computer Vision is an incredible book, that I learn more from, each time I read it. in particular, for further information see: 
 
+> Tip: Multiple View Geometry in Computer Vision is an incredible book, that I learn more from, each time I read it. in particular, for further information see: 
 * Finite cameras. Page 153, Multiple View Geometry in Computer Vision (Second edition)
 * Minimizing geometric error. Page 176, Multiple View Geometry in Computer Vision (Second edition)
