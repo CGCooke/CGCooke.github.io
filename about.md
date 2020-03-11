@@ -10,3 +10,6 @@ Plus I get excited about the incredible world around us, and can't wait to tell 
 Until next time.
 
 Cameron
+
+
+![_config.yml]({{ site.baseurl }}/images/about/IMG_1807.JPG)
