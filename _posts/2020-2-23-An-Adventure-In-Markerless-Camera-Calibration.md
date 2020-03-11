@@ -15,7 +15,7 @@ While we don't know the dimensions of the hexagon, we guess that each side is ap
 
 Let's spend ±5 minutes annotating the image, using an annotation tool like label me. I've generated a file, which you can find attached here: 
 
-![_config.yml]({{ site.baseurl }}/images/2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/Hexagons.png)
+![_config.yml]({{ site.baseurl }}/images/2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/Hexagons.jpg)
 
 
 
@@ -193,7 +193,7 @@ Now we come to the real magic. This function models the camera, taking points in
 
 There are lots of things going on here,
 
-![_config.yml]({{ site.baseurl }}/images/2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/pinholeCamera.png)
+![_config.yml]({{ site.baseurl }}/images/2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/pinholeCamera.jpg)
 
 
 Firstly, let's talk about the camera's intrinsic matrix.
@@ -436,7 +436,7 @@ plt.show()
 ```
 
 
-![_config.yml]({{ site.baseurl }}/images/2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/output_29_0.png)
+![_config.yml]({{ site.baseurl }}/images/2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/output_29_0.jpg)
 
 
 Ok, so the histogram looks pretty good, apart from the one point with a high residual, which is probably due to sloppy labeling/annotation.
@@ -450,12 +450,12 @@ img = plt.imread('A300.jpg')
 plt.imshow(img)
 plt.scatter(points_2d[:,0],points_2d[:,1],label='Actual',c='r',alpha=0.5)
 plt.scatter(points_2d_proj[:,0],points_2d[:,1],label='Optimised',c='k',alpha=0.5)
-plt.savefig('A300_points.png',dpi = 900)           
+plt.savefig('A300_points.jpg',dpi = 900)           
 
 ```
 
 
-![_config.yml]({{ site.baseurl }}/images/2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/output_31_0.png)
+![_config.yml]({{ site.baseurl }}/images/2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/output_31_0.jpg)
 
 
 Again, this looks great.
@@ -492,11 +492,11 @@ for row in range(1,11,2):
         plt.text(np.mean(points_2d_proj[:,0]), np.mean(points_2d_proj[:,1]), str(row)+','+str(col), horizontalalignment='center',verticalalignment='center')
 
 
-plt.savefig('A300.png',dpi = 900,bbox_inches='tight')           
+plt.savefig('A300.jpg',dpi = 900,bbox_inches='tight')           
 
 ```
 
-![_config.yml]({{ site.baseurl }}/images/2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/output_33_1.png)
+![_config.yml]({{ site.baseurl }}/images/2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/output_33_1.jpg)
 
 
 Thanks for reading all the way to the end,
