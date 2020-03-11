@@ -2,9 +2,14 @@
 > summary
 
 
-It's Febrary 1972, the A300 airliner is being unviled in Toulouse, let's go on an adventure!
+It's Febrary 1972, the [A300](https://en.wikipedia.org/wiki/Airbus_A300) airliner is being unviled in Toulouse, let's go on an adventure (In markerless camera calibration!).
 
-![A300.jpg](attachment:A300.jpg)
+
+
+
+
+
+![An image of the Airbus A300 Final Assmembly line in Toulouse](A300.jpg)
 
 Let's keep things interesting, and pretend that we work for an aicraft manufacturer, Norton Aircraft, headquaretered in Burbank, Califaunia. Lets say we have seen this photo published in a magazine, and we want to try and learn as much about the dimensions of Airbus's new aircraft as possible. In order to do so, we will need to mathematically reconstruct the camera used to take the photo, as well as the scene itself.
 
@@ -12,33 +17,34 @@ Now, In this case, we are lucky, because we notice the hexagonal pattern on the 
 
 While we don't know the dimensions of the hexagon, we guess that each side is approximately 1.6m long, based on the high of the people in the photo. If we assume some point on the ground, say the center of a polygon is the point 0,0, we can work out the X & Y location of each other polygon vertex we can see. Furthermore, we could also assume that the factory floor is flat and level. Hence the Z coordinate of each point is 0.
 
-Let's spend ±5 minutes annotating the image, using an annotation tool like label me. I've generated a file, which you can find attached here:
+Let's spend ±5 minutes annotating the image, using an annotation tool like label me. I've generated a file, which you can find attached here: 
 
-![Hexagons.png](attachment:Hexagons.png)
+![An annotated image of the Airbus A300 Final Assmembly line in Toulouse](Hexagons.png)
 
 
-Firstly, lets load in all of the x and y points
+Firstly, lets load in all of the x and y points:
 
 ```python
 import json
+import numpy as np
 
 JSON = json.loads(open('A300.json','r').read())
-
 polygons = {}
 for shape in JSON['shapes']:
     coords = shape['label'].split(',')
     x,y = int(coords[0]),int(coords[1])
-    polygons[x,y] = shape['points']
-    
-    
+    polygons[x,y] = shape['points']    
 ```
 
 Ok, now doing some maths....
 
 ```python
-f = open('COORDS_A300.CSV','w')
-f.write('i,j,X,Y,Z\n')
-for key in sorted(polygons.keys()):
+from sklearn.neighbors import KDTree
+
+points = []
+keys = sorted(polygons.keys())
+
+for key in keys:
     poly = polygons[key]    
     (pts_x, pts_y) = zip(*poly)
     
@@ -58,26 +64,55 @@ for key in sorted(polygons.keys()):
     y*=1.6 #meters
     
     for idx in range(0,6):
+        point = []
         i = pts_x[idx]
         j = pts_y[idx]
         X = x[idx]
         Y = y[idx]
         Z = 0.0
-        out_str = str(i)+','+str(j)+','+ str(X)+','+str(Y)+','+str(Z)+''+'\n'
-        f.write(out_str)
-f.close()
+        points.append([i,j,X,Y,Z])
+        
+
+points = np.asarray(points)
+
+tree = KDTree(points[:,0:2], leaf_size=5)
+
+merged_indicies = []
+unique_points = []
+for i in range(0,points.shape[0]):
+    if i not in merged_indicies:
+        dist, ind = tree.query(points[i,0:2].reshape(-1, 2), k=3)
+        
+        indicies_to_merge = []
+        for j in range(0,3):
+            if dist[0][j]<10:
+                indicies_to_merge.append(ind[0][j]) 
+                merged_indicies.append(ind[0][j])
+
+        mean_points = np.mean(points[indicies_to_merge,:],axis=0)
+        unique_points.append(mean_points)
+        
+
+unique_points = np.asarray(unique_points)
 ```
 
 So, now we have a bunch of 3D points, and corresponding 2D points in the photo.
 
+Now it's time to turn to the real magic, bundle adjustment. Basically, our task at hand, is to find a camera, which best fits the data we have measured. 
+
+Let's talk more about cameras.
+{% include important.html content='There are many correct ways to model a camera mathematically. This is one way.' %}
+
+Mathematically, cameras are are composed of two types of parameters, *Intrinsic* and *Extrinsic*.
+The *Extrinsic* parameters define the position and rotation of the camera, with respect to the origin of the points it's observing.
+
+The *Intrinsic* parameters define the parameters of the camera itself, for example the Focal length, the location of the camera's radial center, as well as distortion induced by the lens.
 
 
+The *Extrinisic* parameters are cromprised of 6 degrees of freedom, given our world is 3 dimensional, and there are 3 dimmensions which to rotate around. 
 
-I've always been interested in structure from motion/bundle adjustment/markerless camera calibration, given we start with a problem that seems intractable, but we find a solution, as if by magic.
-
-Like all good magic tricks, it all comes down to diligant and careful planning behind the scenes.
-
-To be clear, I'm building on the shoulders of giants, I've heavily adpated this example from this incredible demo by *Nikolay Mayorov* which you can find here: https://scipy-cookbook.readthedocs.io/items/bundle_adjustment.html
+The *Intrinsic* parameters are more complex. There are a number of great resources, for example *Multiple View Computer Vision*, or the OpenCV documentation. Howevever, In this case, I am assuming that the principle point, the focal length, and the radial parameters are unknown.
+{% include note.html content='To be clear, I&#8217;m building on the shoulders of giants, I&#8217;ve heavily adpated this example from this incredible demo by *Nikolay Mayorov* which you can find here: https://scipy-cookbook.readthedocs.io/items/bundle_adjustment.html' %}
 
 ```python
 from __future__ import print_function
@@ -95,113 +130,228 @@ from scipy.spatial.transform import Rotation as Rot
 
 %matplotlib inline
 
-plt.rcParams["figure.figsize"] = (10,10)
+plt.rcParams["figure.figsize"] = (20,20)
 ```
 
 ```python
-camera_params = np.zeros(12)
+points_2d = unique_points[:,0:2]
+points_3d = unique_points[:,2:5]
 
-#camera_matrix
-#T
-camera_params[3] = 0
-camera_params[4] = 0
-camera_params[5] = 5
+print(points_2d.shape)
+
+#print(points_2d[:,0])
+#plt.scatter(points_2d[:,0],points_2d[:,1])
+#plt.show()
+
+```
+
+    (51, 2)
+
+
+Let's start by setting some priors.
+
+We know both the image width and height, 
+
+I think the cameras is about 10 meters off the ground.
+
+To make the task of optimization easier, lets rotate the camera so that it's facing directly down. This means that the points should be in front of/below it.
+
+We can also reasonable guess that the location of the optical center is near that center of the image. 
+
+```python
+image_width =  2251
+image_height = 1508
+
+estimated_focal_length_px = (50.0/36) * image_width
+camera_params = np.zeros(14)
+
+r = Rot.from_euler('x', 180, degrees=True).as_rotvec()
+#Rotation matrix
+camera_params[0] = r[0]
+camera_params[1] = r[1]
+camera_params[2] = r[2]
+
+#C
+camera_params[3] = points_3d[:,0].mean()
+camera_params[4] = points_3d[:,1].mean()
+camera_params[5] = 10
 
 #f,k1,k2,
-camera_params[6] = 1000
+camera_params[6] = estimated_focal_length_px
 camera_params[7] = 0
 camera_params[8] = 0
 camera_params[9] = 0
+camera_params[10] = 0
+camera_params[11] = 0
+
 
 #c_x,c_y
-camera_params[10] = 2251/2.0
-camera_params[11] = 1508/2.0
+camera_params[12] = image_width/2.0
+camera_params[13] = image_height/2.0
 ```
+
+Now we come to the real magic. This function models the camera, taking points in 3D space, and converting them into points in 2D space.
+
+There are lots of things going on here,
+
+![Diagram of a pinhole camera](pinholeCamera.png)
+
+
+Firstly, let's talk about the camera's intrinsic matrix.
+
+Basically, it converts points from 3D space to 2D space.
+
+\begin{equation*}
+K = 
+\begin{bmatrix}
+f & 0 & c_{x} \\
+0 & f & c_{y} \\
+0 & 0 & 1 
+\end{bmatrix}
+\end{equation*}
+
+
+We have the focal length, $f$, and the camera optical center $c_x$ and $c_y$.
+
+
+Secondly let's talk about the camera's extrinsic matrix. 
+
+These are the 6 degrees of freedom that describe it's position and orientation within the world. 
+That's 3 degrees for the position, and 3 for the orientation. At it's heart, what we are doing is simple, but confusing. 
+
+There are so many ways to represent our setup:
+1. Coordinate systems: 2D and 3D.
+  * Left Handed or Right Handed?
+   
+2. Rotations:
+  * Quaternions?
+  * Proper Euler angles (6 different ways)?
+  * Tait–Bryan angles (6 different ways)?
+  * Rodrigues rotation formula?
+  * A rotation matrix? 
+3. The location of the camera in to the world. (2 Different ways).
+
+
+Today we are going to use two different ways to represent the rotations, Firstly a [Rodrigues rotation vector](https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula) representation, and a rotation matrix. The reason why we use two different representations is because it's easier to optimise when we have 3 degrees of freedom, rather than a naive rotation matrix which uses 9 numbers to represent 3 degrees of freedom.
+
+R reprsents the orientation of the cameara in the World Coordinate Frame (The frame which we use to describe our 3D points).
+
+In python, we can use convert from the Rodrigues rotation vector to the Rotation matrix as follows:
 
 ```python
-df = pd.read_csv('COORDS_A300.CSV', sep=',')
-
-points_2d = df.values[:,0:2]
-points_3d = df.values[:,2:5]
-
-
-#Flip up down
-points_2d[:,1] = 2251 - points_2d[:,1]
-
-#Set origin to be middle of the image.
-plt.scatter(points_2d[:,0],points_2d[:,1])
-plt.xlim(0,2251)
-plt.xlim(0,1508)
-plt.show()
-
-
-X_mean = points_3d[:,0].mean()
-Y_mean = points_3d[:,1].mean()
-
-points_3d[:,0] -= X_mean
-points_3d[:,1] -= Y_mean
+from scipy.spatial.transform import Rotation as Rot
+rotation_vector = camera_params[:3]
+R = Rot.from_rotvec(rotation_vector).as_matrix()
 ```
 
+\begin{equation*}
+R = 
+\begin{bmatrix}
+R_1 & R_2 & R_3 \\
+R_4 & R_5 & R_6 \\
+R_7 & R_8 & R_9 
+\end{bmatrix}
+\end{equation*}
 
-![png](2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/output_8_0.png)
+Now, let's talk about the Project Matrix $P$ of the camera. This takes the points all the way from the their location in 3D world coordinates, to pixel coordinates, assuming we have a cameara without radial distortion. There are two main ways this could be formulated.
+
+Firstly:
+\begin{equation*}
+P = KR[I|−C]
+\end{equation*}
+
+Secondly:
+\begin{equation*}
+P = K[R | t]
+\end{equation*}
 
 
+Where $t$ is:
+\begin{equation*}
+t = −RC
+\end{equation*}
+
+
+
+
+Let's go with the first method, where C is :
+
+\begin{equation*}
+C = 
+\begin{bmatrix}
+-C_X\\
+-C_Y\\
+-C_Z 
+\end{bmatrix}
+\end{equation*}
+
+
+However, there is one subtletly aluded to before, which is the impact of radial distortion. Simply, the camera's lenses distort the rays of light coming in, in a non-linear way. 
+
+We can model it using a Taylor series:
+
+\begin{equation*}
+x_c = x(1 + k_1  r^2 + k_2  r^4 + k_3 r^6)
+\end{equation*}
+\begin{equation*}
+y_c = y(1 + k_1  r^2 + k_2 r^4 + k_3 r^6)
+\end{equation*}
+
+
+
+In python, we end up with:
 ```python
-n_cameras = camera_params.shape[0]
-n_points = points_3d.shape[0]
-
-n = 10 * n_cameras
-m = 2 * points_2d.shape[0]
-
-print("n_cameras: {}".format(n_cameras))
-print("n_points: {}".format(n_points))
-print("Total number of parameters: {}".format(n))
-print("Total number of residuals: {}".format(m))
-
+r = np.sqrt(np.sum(points_proj**2, axis=1)))
+r = 1 + k1 \times r**2 + k2 * r**4 + k3 * r**6
+points_proj *= r[:, np.newaxis]
 ```
-
-    n_cameras: 12
-    n_points: 60
-    Total number of parameters: 120
-    Total number of residuals: 120
-
+    
+ 
+    
 
 ```python
 def project(points, camera_params):
     """Convert 3-D points to 2-D by projecting onto images."""
     #Rotation
-    R = Rot.from_rotvec(camera_params[:3]).as_matrix()
+    rotation_vector = camera_params[:3]
+    R = Rot.from_rotvec(rotation_vector).as_matrix()
     
-    #Translation 
-    T = camera_params[3:6].reshape(3,1)
-    
-    #Composing RT Matrix
-    RT = np.hstack([R,T])
+    #Camera Center
+    C = camera_params[3:6].reshape(3,1)
+    IC = np.hstack([np.eye(3),-C])
+    RIC = np.matmul(R,IC)
     
     #Make points Homogeneous
     points = np.hstack([points,np.ones((points.shape[0],1))])
     
-    #Perform projective transform
+    #Perform Rotation and Translation
     #(n,k), (k,m) -> (n,m)
-    points_proj = np.matmul(points,RT.T)
+    points_proj = np.matmul(points,RIC.T)
     
     #perspective divide 
     points_proj = points_proj[:, :2] / points_proj[:, 2, np.newaxis]
     
     f  = camera_params[6]
+    
     k1 = camera_params[7]
     k2 = camera_params[8]
     k3 = camera_params[9]
-    
-    c_x = camera_params[10]
-    c_y = camera_params[11]
+    k4 = camera_params[10]
+    k5 = camera_params[11]
+
+    c_x = camera_params[12]
+    c_y = camera_params[13]
     
     #Radial distortion
-    r_squared = np.sum(points_proj**2, axis=1)
-    r = 1 + k1 * r_squared + k2 * r_squared**2 + k3 * r_squared**3
+    r = np.sqrt(np.sum(points_proj**2, axis=1))
     
-    points_proj *= r[:, np.newaxis]
+    x = points_proj[:,0]
+    y = points_proj[:,1]
     
+    points_proj[:,0] = (1 + k1 * r**2 + k2 * r**4 + k3 * r**6)*x + 2*(k4*y + k5*x)*x + k5*r**2  
+    points_proj[:,1] = (1 + k1 * r**2 + k2 * r**4 + k3 * r**6)*y + 2*(k4*y + k5*x)*y + k4*r**2  
+    
+    #Make points Homogeneous
     points_proj = np.hstack([points_proj, np.ones((points_proj.shape[0],1))])
     
     K = np.asarray([[f, 0, c_x],
@@ -210,9 +360,12 @@ def project(points, camera_params):
     
     points_proj = np.dot(points_proj,K.T)
     points_proj = points_proj[:,:2]
-    
     return(points_proj)
 ```
+
+This section below is really well explained by [here](https://scipy-cookbook.readthedocs.io/items/bundle_adjustment.html). Basically, we are optimizing to minimise a geometric error. It's the distance between the 2D points we see, and the projection of their 3D counterparts. 
+
+Through a process of optimization, we aim to find parameters which result a in low error, which means in turn they should represent the real parameters of the camera.
 
 ```python
 def fun(camera_params, points_2d, points_3d):
@@ -223,81 +376,102 @@ def fun(camera_params, points_2d, points_3d):
 
 ```python
 x0 = camera_params.ravel()
-res = least_squares(fun, x0,  verbose=1, x_scale='jac', ftol=1e-4, method='lm',loss='linear',
-                    args=(points_2d, points_3d))
+
+'''
+lower_bounds = [-np.inf,-np.inf,-np.inf,
+                -100,-100,0,
+                -100_000,-np.inf,-np.inf,-np.inf,
+               -np.inf,-np.inf]
+
+upper_bounds = [np.inf,np.inf,np.inf,
+               100,100,100,
+               100_000,np.inf,np.inf,np.inf,
+               np.inf,np.inf]
+bounds = (lower_bounds,upper_bounds)
+
+'''
+
+optimization_results = least_squares(fun, x0,  verbose=1, x_scale='jac', ftol=1e-4, method='lm',
+                                     loss='linear',args=(points_2d, points_3d))
 ```
 
     `ftol` termination condition is satisfied.
-    Function evaluations 362, initial cost 3.3946e+07, final cost 1.2265e+02, first-order optimality 1.08e+02.
+    Function evaluations 1994, initial cost 8.2917e+07, final cost 1.7128e+02, first-order optimality 5.93e+02.
 
 
 ```python
+camera_params = optimization_results.x
 
-params_per_camera = 9
-x = res.x
-R_Rodrigues = x[0:3]
-T = x[3:6]
-intrinsic = x[6:params_per_camera]
+R_Rodrigues = camera_params[0:3]
+C = camera_params[3:6]
 
-print(intrinsic)
 r = Rot.from_rotvec(R_Rodrigues)
 R_matrix = r.as_matrix()
 
+r = Rot.from_matrix(R_matrix.T)
+R_Quaternion = r.as_quat()
 
-C = -np.dot(np.linalg.inv(R_matrix),T)
+print('Quaternions: X: {:.3f} Y: {:.3f} Z: {:.3f} W: {:.3f} '.format(R_Quaternion[0],R_Quaternion[1],R_Quaternion[2],R_Quaternion[3]))
+print('Camera position relative to the origin in (M): X: {:.2f}, Y: {:.2f}, Z: {:.2f}'.format(C[0],C[1],C[2]))
 
-print('centroid of camera in world coordinates')
-print(C[0]+X_mean,C[1]+Y_mean,C[2])
+focal_length_px = camera_params[6]
+k1 = camera_params[7]
+k2 = camera_params[8]
+k3 = camera_params[9]
 
-print('quatonians')
-print(r.as_quat())
+k4 = camera_params[10]
+k5 = camera_params[11]
 
-print(res.cost/points_2d.shape[0])
+c_x = camera_params[12]
+c_y = camera_params[13]
 
+print('Focal length (Pixels): {:.2f}'.format(focal_length_px))
+print('CX, CY: {:.2f} {:.2f}'.format(c_x,c_y))
+
+print('K_1, K_2, K_3 : {:.6f}, {:.6f}, {:.6f}'.format(k1,k2,k3))
+print('Mean error per point: {:.2f} pixels '.format(optimization_results.cost/points_2d.shape[0]))
+
+image_width =  2251
+image_height = 1508
 ```
 
-    [1.69657784e+03 2.23353222e-03 7.34040220e-02]
-    centroid of camera in world coordinates
-    -8.978834938543706 -15.150961972229053 -6.072551195042725
-    quatonians
-    [ 0.37018863 -0.1863872   0.37792249  0.82788573]
-    2.0441718675933784
+    Quaternions: X: 0.797 Y: -0.371 Z: 0.222 W: -0.423 
+    Camera position relative to the origin in (M): X: -9.13, Y: -14.78, Z: 6.29
+    Focal length (Pixels): 1849.51
+    CX, CY: 1114.76 1816.82
+    K_1, K_2, K_3 : -0.009892, -0.002677, -0.007171
+    Mean error per point: 3.36 pixels 
 
 
 ```python
-plt.plot(res.fun)
+plt.hist(abs(optimization_results.fun),density=True)#, bins = np.arange(0,5,0.5),alpha=0.5)
+plt.title('Histogram of Residuals')
+plt.xlabel('Absolute Residual (Pixels)')
+plt.grid()
 plt.show()
-
-plt.hist(res.fun)
-plt.show()
-
 ```
 
 
-![png](2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/output_14_0.png)
-
-
-
-![png](2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/output_14_1.png)
+![png](2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/output_25_0.png)
 
 
 ```python
-points_2d_proj = project(points_3d, res.x)
+points_2d_proj = project(points_3d, optimization_results.x)
 
-img = plt.imread('A300.jpg')        
+img = plt.imread('A300.jpg')      
 plt.imshow(img)
-plt.scatter(points_2d[:,0],points_2d[:,1],label='Actual')
-plt.scatter(points_2d_proj[:,0],points_2d[:,1],label='Optimised')
+plt.scatter(points_2d[:,0],points_2d[:,1],label='Actual',c='r',alpha=0.5)
+plt.scatter(points_2d_proj[:,0],points_2d[:,1],label='Optimised',c='k',alpha=0.5)
 plt.savefig('A300_points.png',dpi = 900)           
 
 ```
 
 
-![png](2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/output_15_0.png)
+![png](2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/output_26_0.png)
 
 
 ```python
-img = plt.imread('A300.jpg')        
+      
 plt.imshow(img)
 
 def plot_verticies(row,col):
@@ -307,24 +481,14 @@ def plot_verticies(row,col):
     x = row * 1.5 + x_vertex
     y = col * 0.5 * np.sqrt(3) + y_vertex
 
-    x*=1.67
-    y*=1.67
+    x*=1.6
+    y*=1.6
 
     points_3d = np.vstack([x,y,np.zeros(7)]).T
-    
-    points_3d[:,0] -= X_mean
-    points_3d[:,1] -= Y_mean
-    
-    points_2d_proj = project(points_3d, res.x)
-    
-    
-    points_2d_proj[:,1] = 2251 - points_2d_proj[:,1]
-    
+    points_2d_proj = project(points_3d, optimization_results.x)
     
     return(points_2d_proj)
-        
-
-
+    
 for row in range(0,10,2):
     for col in range(0,10,2):
         points_2d_proj = plot_verticies(row,col)
@@ -343,11 +507,30 @@ plt.savefig('A300.png',dpi = 900,bbox_inches='tight')
 
 ```
 
-    /Users/cooke_c/.local/lib/python3.7/site-packages/ipykernel_launcher.py:43: MatplotlibDeprecationWarning: Support for uppercase single-letter colors is deprecated since Matplotlib 3.1 and will be removed in 3.3; please use lowercase instead.
+    /Users/cooke_c/.local/lib/python3.7/site-packages/ipykernel_launcher.py:32: MatplotlibDeprecationWarning: Support for uppercase single-letter colors is deprecated since Matplotlib 3.1 and will be removed in 3.3; please use lowercase instead.
 
 
 
-![png](2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/output_16_1.png)
+![png](2020-2-23-An-Adventure-In-Markerless-Camera-Calibration_files/output_27_1.png)
 
 
-Again, huge thanks to *Nikolay Mayorov* who created the awsome demo of optimization in Scipy that I built upon, find the original code here https://scipy-cookbook.readthedocs.io/items/bundle_adjustment.html.
+{% include note.html content='Again, huge thanks to *Nikolay Mayorov* who created the awsome demo of optimization in Scipy that I built upon, find the original code [here](https://scipy-cookbook.readthedocs.io/items/bundle_adjustment.html).' %}{% include note.html content='Finite cameras. Page 153, Multiple View Geometry in Computer Vision (Second edition)' %}{% include note.html content='Minimizing geometric error. Page 176, Multiple View Geometry in Computer Vision (Second edition)' %}
+
+```python
+r = Rot.from_euler('x', 180, degrees=True)
+
+#r = Rot.from_rotvec(R_Rodrigues)
+#R_matrix = r.as_matrix()
+
+#r = Rot.from_matrix(R_matrix.T)
+R_Quaternion = r.as_quat()
+#print(R_Quaternion)
+
+
+print('Quaternions: X: {:.3f} Y: {:.3f} Z: {:.3f} W: {:.3f} '.format(R_Quaternion[0],R_Quaternion[1],R_Quaternion[2],R_Quaternion[3]))
+
+
+```
+
+    Quaternions: X: 1.000 Y: 0.000 Z: 0.000 W: 0.000 
+
