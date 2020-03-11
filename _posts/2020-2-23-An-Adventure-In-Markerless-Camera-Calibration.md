@@ -511,4 +511,4 @@ Multiple View Geometry in Computer Vision is an incredible book, that I learn mo
 * Finite cameras. Page 153, Multiple View Geometry in Computer Vision (Second edition)
 * Minimizing geometric error. Page 176, Multiple View Geometry in Computer Vision (Second edition)
 
-Photos by André Cros, preserved by the city archives of Toulouse and released under CC BY-SA 4.0 license by the deliberation n°27.3 of June 23rd, 2017 of the Town Council of the City of Toulouse.
+Photos by André Cros, preserved by the city archives of Toulouse and released under CC BY-SA 4.0 license.
