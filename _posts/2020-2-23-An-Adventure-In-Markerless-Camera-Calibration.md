@@ -148,7 +148,7 @@ print('We have {} unique points'.format(points_2d.shape[0]))
     We have 51 unique points
 
 
-Let's start by providing some "hints{ to the optimiser about what the solution could be like, by putting in some reasonable starting conditions. 
+Let's start by providing some "hints" to the optimiser about what the solution could be like, by putting in some reasonable starting conditions. 
 
 We know both the image width and height, and we can assume that the principal point is in the center of the image.
 
