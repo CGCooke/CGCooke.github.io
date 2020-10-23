@@ -1,15 +1,14 @@
 # About
-Hi, I'm Cameron,
 
-I'm passionate about AI (Computer Vision in particular), Robotics and the future of Aerospace.
+Hi, I'm Cameron!
 
-I'm writing a blog because the first step to truly understanding something is being able to explain it to someone else.
+I'm passionate about Computer Vision, Robotics, Deep Learning, Bayesian Analysis and Flight.
 
-Plus I get excited about the incredible world around us, and can't wait to tell everyone about it!
+I'm writing a blog because the first step to better understanding something is to try and explain it to someone else. 
 
-Until next time.
+Plus I get excited about the incredible world around us, and writing helps me appreciate it all the more.
 
-Cameron
+I currently work with Airbus in Toulouse, France, where I get to learn from some incredible people, while helping to shape the future of the Aerospace industry.
 
 
 ![_config.yml]({{ site.baseurl }}/images/about/IMG_1807.JPG)
