@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.251">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2020-08-22">
+<meta name="description" content="Let’s take a high-level view of how often Afterpay customers pay late, based on Afterpay’s FY2019 Annual report.">
+
+<title>Adventures with Numbers - How often do Afterpay transactions attract late fees? (Part 2)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Adventures with Numbers</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/CGCooke"><i class="bi bi-github" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/CGCooke"><i class="bi bi-twitter" role="img">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">How often do Afterpay transactions attract late fees? (Part 2)</h1>
+                  <div>
+        <div class="description">
+          Let’s take a high-level view of how often Afterpay customers pay late, based on Afterpay’s FY2019 Annual report.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Bayesian</div>
+                <div class="quarto-category">PyMC3</div>
+                <div class="quarto-category">Finance</div>
+                <div class="quarto-category">Monte Carlo Simulation</div>
+                <div class="quarto-category">Afterpay</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">August 22, 2020</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#what-do-we-know" id="toc-what-do-we-know" class="nav-link" data-scroll-target="#what-do-we-know">What do we know?</a></li>
+  <li><a href="#computing-late-fees" id="toc-computing-late-fees" class="nav-link" data-scroll-target="#computing-late-fees">Computing late fees</a></li>
+  <li><a href="#modelling-transaction-values" id="toc-modelling-transaction-values" class="nav-link" data-scroll-target="#modelling-transaction-values">Modelling transaction values</a></li>
+  <li><a href="#modelling-late-fees" id="toc-modelling-late-fees" class="nav-link" data-scroll-target="#modelling-late-fees">Modelling late fees</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>From the <a href="https://cgcooke.github.io/Blog/bayesian/finance/2020/08/21/Afterpay-Customer-Defaults-Part-1.html">previous post</a>, I made some high-level estimates for how often <em>Afterpay</em> transactions attracted late fees. If we could better understand the actual distribution of late fees, then we could, in turn, better estimate the frequency of late fees.</p>
+<div class="callout-important callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Obviously, I need a disclaimer. If you use anything I say as the basis for any decision, financial or otherwise, you are an idiot.</p>
+</div>
+</div>
+</section>
+<section id="what-do-we-know" class="level2">
+<h2 class="anchored" data-anchor-id="what-do-we-know">What do we know?</h2>
+<ul>
+<li>Late Fees Revenue: 46.1 million AUD</li>
+<li>Average Transaction Value: Approximately 150 AUD &nbsp; &nbsp; Furthermore, we know that the lowest and highest fee you can charge for a single transaction is 10 AUD and 68 AUD. Hence, this, in turn, bounds the average of the late fees.</li>
+</ul>
+<p><em>Afterpay</em> is pretty transparent about their late fees; I’ve taken the following from <a href="https://www.afterpay.com/en-AU/terms-of-service#:~:text=If%20a%20payment%20is%20not,may%20be%20applied%20per%20order.">here</a>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/2020-08-22-Afterpay-Customer-Defaults-Part-2/late_fees.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Afterpay late fees policy</figcaption><p></p>
+</figure>
+</div>
+<p>We can model this policy out in code, keeping in mind that the customer pays <em>Afterpay</em> 4 separate times.</p>
+<p>There are some pieces of information that we are missing.</p>
+<ol type="1">
+<li>The distribution of values for transactions where customers pay late.</li>
+<li>How late they make each payment.</li>
+</ol>
+<p>At this stage, we have to accept that we probably can’t find an exact solution, but we can settle for a good approximation.</p>
+<p>One assumption we could make is that the number of late payments is uncorrelated with the transaction value and uniformly distributed for delays of less than and more than one week.</p>
+</section>
+<section id="computing-late-fees" class="level2">
+<h2 class="anchored" data-anchor-id="computing-late-fees">Computing late fees</h2>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute_late_fee(transaction_value,probability_of_late_payment <span class="op">=</span> <span class="fl">0.5</span>):</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    total_fees <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    number_of_delays_of_less_than_1_week <span class="op">=</span> <span class="dv">1</span> <span class="op">+</span> np.random.binomial(<span class="dv">3</span>,probability_of_late_payment,<span class="dv">1</span>)[<span class="dv">0</span>]</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> number_of_delays_of_less_than_1_week <span class="op">&gt;</span> <span class="dv">0</span>:</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        number_of_delays_of_more_than_1_week <span class="op">=</span> np.random.binomial(number_of_delays_of_less_than_1_week,probability_of_late_payment,<span class="dv">1</span>)[<span class="dv">0</span>]</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    total_fees <span class="op">=</span> <span class="dv">10</span> <span class="op">*</span> number_of_delays_of_less_than_1_week <span class="op">+</span> <span class="dv">7</span> <span class="op">*</span> number_of_delays_of_more_than_1_week</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    late_fee <span class="op">=</span> <span class="bu">min</span>([total_fees,<span class="fl">0.25</span><span class="op">*</span>transaction_value])</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    late_fee <span class="op">=</span> <span class="bu">max</span>([late_fee,<span class="dv">10</span>])</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(late_fee)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pymc3 <span class="im">as</span> pm</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy.stats <span class="im">as</span> st</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"figure.figsize"</span>] <span class="op">=</span> (<span class="dv">10</span>,<span class="dv">10</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> warnings <span class="im">import</span> filterwarnings</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>filterwarnings(<span class="st">'ignore'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="modelling-transaction-values" class="level2">
+<h2 class="anchored" data-anchor-id="modelling-transaction-values">Modelling transaction values</h2>
+<p>Let’s model the transaction values.</p>
+<p>I’m making two assumptions:</p>
+<ol type="1">
+<li>Transactions where the customer is late paying, have the same average transaction value as other payments.</li>
+<li>Transaction values are Exponentially distributed.</li>
+</ol>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">1500</span>, <span class="dv">300</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>pdf <span class="op">=</span> st.expon.pdf(x, scale<span class="op">=</span><span class="dv">150</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>plt.plot(x, pdf)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Transaction value (AUD)'</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Relative Frequency'</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="2020-08-22-Afterpay-Customer-Defaults-Part-2_files/figure-html/cell-4-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pm.Model() <span class="im">as</span> model:</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    average_transaction_value_aud <span class="op">=</span> pm.Uniform(<span class="st">'average_transaction_value_aud'</span>, lower<span class="op">=</span><span class="fl">144.50</span>, upper<span class="op">=</span><span class="fl">154.49</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    transaction_value_aud <span class="op">=</span> pm.Bound(pm.Exponential, upper<span class="op">=</span><span class="fl">1_500.0</span>)(<span class="st">'transaction_value_aud'</span>, lam <span class="op">=</span> <span class="dv">1</span><span class="op">/</span>average_transaction_value_aud)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now that we have instantiated all of the random variables, we will take 50,000 draws from them to perform our <em>Monte Carlo</em> simulation.</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> model:</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    samples <span class="op">=</span> pm.sample_prior_predictive(samples<span class="op">=</span><span class="dv">50_000</span>, random_seed<span class="op">=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>sns.distplot(samples[<span class="st">"transaction_value_aud"</span>], kde<span class="op">=</span><span class="va">False</span>, norm_hist<span class="op">=</span><span class="va">True</span>, bins<span class="op">=</span><span class="dv">100</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Histogram of transaction values'</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Transaction value (AUD)'</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Relative Frequency'</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="2020-08-22-Afterpay-Customer-Defaults-Part-2_files/figure-html/cell-7-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>As we can see, this distribution has a mean of approximately 150 AUD.</p>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pm.summary(samples[<span class="st">'transaction_value_aud'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>arviz.stats.stats_utils - WARNING - Shape validation failed: input_shape: (1, 50000), minimum_shape: (chains=2, draws=4)</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>mean</th>
+      <th>sd</th>
+      <th>hpd_3%</th>
+      <th>hpd_97%</th>
+      <th>mcse_mean</th>
+      <th>mcse_sd</th>
+      <th>ess_mean</th>
+      <th>ess_sd</th>
+      <th>ess_bulk</th>
+      <th>ess_tail</th>
+      <th>r_hat</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>x</th>
+      <td>150.103</td>
+      <td>150.269</td>
+      <td>0.0</td>
+      <td>422.672</td>
+      <td>0.675</td>
+      <td>0.477</td>
+      <td>49547.0</td>
+      <td>49547.0</td>
+      <td>49322.0</td>
+      <td>49878.0</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="modelling-late-fees" class="level2">
+<h2 class="anchored" data-anchor-id="modelling-late-fees">Modelling late fees</h2>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>late_fees <span class="op">=</span> []</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> transaction_value <span class="kw">in</span> samples[<span class="st">"transaction_value_aud"</span>]:</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    late_fee <span class="op">=</span> compute_late_fee(transaction_value)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    late_fees.append(late_fee)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>late_fees <span class="op">=</span> np.array(late_fees)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>sns.distplot(late_fees, kde<span class="op">=</span><span class="va">False</span>, norm_hist<span class="op">=</span><span class="va">True</span>, bins<span class="op">=</span>np.arange(<span class="dv">10</span>,<span class="dv">70</span>,<span class="dv">1</span>))</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Average Late Fee (AUD)'</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="2020-08-22-Afterpay-Customer-Defaults-Part-2_files/figure-html/cell-10-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>pm.summary(late_fees)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>arviz.stats.stats_utils - WARNING - Shape validation failed: input_shape: (1, 50000), minimum_shape: (chains=2, draws=4)</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+
+<div>
+
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>mean</th>
+      <th>sd</th>
+      <th>hpd_3%</th>
+      <th>hpd_97%</th>
+      <th>mcse_mean</th>
+      <th>mcse_sd</th>
+      <th>ess_mean</th>
+      <th>ess_sd</th>
+      <th>ess_bulk</th>
+      <th>ess_tail</th>
+      <th>r_hat</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>x</th>
+      <td>22.585</td>
+      <td>12.514</td>
+      <td>10.0</td>
+      <td>44.0</td>
+      <td>0.056</td>
+      <td>0.04</td>
+      <td>49161.0</td>
+      <td>49161.0</td>
+      <td>48824.0</td>
+      <td>49670.0</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>We now can compute the expected average late fee, given the distribution of transaction values and a probability of making each payment on time. &nbsp;In our case, we found the average late fee was 37.49 AUD.</p>
+<p>However, I don’t think we can conclude anything meaningful from a single distribution of transaction values and a single probability of making each payment on time.</p>
+<p>Given this, we can try lots of different distributions and use this to find the distribution of average late fees that we could see. Next post, I will make the way I do the sampling more computationally efficient. This will allow us to draw some meaningful conclusions.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.251">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2018-11-18">
+<meta name="description" content="Visualising Digital Elevation Maps">
+
+<title>Adventures with Numbers - 256 shades of grey</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Adventures with Numbers</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/CGCooke"><i class="bi bi-github" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/CGCooke"><i class="bi bi-twitter" role="img">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">256 shades of grey</h1>
+                  <div>
+        <div class="description">
+          Visualising Digital Elevation Maps
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Remote Sensing</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">November 18, 2018</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#dem" id="toc-dem" class="nav-link active" data-scroll-target="#dem">DEM</a></li>
+  <li><a href="#slicing" id="toc-slicing" class="nav-link" data-scroll-target="#slicing">Slicing</a></li>
+  <li><a href="#hillshading" id="toc-hillshading" class="nav-link" data-scroll-target="#hillshading">Hillshading</a></li>
+  <li><a href="#hypsometric-tinting" id="toc-hypsometric-tinting" class="nav-link" data-scroll-target="#hypsometric-tinting">Hypsometric Tinting</a></li>
+  <li><a href="#slope-shading" id="toc-slope-shading" class="nav-link" data-scroll-target="#slope-shading">Slope Shading</a></li>
+  <li><a href="#layer-merging" id="toc-layer-merging" class="nav-link" data-scroll-target="#layer-merging">Layer Merging</a></li>
+  <li><a href="#further-reading" id="toc-further-reading" class="nav-link" data-scroll-target="#further-reading">Further reading</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<p>On February 22, 2000, after 11 days of measurements, the most comprehensive map ever created of the earth’s topography was complete. The space shuttle <em>Endeavor</em> had just completed the Shuttle Radar Topography Mission, using a specialised radar to image the earth’s surface.</p>
+<p>The resulting Digital Elevation Map (DEM) is in the public domain and provides the measured terrain height at ~90-meter resolution. The mission mapped 99.98% of the area between 60 degrees North and 56 degrees South.</p>
+<p>This post will examine how to process the raw DEM to be more intuitively interpreted through <em>hill-shading</em>,<em>slope shading</em> &amp; <em>hypsometric tinting</em>.</p>
+<p>Transforming the raw GeoTIFF into the final imagery product is simple. GDAL, the Geospatial Data Abstraction Library, carries out much of the grunt work.</p>
+<p>In order, we need to:</p>
+<ol type="1">
+<li>Download a DEM as a GeoTIFF</li>
+<li>Extract a subsection of the GeoTIFF</li>
+<li>Reproject the subsection</li>
+<li>Make an image by hill shading</li>
+<li>Make an image by colouring the subsection according to altitude</li>
+<li>Make an image by colouring the subsection according to slope</li>
+<li>Combine the three images into a final composite</li>
+</ol>
+<section id="dem" class="level1">
+<h1>DEM</h1>
+<p>Several different DEMs have been created from the data collected on the SRTM mission. I will use the CGIAR <a href="http://www.cgiar-csi.org/data/srtm-90m-digital-elevation-database-v4-1">SRTM 90m Digital Elevation Database</a>. Data is provided in 5x5 degree tiles, with each degree of latitude equal to approximately 111Km.</p>
+<p>Our first task is to acquire a tile. Tiles can be downloaded from http://data.cgiar-csi.org/srtm/tiles/GeoTIFF/ using wget.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image, ImageChops, ImageEnhance</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> cm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> downloadDEMFromCGIAR(lat,lon):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">''' Download a DEM from CGIAR FTP repository '''</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    fileName <span class="op">=</span> lonLatToFileName(lon,lat)<span class="op">+</span><span class="st">'.zip'</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">''' Check to see if we have already downloaded the file '''</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> fileName <span class="kw">not</span> <span class="kw">in</span> os.listdir(<span class="st">'.'</span>):</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        os.system(<span class="st">'''wget --user=data_public --password='GDdci' http://data.cgiar-csi.org/srtm/tiles/GeoTIFF/'''</span><span class="op">+</span>fileName)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    os.system(<span class="st">'unzip '</span><span class="op">+</span>fileName)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> lonLatToFileName(lon,lat):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">''' Compute the input file name '''</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    tileX <span class="op">=</span> <span class="bu">int</span>(math.ceil((lon<span class="op">+</span><span class="dv">180</span>)<span class="op">/</span><span class="fl">5.0</span>))</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    tileY <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">*</span><span class="bu">int</span>(math.ceil((lat<span class="op">-</span><span class="dv">65</span>)<span class="op">/</span><span class="fl">5.0</span>))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    inputFileName <span class="op">=</span> <span class="st">'srtm_'</span><span class="op">+</span><span class="bu">str</span>(tileX).zfill(<span class="dv">2</span>)<span class="op">+</span><span class="st">'_'</span><span class="op">+</span><span class="bu">str</span>(tileY).zfill(<span class="dv">2</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(inputFileName)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>lon,lat <span class="op">=</span> <span class="op">-</span><span class="dv">123</span>,<span class="dv">49</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>inputFileName <span class="op">=</span> lonLatToFileName(lon,lat)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>downloadDEMFromCGIAR(lat,lon)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="slicing" class="level1">
+<h1>Slicing</h1>
+<p>The area I have selected covers Washington State and British Columbia, with file name <em>srtm_12_03.tif</em>.</p>
+<p>Let’s use <a href="http://www.gdal.org/">GDAL</a> to extract a subsection of the tile. The subsection covers Vancouver Island and the Pacific Ranges, stretching from 125ºW - 122ºW &amp; 48ºN - 50ºN. Using gdalwarp:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="op">!!</span> gdalwarp <span class="op">-</span>q <span class="op">-</span>te <span class="op">-</span><span class="dv">125</span> <span class="dv">48</span> <span class="op">-</span><span class="dv">122</span> <span class="dv">50</span> <span class="op">-</span>srcnodata <span class="op">-</span><span class="dv">32768</span> <span class="op">-</span>dstnodata <span class="dv">0</span> srtm_12_03.tif subset.tif</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Our next step is to transform the subsection of the tile to a different projection. The points in the subsection are located on a grid 1/1200th of a degree apart. While degrees of latitude are always ~110Km in size, resulting in ~92.5M resolution, degrees of longitude decrease in size, from ~111Km at the equator to 0Km at the poles. A different scale exists between the latitude &amp; longitude axis and a longitude scale that depends on the latitude.</p>
+<p>A solution is to project that points to have a consistent and equal scale in the X/Y plane. One choice is to use a family of projections called <a href="http://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system">Universal Transverse Mercator</a>. Each UTM projection can map points from longitude &amp; latitude to X &amp; Y coordinates in meters. The UTM projection is helpful because it locally preserves both shapes and distances over distances of up to several hundred kilometres.</p>
+<p>The tradeoff is that several different UTM projections are required for different points on earth, 120 to be precise. Fortunately, it is relatively trivial to work out the required projection based on the longitude and latitude. Almost every conceivable projection has been assigned a code by the European Petroleum Survey Group (EPSG). This EPSG code can be used to specify the projection being used unambiguously. With UTM, each code starts with either 327 or 326, depending on the hemisphere of the projection.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>utmZone <span class="op">=</span> <span class="bu">int</span>((math.floor((lon <span class="op">+</span> <span class="dv">180</span>)<span class="op">/</span><span class="dv">6</span>) <span class="op">%</span> <span class="dv">60</span>) <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">''' Check to see if file is in northern or southern hemisphere '''</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> lat<span class="op">&lt;</span><span class="dv">0</span>:</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    EPSGCode <span class="op">=</span> <span class="st">'EPSG:327'</span><span class="op">+</span><span class="bu">str</span>(utmZone)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    EPSGCode <span class="op">=</span> <span class="st">'EPSG:326'</span><span class="op">+</span><span class="bu">str</span>(utmZone)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Once we have identified the correct EPSG code to use, warping the subset to a new projection is relatively straightforward.</p>
+<p>In the following system call to gdalwarp, <em>t_srs</em> denotes the target projection, and <em>tr</em> specifies the resolution in the X and Y plane. The Y resolution is negative because the GDAL file uses a (row, column) coordinate system.</p>
+<p>In this coordinate system, the origin is in the top left-hand corner of the file. The row value increases as you move down the file, like an excel spreadsheet; however, the UTM Y coordinate decreases. This results in a negative sign in the resolution.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>os.system(<span class="st">'gdalwarp -q -t_srs '</span><span class="op">+</span>EPSGCode<span class="op">+</span><span class="st">' -tr 100 -100 -r cubic subset.tif warped.tif'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="hillshading" class="level1">
+<h1>Hillshading</h1>
+<p>At this point, we can begin to visualise the DEM. One highly effective method is <em>hill-shading</em>, which models how the surface of the DEM would be illuminated by light projected onto it. Shading of the slopes allows the DEM to be more intuitively interpreted than just colouring by height alone.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="%7B%7B%20site.baseurl%20%7D%7D/images/2018-11-18-256-Shades-of-Grey/hillshade.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">_config.yml</figcaption><p></p>
+</figure>
+</div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="op">!!</span> gdaldem hillshade <span class="op">-</span>q <span class="op">-</span>az <span class="dv">45</span> <span class="op">-</span>alt <span class="dv">45</span> warped.tif hillshade.tif</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="hypsometric-tinting" class="level1">
+<h1>Hypsometric Tinting</h1>
+<p>Hillshading can also be combined with height information to aid the interpretation of the topography. The technical name for colouring a DEM based on height is <em>hypsometric tinting</em>. The process is simple, with GDAL mapping colours to cell heights using a provided colour scheme.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="%7B%7B%20site.baseurl%20%7D%7D/images/2018-11-18-256-Shades-of-Grey/color_relief.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">_config.yml</figcaption><p></p>
+</figure>
+</div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> createColorMapLUT(minHeight,maxHeight,cmap <span class="op">=</span> cm.YlGn_r,numSteps<span class="op">=</span><span class="dv">256</span>):</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">'''</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Create a colourmap for visualisation</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">    '''</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    f <span class="op">=</span><span class="bu">open</span>(<span class="st">'color_relief.txt'</span>,<span class="st">'w'</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    f.write(<span class="st">'-0.1,135,206,250 </span><span class="ch">\n</span><span class="st">'</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    f.write(<span class="st">'0.1,135,206,250 </span><span class="ch">\n</span><span class="st">'</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,numSteps):</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        r,g,b,a<span class="op">=</span> cmap(i<span class="op">/</span><span class="bu">float</span>(numSteps))</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>        height <span class="op">=</span> minHeight <span class="op">+</span> (maxHeight<span class="op">-</span>minHeight)<span class="op">*</span>(i<span class="op">/</span>numSteps)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        f.write(<span class="bu">str</span>(height)<span class="op">+</span><span class="st">','</span><span class="op">+</span><span class="bu">str</span>(<span class="bu">int</span>(<span class="dv">255</span><span class="op">*</span>r))<span class="op">+</span><span class="st">','</span><span class="op">+</span><span class="bu">str</span>(<span class="bu">int</span>(<span class="dv">255</span><span class="op">*</span>g))<span class="op">+</span><span class="st">','</span><span class="op">+</span><span class="bu">str</span>(<span class="bu">int</span>(<span class="dv">255</span><span class="op">*</span>b))<span class="op">+</span><span class="st">'</span><span class="ch">\n</span><span class="st">'</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    f.write(<span class="bu">str</span>(<span class="op">-</span><span class="dv">1</span>)<span class="op">+</span><span class="st">','</span><span class="op">+</span><span class="bu">str</span>(<span class="bu">int</span>(<span class="dv">255</span><span class="op">*</span>r))<span class="op">+</span><span class="st">','</span><span class="op">+</span><span class="bu">str</span>(<span class="bu">int</span>(<span class="dv">255</span><span class="op">*</span>g))<span class="op">+</span><span class="st">','</span><span class="op">+</span><span class="bu">str</span>(<span class="bu">int</span>(<span class="dv">255</span><span class="op">*</span>b))<span class="op">+</span><span class="st">'</span><span class="ch">\n</span><span class="st">'</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>createColorMapLUT(minHeight<span class="op">=</span><span class="dv">10</span>,maxHeight<span class="op">=</span><span class="dv">2658</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="op">!!</span> gdaldem color<span class="op">-</span>relief <span class="op">-</span>q warped.tif color_relief.txt color_relief.tif</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="slope-shading" class="level1">
+<h1>Slope Shading</h1>
+<p>Another technique for visualising terrain is slope shading. While hypsometric tinting assigns colours to cells based on elevation, slope shading assigns colours to pixels based on the slope (0º to 90º). In this case, white (255,255,255) is assigned to slopes of 0º and black (0,0,0) is assigned to slopes of 90º, with varying shades of grey for slopes in-between.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="%7B%7B%20site.baseurl%20%7D%7D/images/2018-11-18-256-Shades-of-Grey/slopeshade.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">_config.yml</figcaption><p></p>
+</figure>
+</div>
+<p>This color scheme is encoded in a txt file for gdaldem as follows:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="bu">open</span>(<span class="st">'color_slope.txt'</span>,<span class="st">'w'</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>f.write(<span class="st">'0 255 255 255</span><span class="ch">\n</span><span class="st">'</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>f.write(<span class="st">'90 0 0 0</span><span class="ch">\n</span><span class="st">'</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>f.close()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The computation of the slope shaded dem takes place over two steps.</p>
+<ol type="1">
+<li>The slope of each cell is computed.</li>
+<li>Each cell is assigned a shade of grey depending on the slope.</li>
+</ol>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="op">!!</span> gdaldem slope <span class="op">-</span>q warped.tif slope.tif</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="op">!!</span> gdaldem color<span class="op">-</span>relief <span class="op">-</span>q slope.tif color_slope.txt slopeshade.tif</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="layer-merging" class="level1">
+<h1>Layer Merging</h1>
+<p>The final step in producing the final product is to merge the three different created images. The Python Image Library (PIL) is a quick and dirty way to accomplish this task, with the three layers are merged using pixel by pixel multiplication.</p>
+<p>One important detail to note is that the pixel by pixel multiplication occurs in the RGB space. From a theoretical perspective, it’s probably better that each pixel is first transformed to the Hue, Saturation, Value (HSV) colour space. The value is then multiplied by the hill-shade and slope shade values before being transformed into the RGB colour space. However, in practical terms, the RGB space multiplication is a very reasonable approximation.</p>
+<p>In one final tweak, the brightness of the output image is increased by 40% to offset the average reduction in brightness caused by multiplying the layers together.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="%7B%7B%20site.baseurl%20%7D%7D/2018-11-18-256-Shades-of-Grey/256_Shades_of_Grey/blended.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">_config.yml</figcaption><p></p>
+</figure>
+</div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">''' Merge components using Python Image Lib '''</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>slopeshade <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">"slopeshade.tif"</span>).convert(<span class="st">'L'</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>hillshade <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">"hillshade.tif"</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>colorRelief <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">"color_relief.tif"</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">#Lets just fill in any gaps in the hillshading</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>ref <span class="op">=</span> Image.new(<span class="st">'L'</span>, slopeshade.size,<span class="dv">180</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>hillshade <span class="op">=</span> ImageChops.lighter(hillshade,ref)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>shading <span class="op">=</span> ImageChops.multiply(slopeshade, hillshade).convert(<span class="st">'RGB'</span>)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>merged <span class="op">=</span> ImageChops.multiply(shading,colorRelief)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co">''' Adjust the brightness to take into account the reduction caused by hillshading'''</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>enhancer <span class="op">=</span> ImageEnhance.Brightness(merged)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>img_enhanced <span class="op">=</span> enhancer.enhance(<span class="fl">1.4</span>)</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>img_enhanced.save(<span class="st">'Merged.png'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="further-reading" class="level1">
+<h1>Further reading</h1>
+<p>I found the following sources to be invaluable in compiling this post:</p>
+<ul>
+<li><a href="http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html">Creating colour relief and slope shading</a></li>
+<li><a href="http://linfiniti.com/2010/12/a-workflow-for-creating-beautiful-relief-shaded-dems-using-gdal/">A workflow for creating beautiful relief shaded DEMs using gdal</a></li>
+<li><a href="http://www.geophysique.be/2014/02/25/shaded-relief-map-in-python/">Shaded relief map in python</a></li>
+<li><a href="http://openterrain.tumblr.com/">Stamen Design</a></li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

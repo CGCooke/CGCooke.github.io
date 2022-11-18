@@ -1,0 +1,20 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Adventures with Numbers"
+  favicon: favicon.ico
+  navbar:
+    background: '#FFFFFF'
+    right:
+      - icon: github
+        href: https://github.com/CGCooke
+      - icon: twitter
+        href: https://twitter.com/CGCooke
+format:
+  html:
+    css: styles.css
+
+
+

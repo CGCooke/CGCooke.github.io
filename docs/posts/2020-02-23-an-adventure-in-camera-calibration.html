@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.251">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2020-02-23">
+<meta name="description" content="Let’s learn how to use a set of known 2D and 3D point correspondences to calibrate a camera">
+
+<title>Adventures with Numbers - An Adventure in Camera Calibration</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Adventures with Numbers</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/CGCooke"><i class="bi bi-github" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/CGCooke"><i class="bi bi-twitter" role="img">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">An Adventure in Camera Calibration</h1>
+                  <div>
+        <div class="description">
+          Let’s learn how to use a set of known 2D and 3D point correspondences to calibrate a camera
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Computer Vision</div>
+                <div class="quarto-category">Optimisation</div>
+                <div class="quarto-category">Linear Algebra</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">February 23, 2020</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-context" id="toc-the-context" class="nav-link active" data-scroll-target="#the-context">The Context</a></li>
+  <li><a href="#control-points" id="toc-control-points" class="nav-link" data-scroll-target="#control-points">Control points</a></li>
+  <li><a href="#camera-parameters" id="toc-camera-parameters" class="nav-link" data-scroll-target="#camera-parameters">Camera Parameters</a></li>
+  <li><a href="#modelling-the-camera" id="toc-modelling-the-camera" class="nav-link" data-scroll-target="#modelling-the-camera">Modelling the Camera</a>
+  <ul class="collapse">
+  <li><a href="#intrinsic-matrix" id="toc-intrinsic-matrix" class="nav-link" data-scroll-target="#intrinsic-matrix">Intrinsic Matrix</a></li>
+  <li><a href="#extrinsic-matrix" id="toc-extrinsic-matrix" class="nav-link" data-scroll-target="#extrinsic-matrix">Extrinsic Matrix</a></li>
+  <li><a href="#lens-distortion" id="toc-lens-distortion" class="nav-link" data-scroll-target="#lens-distortion">Lens distortion</a></li>
+  </ul></li>
+  <li><a href="#putting-it-all-together" id="toc-putting-it-all-together" class="nav-link" data-scroll-target="#putting-it-all-together">Putting it all together</a></li>
+  <li><a href="#initial-parameters" id="toc-initial-parameters" class="nav-link" data-scroll-target="#initial-parameters">Initial Parameters</a></li>
+  <li><a href="#optimisation" id="toc-optimisation" class="nav-link" data-scroll-target="#optimisation">Optimisation</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
+  <li><a href="#in-conclusion" id="toc-in-conclusion" class="nav-link" data-scroll-target="#in-conclusion">In Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="the-context" class="level2">
+<h2 class="anchored" data-anchor-id="the-context">The Context</h2>
+<p>It’s February 1972; the <a href="https://en.wikipedia.org/wiki/Airbus_A300">A300</a> airliner is being unveiled in Toulouse; let’s go on an adventure (In camera calibration!).</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/2020-02-23-An-Adventure-In-Camera-Calibration/A300.jpg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">An image of the Airbus A300 Final Assembly line in Toulouse</figcaption><p></p>
+</figure>
+</div>
+<p>Let’s say we have seen this photo published in a magazine, and we want to try and learn as much about the dimensions of Airbus’s new aircraft as possible. To do so, we will need to mathematically reconstruct the camera used to take the photo and the scene itself.</p>
+</section>
+<section id="control-points" class="level2">
+<h2 class="anchored" data-anchor-id="control-points">Control points</h2>
+<p>In this case, we are lucky because we notice the hexagonal pattern on the floor. In particular, we see that it’s a tessellating hexagonal pattern, which can only happen if all the hexagons have identical dimensions.</p>
+<p>While we don’t know the dimensions of the hexagon, we guess that each side is approximately 1.6m long, based on the height of the people in the photo. If we assume some point on the ground, say the centre of a polygon is the point 0,0, we can work out the X &amp; Y location of each other polygon vertex we can see. Furthermore, we could also assume that the factory floor is flat and level. Hence the Z coordinate of each point is 0.</p>
+<p>Let’s spend ±5 minutes annotating the image, using an annotation tool like label me. I’ve generated a file, which you can find attached here:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/2020-02-23-An-Adventure-In-Camera-Calibration/Hexagons.jpg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">An annotated image of the Airbus A300 Final Assembly line in Toulouse</figcaption><p></p>
+</figure>
+</div>
+<p>Firstly, lets load in all of the x and y points:</p>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>JSON <span class="op">=</span> json.loads(<span class="bu">open</span>(<span class="st">'data/2020-02-23-An-Adventure-In-Camera-Calibration/A300.json'</span>,<span class="st">'r'</span>).read())</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>polygons <span class="op">=</span> {}</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> shape <span class="kw">in</span> JSON[<span class="st">'shapes'</span>]:</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    coords <span class="op">=</span> shape[<span class="st">'label'</span>].split(<span class="st">','</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    x,y <span class="op">=</span> <span class="bu">int</span>(coords[<span class="dv">0</span>]),<span class="bu">int</span>(coords[<span class="dv">1</span>])</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    polygons[x,y] <span class="op">=</span> shape[<span class="st">'points'</span>]    </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Ok, now do some maths, and work out the locations of each vertex of our hexagons.</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neighbors <span class="im">import</span> KDTree</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>points <span class="op">=</span> []</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>keys <span class="op">=</span> <span class="bu">sorted</span>(polygons.keys())</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> key <span class="kw">in</span> keys:</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    poly <span class="op">=</span> polygons[key]    </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    (pts_x, pts_y) <span class="op">=</span> <span class="bu">zip</span>(<span class="op">*</span>poly)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    pts_x <span class="op">=</span> <span class="bu">list</span>(pts_x)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    pts_y <span class="op">=</span> <span class="bu">list</span>(pts_y)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="co">#Magic analytic formula for working out the location of each point, based on which vertex, of which polygon it is.</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    x_vertex <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> np.array([<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="op">-</span><span class="dv">1</span>,<span class="op">-</span><span class="dv">2</span>,<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    y_vertex <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> np.array([np.sqrt(<span class="dv">3</span>),<span class="dv">0</span>,<span class="op">-</span>np.sqrt(<span class="dv">3</span>),<span class="op">-</span>np.sqrt(<span class="dv">3</span>),<span class="dv">0</span>,np.sqrt(<span class="dv">3</span>)])</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    row,col <span class="op">=</span> key</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> row <span class="op">*</span> <span class="fl">1.5</span> <span class="op">+</span> x_vertex</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> col <span class="op">*</span> <span class="fl">0.5</span> <span class="op">*</span> np.sqrt(<span class="dv">3</span>) <span class="op">+</span> y_vertex</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="co">#From before, we assume the sides of each polygon is 1.6m</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    x<span class="op">*=</span><span class="fl">1.6</span> <span class="co">#meters</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    y<span class="op">*=</span><span class="fl">1.6</span> <span class="co">#meters</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> idx <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">6</span>):</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        point <span class="op">=</span> []</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>        i <span class="op">=</span> pts_x[idx]</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>        j <span class="op">=</span> pts_y[idx]</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>        X <span class="op">=</span> x[idx]</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>        Y <span class="op">=</span> y[idx]</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>        Z <span class="op">=</span> <span class="fl">0.0</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        points.append([i,j,X,Y,Z])</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now we are presented with a minor problem; in many cases, we annotated the same point up to 3 times, where the vertices of the hexagons meet. So let’s go and find points that are within 10 pixels and then take their average. If we don’t do this, we effectively over-weight some points in the image at the expense of others.</p>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>points <span class="op">=</span> np.asarray(points)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>np.savetxt(<span class="st">"data/2020-02-23-An-Adventure-In-Camera-Calibration/points.csv"</span>, points)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>tree <span class="op">=</span> KDTree(points[:,<span class="dv">0</span>:<span class="dv">2</span>], leaf_size<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>merged_indicies <span class="op">=</span> []</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>unique_points <span class="op">=</span> []</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,points.shape[<span class="dv">0</span>]):</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> i <span class="kw">not</span> <span class="kw">in</span> merged_indicies:</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        dist, ind <span class="op">=</span> tree.query(points[i,<span class="dv">0</span>:<span class="dv">2</span>].reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">2</span>), k<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        indicies_to_merge <span class="op">=</span> []</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">3</span>):</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> dist[<span class="dv">0</span>][j]<span class="op">&lt;</span><span class="dv">10</span>:</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>                indicies_to_merge.append(ind[<span class="dv">0</span>][j]) </span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>                merged_indicies.append(ind[<span class="dv">0</span>][j])</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        mean_points <span class="op">=</span> np.mean(points[indicies_to_merge,:],axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        unique_points.append(mean_points)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>unique_points <span class="op">=</span> np.asarray(unique_points)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="camera-parameters" class="level2">
+<h2 class="anchored" data-anchor-id="camera-parameters">Camera Parameters</h2>
+<p>So, now we have many 3D points and corresponding 2D points in the photo.</p>
+<p>Now it’s time to turn to the real magic, bundle adjustment. Our task is to find a camera that best fits the data we have measured.</p>
+<p>Let’s talk more about cameras.</p>
+<div class="callout-important callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>There are many correct ways to model a camera mathematically. This is one way.</p>
+</div>
+</div>
+<p>Mathematically, cameras are composed of two types of parameters, <em>Intrinsic</em> and <em>Extrinsic</em>. The <em>Extrinsic</em> parameters define the position and rotation of the camera with respect to the origin of the points it’s observing.</p>
+<p>The <em>Intrinsic</em> parameters define the camera’s parameters, such as the Focal length, the location of the camera’s radial centre, and distortion induced by the lens.</p>
+<p>The <em>Extrinsic</em> parameters comprise 6 degrees of freedom, given our world is three dimensional, and there are three dimensions to rotate around.</p>
+<p>The <em>Intrinsic</em> parameters are more complex. There are some great resources, for example, <em>Multiple View Geometry in Computer Vision</em> or the OpenCV documentation. However, In this case, I am assuming that the principal point, the focal length, and the radial parameters are unknown.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To be clear, I’m building on the shoulders of giants; I’ve heavily adapted this example from this incredible demo by <em>Nikolay Mayorov</em> which you can find <a href="https://scipy-cookbook.readthedocs.io/items/bundle_adjustment.html">here</a></p>
+</div>
+</div>
+<p>Firstly, let’s go and import a bunch of stuff we will need later.</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> __future__ <span class="im">import</span> print_function</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> warnings <span class="im">import</span> filterwarnings</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>filterwarnings(<span class="st">'ignore'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> least_squares</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.spatial.transform <span class="im">import</span> Rotation <span class="im">as</span> Rot</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"figure.figsize"</span>] <span class="op">=</span> (<span class="dv">20</span>,<span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>points_2d <span class="op">=</span> unique_points[:,<span class="dv">0</span>:<span class="dv">2</span>]</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>points_3d <span class="op">=</span> unique_points[:,<span class="dv">2</span>:<span class="dv">5</span>]</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'We have </span><span class="sc">{}</span><span class="st"> unique points'</span>.<span class="bu">format</span>(points_2d.shape[<span class="dv">0</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>We have 51 unique points</code></pre>
+</div>
+</div>
+</section>
+<section id="modelling-the-camera" class="level2">
+<h2 class="anchored" data-anchor-id="modelling-the-camera">Modelling the Camera</h2>
+<section id="intrinsic-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="intrinsic-matrix">Intrinsic Matrix</h3>
+<p>Now we come to the real magic.</p>
+<p><span class="math display">\[\begin{equation*}
+x = PX
+\end{equation*}\]</span></p>
+<p>This function models the camera, taking points in 3D space and converting them into points in 2D space.</p>
+<p>There are lots of things going on here.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/2020-02-23-An-Adventure-In-Camera-Calibration/pinholeCamera.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Diagram of a pinhole camera</figcaption><p></p>
+</figure>
+</div>
+<p>Firstly, let’s talk about the camera’s intrinsic matrix.</p>
+<p>It converts points from 3D space to 2D space.</p>
+<p><span class="math display">\[\begin{equation*}
+K =
+\begin{bmatrix}
+f &amp; 0 &amp; c_{x} \\
+0 &amp; f &amp; c_{y} \\
+0 &amp; 0 &amp; 1
+\end{bmatrix}
+\end{equation*}\]</span></p>
+<p>We have the focal length, <span class="math inline">\(f\)</span>, and the camera optical center <span class="math inline">\(c_x\)</span> and <span class="math inline">\(c_y\)</span>.</p>
+</section>
+<section id="extrinsic-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="extrinsic-matrix">Extrinsic Matrix</h3>
+<p>Now let’s talk about the camera’s extrinsic matrix.</p>
+<p>The 6 degrees of freedom describe its position and orientation within the world. That’s 3 degrees for the position and 3 for the orientation. At its heart, what we are doing is simple but confusing.</p>
+<p>There are so many ways to represent our setup: 1. Coordinate systems: 2D and 3D. * Left Handed or Right Handed? &nbsp; &nbsp; 2. Rotations: * Quaternions? * Proper Euler angles (6 different ways)? * Tait–Bryan angles (6 different ways)? * Rodrigues rotation formula? * A rotation matrix?</p>
+<ol start="3" type="1">
+<li>The location of the camera in the world. (2 Different ways).</li>
+</ol>
+<p>Today, we will use two different ways to represent the rotations; firstly, a <a href="https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula">Rodrigues rotation vector</a> representation and a rotation matrix.</p>
+<p>We use two different representations because it’s easier to optimise when we have 3 degrees of freedom, rather than a naive rotation matrix that uses nine numbers to represent 3 degrees of freedom.</p>
+<p>R represents the camera’s orientation in the World Coordinate Frame (The frame which we use to describe our 3D points).</p>
+<p>In python, we can use convert from the Rodrigues rotation vector to the Rotation matrix as follows:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.spatial.transform <span class="im">import</span> Rotation <span class="im">as</span> Rot</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>rotation_vector <span class="op">=</span> camera_params[:<span class="dv">3</span>]</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>R <span class="op">=</span> Rot.from_rotvec(rotation_vector).as_matrix()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><span class="math display">\[\begin{equation*}
+R =
+\begin{bmatrix}
+R_1 &amp; R_2 &amp; R_3 \\
+R_4 &amp; R_5 &amp; R_6 \\
+R_7 &amp; R_8 &amp; R_9
+\end{bmatrix}
+\end{equation*}\]</span></p>
+<p>Now, let’s talk about the Project Matrix <span class="math inline">\(P\)</span> of the camera. This takes the points from their location in 3D world coordinates to pixel coordinates, assuming we have a camera without radial distortion. There are two main ways this could be formulated.</p>
+<p>Firstly: <span class="math display">\[\begin{equation*}
+P = KR[I|−C]
+\end{equation*}\]</span></p>
+<p>Secondly: <span class="math display">\[\begin{equation*}
+P = K[R | t]
+\end{equation*}\]</span></p>
+<p>Where <span class="math inline">\(t\)</span> is: <span class="math display">\[\begin{equation*}
+t = −RC
+\end{equation*}\]</span></p>
+<p>Let’s go with the first method, where C is :</p>
+<p><span class="math display">\[\begin{equation*}
+C =
+\begin{bmatrix}
+-C_X\\
+-C_Y\\
+-C_Z
+\end{bmatrix}
+\end{equation*}\]</span></p>
+</section>
+<section id="lens-distortion" class="level3">
+<h3 class="anchored" data-anchor-id="lens-distortion">Lens distortion</h3>
+<p>However, there is one subtlety alluded to before, which is the impact of radial distortion. The camera’s lens distorts the rays of light coming in, in a non-linear way.</p>
+<p>We can model it using a <a href="https://en.wikipedia.org/wiki/Taylor_series">Taylor series</a>:</p>
+<p><span class="math display">\[\begin{equation*}
+x_c = x(1 + k_1  r + k_2  r^2 + k_3 r^3)
+\end{equation*}\]</span> <span class="math display">\[\begin{equation*}
+y_c = y(1 + k_1  r + k_2 r^2 + k_3 r^3)
+\end{equation*}\]</span></p>
+<p>In python, we end up with:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> np.sqrt(np.<span class="bu">sum</span>(points_proj<span class="op">**</span><span class="dv">2</span>, axis<span class="op">=</span><span class="dv">1</span>)))</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> <span class="dv">1</span> <span class="op">+</span> k1 \times r <span class="op">+</span> k2 <span class="op">*</span> r<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> k3 <span class="op">*</span> r<span class="op">**</span><span class="dv">3</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>points_proj <span class="op">*=</span> r[:, np.newaxis]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="putting-it-all-together" class="level2">
+<h2 class="anchored" data-anchor-id="putting-it-all-together">Putting it all together</h2>
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> project(points, camera_params):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Convert 3-D points to 2-D by projecting onto images."""</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">#Rotation</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    rotation_vector <span class="op">=</span> camera_params[:<span class="dv">3</span>]</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    R <span class="op">=</span> Rot.from_rotvec(rotation_vector).as_matrix()</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">#Camera Center</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    C <span class="op">=</span> camera_params[<span class="dv">3</span>:<span class="dv">6</span>].reshape(<span class="dv">3</span>,<span class="dv">1</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    IC <span class="op">=</span> np.hstack([np.eye(<span class="dv">3</span>),<span class="op">-</span>C])</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    RIC <span class="op">=</span> np.matmul(R,IC)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="co">#Make points Homogeneous</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    points <span class="op">=</span> np.hstack([points,np.ones((points.shape[<span class="dv">0</span>],<span class="dv">1</span>))])</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">#Perform Rotation and Translation</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">#(n,k), (k,m) -&gt; (n,m)</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    points_proj <span class="op">=</span> np.matmul(points,RIC.T)</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">#perspective divide </span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    points_proj <span class="op">=</span> points_proj[:, :<span class="dv">2</span>] <span class="op">/</span> points_proj[:, <span class="dv">2</span>, np.newaxis]</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    f  <span class="op">=</span> camera_params[<span class="dv">6</span>]</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    k1 <span class="op">=</span> camera_params[<span class="dv">7</span>]</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    k2 <span class="op">=</span> camera_params[<span class="dv">8</span>]</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    k3 <span class="op">=</span> camera_params[<span class="dv">9</span>]</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>    c_x <span class="op">=</span> camera_params[<span class="dv">10</span>]</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>    c_y <span class="op">=</span> camera_params[<span class="dv">11</span>]</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>    <span class="co">#Radial distortion</span></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> np.sqrt(np.<span class="bu">sum</span>(points_proj<span class="op">**</span><span class="dv">2</span>, axis<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> points_proj[:,<span class="dv">0</span>]</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> points_proj[:,<span class="dv">1</span>]</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>    points_proj[:,<span class="dv">0</span>] <span class="op">=</span> (<span class="dv">1</span> <span class="op">+</span> k1 <span class="op">*</span> r <span class="op">+</span> k2 <span class="op">*</span> r<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> k3 <span class="op">*</span> r<span class="op">**</span><span class="dv">3</span>)<span class="op">*</span>x</span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>    points_proj[:,<span class="dv">1</span>] <span class="op">=</span> (<span class="dv">1</span> <span class="op">+</span> k1 <span class="op">*</span> r <span class="op">+</span> k2 <span class="op">*</span> r<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> k3 <span class="op">*</span> r<span class="op">**</span><span class="dv">3</span>)<span class="op">*</span>y</span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>    <span class="co">#Make points Homogeneous</span></span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>    points_proj <span class="op">=</span> np.hstack([points_proj, np.ones((points_proj.shape[<span class="dv">0</span>],<span class="dv">1</span>))])</span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>    K <span class="op">=</span> np.asarray([[f, <span class="dv">0</span>, c_x],</span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>                    [<span class="dv">0</span>, f, c_y],</span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>                    [<span class="dv">0</span>, <span class="dv">0</span>,   <span class="fl">1.0</span>]])</span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>    points_proj <span class="op">=</span> np.dot(points_proj,K.T)</span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>    points_proj <span class="op">=</span> points_proj[:,:<span class="dv">2</span>]</span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(points_proj)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="initial-parameters" class="level2">
+<h2 class="anchored" data-anchor-id="initial-parameters">Initial Parameters</h2>
+<p>Let’s start by providing some hints to the optimiser about what the solution could be like, by putting in some reasonable starting conditions.</p>
+<p>We know both the image width and height, and we can assume that the principal point is in the centre of the image.</p>
+<p>I think the camera is about 10 meters off the ground.</p>
+<p>To make optimisation easier, let’s rotate the camera so that it’s facing directly down. This means that the points should be in front of/below it.</p>
+<p>Let’s also assume that the camera is centred above the points. It’s not strictly correct, based on what we see in the image, but it’s not horrifically wrong.&nbsp;</p>
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>image_width <span class="op">=</span>  <span class="dv">2251</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>image_height <span class="op">=</span> <span class="dv">1508</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>estimated_focal_length_px <span class="op">=</span> <span class="dv">2000</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>camera_params <span class="op">=</span> np.zeros(<span class="dv">12</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> Rot.from_euler(<span class="st">'x'</span>, <span class="dv">180</span>, degrees<span class="op">=</span><span class="va">True</span>).as_rotvec()</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co">#Rotation matrix</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>camera_params[<span class="dv">0</span>] <span class="op">=</span> r[<span class="dv">0</span>]</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>camera_params[<span class="dv">1</span>] <span class="op">=</span> r[<span class="dv">1</span>]</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>camera_params[<span class="dv">2</span>] <span class="op">=</span> r[<span class="dv">2</span>]</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="co">#C</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>camera_params[<span class="dv">3</span>] <span class="op">=</span> points_3d[:,<span class="dv">0</span>].mean()</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>camera_params[<span class="dv">4</span>] <span class="op">=</span> points_3d[:,<span class="dv">1</span>].mean()</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>camera_params[<span class="dv">5</span>] <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="co">#f,k1,k2,</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>camera_params[<span class="dv">6</span>] <span class="op">=</span> estimated_focal_length_px</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>camera_params[<span class="dv">7</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>camera_params[<span class="dv">8</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>camera_params[<span class="dv">9</span>] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a><span class="co">#c_x,c_y</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>camera_params[<span class="dv">10</span>] <span class="op">=</span> image_width<span class="op">/</span><span class="fl">2.0</span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>camera_params[<span class="dv">11</span>] <span class="op">=</span> image_height<span class="op">/</span><span class="fl">2.0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="optimisation" class="level2">
+<h2 class="anchored" data-anchor-id="optimisation">Optimisation</h2>
+<p>This section below is well explained by <a href="https://scipy-cookbook.readthedocs.io/items/bundle_adjustment.html">here</a>.</p>
+<p>We are optimising to minimise a geometric error that is the distance between the 2D points we see and the projection of their 3D counterparts.</p>
+<p>Through a process of optimisation, we aim to find parameters that result in a low error, which means they should represent the actual parameters of the camera.</p>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fun(camera_params, points_2d, points_3d):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">#Compute residuals.</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    points_proj <span class="op">=</span> project(points_3d, camera_params)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(points_proj <span class="op">-</span> points_2d).ravel()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>x0 <span class="op">=</span> camera_params.ravel()</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>optimization_results <span class="op">=</span> least_squares(fun, x0,  verbose<span class="op">=</span><span class="dv">1</span>, x_scale<span class="op">=</span><span class="st">'jac'</span>, ftol<span class="op">=</span><span class="fl">1e-4</span>, method<span class="op">=</span><span class="st">'lm'</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>                                     loss<span class="op">=</span><span class="st">'linear'</span>,args<span class="op">=</span>(points_2d, points_3d))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>`ftol` termination condition is satisfied.
+Function evaluations 970, initial cost 3.7406e+07, final cost 1.7398e+02, first-order optimality 3.63e+03.</code></pre>
+</div>
+</div>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<p>Now let’s go and check out the results of our optimization process.</p>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>camera_params <span class="op">=</span> optimization_results.x</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>R_Rodrigues <span class="op">=</span> camera_params[<span class="dv">0</span>:<span class="dv">3</span>]</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>C <span class="op">=</span> camera_params[<span class="dv">3</span>:<span class="dv">6</span>]</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> Rot.from_rotvec(R_Rodrigues)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>R_matrix <span class="op">=</span> r.as_matrix()</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> Rot.from_matrix(R_matrix.T)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>R_Quaternion <span class="op">=</span> r.as_quat()</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Quaternions: X: </span><span class="sc">{:.3f}</span><span class="st"> Y: </span><span class="sc">{:.3f}</span><span class="st"> Z: </span><span class="sc">{:.3f}</span><span class="st"> W: </span><span class="sc">{:.3f}</span><span class="st"> '</span>.<span class="bu">format</span>(R_Quaternion[<span class="dv">0</span>],R_Quaternion[<span class="dv">1</span>],R_Quaternion[<span class="dv">2</span>],R_Quaternion[<span class="dv">3</span>]))</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Camera position relative to the origin in (M): X: </span><span class="sc">{:.2f}</span><span class="st">, Y: </span><span class="sc">{:.2f}</span><span class="st">, Z: </span><span class="sc">{:.2f}</span><span class="st">'</span>.<span class="bu">format</span>(C[<span class="dv">0</span>],C[<span class="dv">1</span>],C[<span class="dv">2</span>]))</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>focal_length_px <span class="op">=</span> camera_params[<span class="dv">6</span>]</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>k1 <span class="op">=</span> camera_params[<span class="dv">7</span>]</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>k2 <span class="op">=</span> camera_params[<span class="dv">8</span>]</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>k3 <span class="op">=</span> camera_params[<span class="dv">9</span>]</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>c_x <span class="op">=</span> camera_params[<span class="dv">10</span>]</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>c_y <span class="op">=</span> camera_params[<span class="dv">11</span>]</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Focal length (Pixels): </span><span class="sc">{:.2f}</span><span class="st">'</span>.<span class="bu">format</span>(focal_length_px))</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'CX, CY: </span><span class="sc">{:.2f}</span><span class="st"> </span><span class="sc">{:.2f}</span><span class="st">'</span>.<span class="bu">format</span>(c_x,c_y))</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'K_1, K_2, K_3 : </span><span class="sc">{:.6f}</span><span class="st">, </span><span class="sc">{:.6f}</span><span class="st">, </span><span class="sc">{:.6f}</span><span class="st">'</span>.<span class="bu">format</span>(k1,k2,k3))</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Mean error per point: </span><span class="sc">{:.2f}</span><span class="st"> pixels '</span>.<span class="bu">format</span>(optimization_results.cost<span class="op">/</span>points_2d.shape[<span class="dv">0</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Quaternions: X: 0.894 Y: -0.408 Z: 0.084 W: -0.166 
+Camera position relative to the origin in (M): X: -6.85, Y: -12.92, Z: 2.75
+Focal length (Pixels): 1010.93
+CX, CY: 1038.58 2663.52
+K_1, K_2, K_3 : -0.327041, 0.175031, -0.030751
+Mean error per point: 3.41 pixels </code></pre>
+</div>
+</div>
+<p>Ok, first things first, the mean error per point is 3-4 pixels, which is not great, not terrible. It’s clear that we have found a decent solution; however, there are some interesting things going on.</p>
+<p>In particular, the principal point lies outside the image, which is curious, to say the least. One possibility is that the image was cropped.</p>
+<p>Now let’s have a quick look at the errors for each point.</p>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>plt.hist(<span class="bu">abs</span>(optimization_results.fun),density<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Histogram of Residuals'</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Absolute Residual (Pixels)'</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>plt.grid()</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="2020-02-23-An-Adventure-In-Camera-Calibration_files/figure-html/cell-13-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>So the histogram looks pretty good, apart from the one point with a high residual, which is probably due to sloppy labelling/annotation.</p>
+<p>Now let’s compare the points we annotated, with where they would be projected, using the camera parameters we found:</p>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>points_2d_proj <span class="op">=</span> project(points_3d, optimization_results.x)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> plt.imread(<span class="st">'data/2020-02-23-An-Adventure-In-Camera-Calibration/A300.jpg'</span>)      </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>plt.scatter(points_2d[:,<span class="dv">0</span>],points_2d[:,<span class="dv">1</span>],label<span class="op">=</span><span class="st">'Actual'</span>,c<span class="op">=</span><span class="st">'r'</span>,alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>plt.scatter(points_2d_proj[:,<span class="dv">0</span>],points_2d[:,<span class="dv">1</span>],label<span class="op">=</span><span class="st">'Optimised'</span>,c<span class="op">=</span><span class="st">'k'</span>,alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="2020-02-23-An-Adventure-In-Camera-Calibration_files/figure-html/cell-14-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Again, this looks great. Finally, let’s overlay the hexagons on the floor, to build confidence in our solution visually.</p>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_verticies(row,col):</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    x_vertex <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> np.array([<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="op">-</span><span class="dv">1</span>,<span class="op">-</span><span class="dv">2</span>,<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>])</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    y_vertex <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> np.array([np.sqrt(<span class="dv">3</span>),<span class="dv">0</span>,<span class="op">-</span>np.sqrt(<span class="dv">3</span>),<span class="op">-</span>np.sqrt(<span class="dv">3</span>),<span class="dv">0</span>,np.sqrt(<span class="dv">3</span>),np.sqrt(<span class="dv">3</span>)])</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> row <span class="op">*</span> <span class="fl">1.5</span> <span class="op">+</span> x_vertex</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> col <span class="op">*</span> <span class="fl">0.5</span> <span class="op">*</span> np.sqrt(<span class="dv">3</span>) <span class="op">+</span> y_vertex</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    x<span class="op">*=</span><span class="fl">1.6</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    y<span class="op">*=</span><span class="fl">1.6</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    points_3d <span class="op">=</span> np.vstack([x,y,np.zeros(<span class="dv">7</span>)]).T</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    points_2d_proj <span class="op">=</span> project(points_3d, optimization_results.x)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(points_2d_proj)</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">10</span>,<span class="dv">2</span>):</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">10</span>,<span class="dv">2</span>):</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>        points_2d_proj <span class="op">=</span> plot_verticies(row,col)</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>        plt.plot(points_2d_proj[:,<span class="dv">0</span>],points_2d_proj[:,<span class="dv">1</span>],color<span class="op">=</span><span class="st">'B'</span>,alpha<span class="op">=</span><span class="fl">0.25</span>)</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>        plt.text(np.mean(points_2d_proj[:,<span class="dv">0</span>]), np.mean(points_2d_proj[:,<span class="dv">1</span>]), <span class="bu">str</span>(row)<span class="op">+</span><span class="st">','</span><span class="op">+</span><span class="bu">str</span>(col), horizontalalignment<span class="op">=</span><span class="st">'center'</span>,verticalalignment<span class="op">=</span><span class="st">'center'</span>)</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">11</span>,<span class="dv">2</span>):</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> col <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">11</span>,<span class="dv">2</span>):</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>        points_2d_proj <span class="op">=</span> plot_verticies(row,col)</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>        plt.plot(points_2d_proj[:,<span class="dv">0</span>],points_2d_proj[:,<span class="dv">1</span>],color<span class="op">=</span><span class="st">'R'</span>,alpha<span class="op">=</span><span class="fl">0.25</span>)</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>        plt.text(np.mean(points_2d_proj[:,<span class="dv">0</span>]), np.mean(points_2d_proj[:,<span class="dv">1</span>]), <span class="bu">str</span>(row)<span class="op">+</span><span class="st">','</span><span class="op">+</span><span class="bu">str</span>(col), horizontalalignment<span class="op">=</span><span class="st">'center'</span>,verticalalignment<span class="op">=</span><span class="st">'center'</span>)</span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>         </span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="2020-02-23-An-Adventure-In-Camera-Calibration_files/figure-html/cell-15-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="in-conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="in-conclusion">In Conclusion</h2>
+<p>We can see that we have found a semi-reasonable solution.</p>
+<p>However, I’m worried about the location of the principal point of the image. Usually, this is near the centre of the image with most cameras. In our case, it isn’t. There are several reasons why this could be the case; for example, the image might have been cropped; however, it’s a little concerning.</p>
+<p>I’m also worried about the camera’s height, which is only 2.75M above the ground. The camera looks like it’s at approximately the same height as the aircraft’s roof, which would typically be 7-10m above the ground.</p>
+<p>In the future, Let’s look more at how we can extract some more useful information from this image and understand how confident we can be in our solution.</p>
+<p>Thanks to <em>Nikolay Mayorov</em> who created the excellent demo of optimization in Scipy that I built upon, you can find the original code <a href="https://scipy-cookbook.readthedocs.io/items/bundle_adjustment.html">here</a>.</p>
+<p>Multiple View Geometry in Computer Vision is an incredible book that I learn more from each time I read it. in particular, for further information, see:</p>
+<ul>
+<li>Finite cameras. Page 153, Multiple View Geometry in Computer Vision (Second edition)</li>
+<li>Note: Minimizing geometric error. Page 176, Multiple View Geometry in Computer Vision (Second edition)</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
