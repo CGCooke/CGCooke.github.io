@@ -23,7 +23,7 @@ One strategy is to infer the player's position from both the mini-map and the on
 
 
 
-![_config.yml]({{ site.baseurl }}/images/2020-12-18-A-Playground-In-Nuketown/Nuketown-84-1.jpg)
+![_config.yml]({{< var baseurl >}}/images/2020-12-18-A-Playground-In-Nuketown/Nuketown-84-1.jpg)
 
 
 

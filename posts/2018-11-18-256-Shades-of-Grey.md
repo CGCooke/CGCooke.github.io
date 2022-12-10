@@ -126,7 +126,9 @@ Hillshading
 
 At this point, we can begin to visualise the DEM. One highly effective method is *hill-shading*, which models how the surface of the DEM would be illuminated by light projected onto it. Shading of the slopes allows the DEM to be more intuitively interpreted than just colouring by height alone. 
 
-![_config.yml]({{ site.baseurl }}/images/2018-11-18-256-Shades-of-Grey/hillshade.png)
+
+![]({{< var baseurl >}}/images/2018-11-18-256-Shades-of-Grey/hillshade.png)
+
 
 
 ```python
@@ -141,7 +143,7 @@ Hypsometric Tinting
 
 Hillshading can also be combined with height information to aid the interpretation of the topography. The technical name for colouring a DEM based on height is *hypsometric tinting*. The process is simple, with GDAL mapping colours to cell heights using a provided colour scheme. 
 
-![_config.yml]({{ site.baseurl }}/images/2018-11-18-256-Shades-of-Grey/color_relief.png)
+![_config.yml]({{< var baseurl >}}/images/2018-11-18-256-Shades-of-Grey/color_relief.png)
 
 
 ```python
@@ -176,7 +178,7 @@ Slope Shading
 
 Another technique for visualising terrain is slope shading. While hypsometric tinting assigns colours to cells based on elevation, slope shading assigns colours to pixels based on the slope (0º to 90º). In this case, white (255,255,255) is assigned to slopes of 0º and black (0,0,0) is assigned to slopes of 90º, with varying shades of grey for slopes in-between. 
 
-![_config.yml]({{ site.baseurl }}/images/2018-11-18-256-Shades-of-Grey/slopeshade.png)
+![_config.yml]({{< var baseurl >}}/images/2018-11-18-256-Shades-of-Grey/slopeshade.png)
 
 This color scheme is encoded in a txt file for gdaldem as follows: 
 
@@ -211,7 +213,7 @@ One important detail to note is that the pixel by pixel multiplication occurs in
 
 In one final tweak, the brightness of the output image is increased by 40% to offset the average reduction in brightness caused by multiplying the layers together. 
 
-![_config.yml]({{ site.baseurl }}/2018-11-18-256-Shades-of-Grey/256_Shades_of_Grey/blended.png)
+![_config.yml]({{< var baseurl >}}/2018-11-18-256-Shades-of-Grey/256_Shades_of_Grey/blended.png)
 
 ```python
 ''' Merge components using Python Image Lib '''

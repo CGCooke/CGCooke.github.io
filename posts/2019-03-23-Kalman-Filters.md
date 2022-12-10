@@ -47,7 +47,7 @@ One of the challenges with Kalman filters is that it's easy to be initially over
 At this point, I think it's worthwhile considering how all of these matrices are related to each other.
 *Tim Babb* of Bzarg has a fantastic diagram, which sets out how information flows through all of the filters mentioned above. 
 If you haven't already, I strongly recommend you read his [post](https://www.bzarg.com/p/how-a-kalman-filter-works-in-pictures/)  on how Kalman filters work 
-![_config.yml]({{ site.baseurl }}/images/2019-03-23-Kalman-Filters/kalflow.png)
+![_config.yml]({{< var baseurl >}}/images/2019-03-23-Kalman-Filters/kalflow.png)
 
 
 

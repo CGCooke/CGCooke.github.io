@@ -19,7 +19,7 @@ Introduction
 
 While comparing two different mini-maps can tell us the change in angle/heading ($\omega$) between them, we can determine the player's heading ($\theta$) via the compass. This can be seen at the top centre of the screen (107 degrees).
 
-![_config.yml]({{ site.baseurl }}/images/2020-12-18-A-Playground-In-Nuketown/Nuketown-84-1.jpg)
+![_config.yml]({{< var baseurl >}}/images/2020-12-18-A-Playground-In-Nuketown/Nuketown-84-1.jpg)
 
 
 By using Optical Character Recognition (OCR), we can read this heading, digitising the player's current heading on a frame by frame basis. I've chosen to use [Tesseract](https://github.com/tesseract-ocr/tesseract), a powerful open-source library for OCR. In Python, we can use [Pytesseract](https://pypi.org/project/pytesseract/), a wrapper around *Tesseract*. 
@@ -93,7 +93,7 @@ img = load_frame(0,cap)
 plt.imshow(img[:,:,::-1])
 plt.show()
 ```
-![_config.yml]({{ site.baseurl }}/images/2021-01-03-Number-Extraction-With-Tesseract/Frame.png)
+![_config.yml]({{< var baseurl >}}/images/2021-01-03-Number-Extraction-With-Tesseract/Frame.png)
 
 
 And after preprocessing:
@@ -103,7 +103,7 @@ plt.imshow(img,cmap='gray')
 plt.show()
 ```
 
-![_config.yml]({{ site.baseurl }}/images/2021-01-03-Number-Extraction-With-Tesseract/Number.png)
+![_config.yml]({{< var baseurl >}}/images/2021-01-03-Number-Extraction-With-Tesseract/Number.png)
 
 
 Processing
@@ -163,7 +163,7 @@ ax = sns.histplot(confidences,bins = np.arange(0,100,10))
 ax.set_xlabel('Confidence (%)')
 ```
 
-![_config.yml]({{ site.baseurl }}/images/2021-01-03-Number-Extraction-With-Tesseract/Histogram.png)
+![_config.yml]({{< var baseurl >}}/images/2021-01-03-Number-Extraction-With-Tesseract/Histogram.png)
 
 
 
@@ -177,7 +177,7 @@ plt.ylabel('Angle (Degrees)')
 plt.show()
 ```
 
-![_config.yml]({{ site.baseurl }}/images/2021-01-03-Number-Extraction-With-Tesseract/LinePlot.png)
+![_config.yml]({{< var baseurl >}}/images/2021-01-03-Number-Extraction-With-Tesseract/LinePlot.png)
 
 
 

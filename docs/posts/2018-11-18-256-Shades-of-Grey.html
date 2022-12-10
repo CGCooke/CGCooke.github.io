@@ -278,12 +278,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="hillshading" class="level1">
 <h1>Hillshading</h1>
 <p>At this point, we can begin to visualise the DEM. One highly effective method is <em>hill-shading</em>, which models how the surface of the DEM would be illuminated by light projected onto it. Shading of the slopes allows the DEM to be more intuitively interpreted than just colouring by height alone.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="%7B%7B%20site.baseurl%20%7D%7D/images/2018-11-18-256-Shades-of-Grey/hillshade.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">_config.yml</figcaption><p></p>
-</figure>
-</div>
+<p><img src="https://cgcooke.github.io//images/2018-11-18-256-Shades-of-Grey/hillshade.png" class="img-fluid"></p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="op">!!</span> gdaldem hillshade <span class="op">-</span>q <span class="op">-</span>az <span class="dv">45</span> <span class="op">-</span>alt <span class="dv">45</span> warped.tif hillshade.tif</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="hypsometric-tinting" class="level1">
@@ -291,7 +286,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Hillshading can also be combined with height information to aid the interpretation of the topography. The technical name for colouring a DEM based on height is <em>hypsometric tinting</em>. The process is simple, with GDAL mapping colours to cell heights using a provided colour scheme.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="%7B%7B%20site.baseurl%20%7D%7D/images/2018-11-18-256-Shades-of-Grey/color_relief.png" class="img-fluid figure-img"></p>
+<p><img src="https://cgcooke.github.io//images/2018-11-18-256-Shades-of-Grey/color_relief.png" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption">_config.yml</figcaption><p></p>
 </figure>
 </div>
@@ -318,7 +313,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Another technique for visualising terrain is slope shading. While hypsometric tinting assigns colours to cells based on elevation, slope shading assigns colours to pixels based on the slope (0º to 90º). In this case, white (255,255,255) is assigned to slopes of 0º and black (0,0,0) is assigned to slopes of 90º, with varying shades of grey for slopes in-between.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="%7B%7B%20site.baseurl%20%7D%7D/images/2018-11-18-256-Shades-of-Grey/slopeshade.png" class="img-fluid figure-img"></p>
+<p><img src="https://cgcooke.github.io//images/2018-11-18-256-Shades-of-Grey/slopeshade.png" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption">_config.yml</figcaption><p></p>
 </figure>
 </div>
@@ -342,7 +337,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>In one final tweak, the brightness of the output image is increased by 40% to offset the average reduction in brightness caused by multiplying the layers together.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="%7B%7B%20site.baseurl%20%7D%7D/2018-11-18-256-Shades-of-Grey/256_Shades_of_Grey/blended.png" class="img-fluid figure-img"></p>
+<p><img src="https://cgcooke.github.io//2018-11-18-256-Shades-of-Grey/256_Shades_of_Grey/blended.png" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption">_config.yml</figcaption><p></p>
 </figure>
 </div>

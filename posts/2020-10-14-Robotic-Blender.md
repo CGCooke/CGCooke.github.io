@@ -136,6 +136,6 @@ bpy.ops.render.render(write_still=True)
 The Results
 -------------
 
-![_config.yml]({{ site.baseurl }}/images/2020-10-14-Robotic-Blender/render.png)
+![_config.yml]({{< var baseurl >}}/images/2020-10-14-Robotic-Blender/render.png)
 
 

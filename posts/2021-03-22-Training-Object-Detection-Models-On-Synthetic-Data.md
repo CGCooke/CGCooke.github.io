@@ -42,7 +42,7 @@ plt.rcParams['figure.figsize'] = [10,10]
 Image.open('Training_Data/TestImage1.png')
 ```
 
-![_config.yml]({{ site.baseurl }}/images/2021-03-22-Training-Object-Detection-Models-On-Synthetic-Data/Dragons1.png)
+![_config.yml]({{< var baseurl >}}/images/2021-03-22-Training-Object-Detection-Models-On-Synthetic-Data/Dragons1.png)
 
 
 ```python
@@ -276,15 +276,15 @@ for i in range(0,5):
   plt.show()
 ```
 
-![_config.yml]({{ site.baseurl }}/images/2021-03-22-Training-Object-Detection-Models-On-Synthetic-Data/Dragons1.png)
+![_config.yml]({{< var baseurl >}}/images/2021-03-22-Training-Object-Detection-Models-On-Synthetic-Data/Dragons1.png)
 
-![_config.yml]({{ site.baseurl }}/images/2021-03-22-Training-Object-Detection-Models-On-Synthetic-Data/Dragons2.png)
+![_config.yml]({{< var baseurl >}}/images/2021-03-22-Training-Object-Detection-Models-On-Synthetic-Data/Dragons2.png)
 
-![_config.yml]({{ site.baseurl }}/images/2021-03-22-Training-Object-Detection-Models-On-Synthetic-Data/Dragons3.png)
+![_config.yml]({{< var baseurl >}}/images/2021-03-22-Training-Object-Detection-Models-On-Synthetic-Data/Dragons3.png)
 
-![_config.yml]({{ site.baseurl }}/images/2021-03-22-Training-Object-Detection-Models-On-Synthetic-Data/Dragons4.png)
+![_config.yml]({{< var baseurl >}}/images/2021-03-22-Training-Object-Detection-Models-On-Synthetic-Data/Dragons4.png)
 
-![_config.yml]({{ site.baseurl }}/images/2021-03-22-Training-Object-Detection-Models-On-Synthetic-Data/Dragons5.png)
+![_config.yml]({{< var baseurl >}}/images/2021-03-22-Training-Object-Detection-Models-On-Synthetic-Data/Dragons5.png)
 
 
 
@@ -323,15 +323,15 @@ for file_str in ['dragon1.jpeg','dragon2.jpeg','dragon3.jpeg','dragon4.jpeg','dr
 ```
 
 
-![_config.yml]({{ site.baseurl }}/images/2021-03-22-Training-Object-Detection-Models-On-Synthetic-Data/RealDragon1.png)
+![_config.yml]({{< var baseurl >}}/images/2021-03-22-Training-Object-Detection-Models-On-Synthetic-Data/RealDragon1.png)
 
-![_config.yml]({{ site.baseurl }}/images/2021-03-22-Training-Object-Detection-Models-On-Synthetic-Data/RealDragon2.png)
+![_config.yml]({{< var baseurl >}}/images/2021-03-22-Training-Object-Detection-Models-On-Synthetic-Data/RealDragon2.png)
 
-![_config.yml]({{ site.baseurl }}/images/2021-03-22-Training-Object-Detection-Models-On-Synthetic-Data/RealDragon3.png)
+![_config.yml]({{< var baseurl >}}/images/2021-03-22-Training-Object-Detection-Models-On-Synthetic-Data/RealDragon3.png)
 
-![_config.yml]({{ site.baseurl }}/images/2021-03-22-Training-Object-Detection-Models-On-Synthetic-Data/RealDragon4.png)
+![_config.yml]({{< var baseurl >}}/images/2021-03-22-Training-Object-Detection-Models-On-Synthetic-Data/RealDragon4.png)
 
-![_config.yml]({{ site.baseurl }}/images/2021-03-22-Training-Object-Detection-Models-On-Synthetic-Data/RealDragon5.png)
+![_config.yml]({{< var baseurl >}}/images/2021-03-22-Training-Object-Detection-Models-On-Synthetic-Data/RealDragon5.png)
 
 
 

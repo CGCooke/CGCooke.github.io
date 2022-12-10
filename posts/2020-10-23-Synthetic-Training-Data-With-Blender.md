@@ -182,7 +182,7 @@ configure_render()
 
 This is what it looks like in the *Blender* compositing interface when the configuration is complete: 
 
-![_config.yml]({{ site.baseurl }}/images/2020-10-23-Synthetic-Training-Data-With-Blender/BlenderInterface.png)
+![_config.yml]({{< var baseurl >}}/images/2020-10-23-Synthetic-Training-Data-With-Blender/BlenderInterface.png)
 
 
 Finally, we can render the scene.
@@ -197,15 +197,15 @@ The Results
 
 The render has generated three outputs in *OpenEXR* format: an image output, a depth map, and a semantic segmentation map. 
 
-![_config.yml]({{ site.baseurl }}/images/2020-10-23-Synthetic-Training-Data-With-Blender/render.png)
+![_config.yml]({{< var baseurl >}}/images/2020-10-23-Synthetic-Training-Data-With-Blender/render.png)
 
 
 ### Depth map
-![_config.yml]({{ site.baseurl }}/images/2020-10-23-Synthetic-Training-Data-With-Blender/Depth.png)
+![_config.yml]({{< var baseurl >}}/images/2020-10-23-Synthetic-Training-Data-With-Blender/Depth.png)
 
 
 ### Semantic Segmentation map
-![_config.yml]({{ site.baseurl }}/images/2020-10-23-Synthetic-Training-Data-With-Blender/Index.png)
+![_config.yml]({{< var baseurl >}}/images/2020-10-23-Synthetic-Training-Data-With-Blender/Index.png)
 
 
 
