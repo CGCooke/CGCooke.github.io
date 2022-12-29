@@ -206,16 +206,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 <p>Let’s keep things short and sweet.</p>
-<p>Given a camera projection matrix, <span class="math inline">\(P\)</span>, we can decompose it into a <span class="math inline">\(K\)</span> (Camera Matrix), <span class="math inline">\(R\)</span> (Rotation Matrix) and <span class="math inline">\(C\)</span> (Camera Centroid) matrix.</p>
+<p>Given a camera projection matrix, <span class="math inline">\(P\)</span>, we can decompose it into a <span class="math inline">\(K\)</span> (Camera Matrix), <span class="math inline">\(R\)</span> (Rotation Matrix) and <span class="math inline">\(C\)</span> (Camera centroid location) matrix.</p>
 <p>IE, given we have <span class="math inline">\(P = K[R|-RC]\)</span>, We want to find <span class="math inline">\(K\)</span>, <span class="math inline">\(R\)</span> and <span class="math inline">\(C\)</span>.</p>
 <p>The method is described in <em>Multiple View Geometry in Computer Vision (Second Edition)</em>, on page 163; however, let’s turn it into a practical <em>Python</em> implementation.</p>
 <p>Let’s follow along with an example from the book.</p>
-<div class="cell" data-execution_count="1">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy.linalg</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>np.set_printoptions(precision<span class="op">=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>P <span class="op">=</span> np.array([[<span class="fl">3.53553e+2</span>,  <span class="fl">3.39645e+2</span>, <span class="fl">2.77744e+2</span>, <span class="op">-</span><span class="fl">1.44946e+6</span>],</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>              [<span class="op">-</span><span class="fl">1.03528e+2</span>, <span class="fl">2.33212e+1</span>, <span class="fl">4.59607e+2</span>, <span class="op">-</span><span class="fl">6.3252e+5</span>],</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>              [<span class="fl">7.07107e-1</span>, <span class="op">-</span><span class="fl">3.53553e-1</span>, <span class="fl">6.12372e-1</span>, <span class="op">-</span><span class="fl">9.18559e+2</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -227,18 +227,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>So far, so good.</p>
 <p>Now things get a little more complex.</p>
 <p>We want to find a Camera matrix with a positive diagonal, giving positive focal lengths.</p>
-<p>However, if this doesn’t happen, we can adjust the sign of each column for both the <span class="math inline">\(K\)</span> and <span class="math inline">\(R\)</span> matrix to “Make it so”.</p>
+<p>However, if this doesn’t happen, we can adjust the sign of each column for both the <span class="math inline">\(K\)</span> and <span class="math inline">\(R\)</span> matrix.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> np.diag(np.sign(np.diag(K)))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> linalg.det(T) <span class="op">&lt;</span> <span class="dv">0</span>:</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; T[<span class="dv">1</span>,<span class="dv">1</span>] <span class="op">*=</span> <span class="op">-</span><span class="dv">1</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    T[<span class="dv">1</span>,<span class="dv">1</span>] <span class="op">*=</span> <span class="op">-</span><span class="dv">1</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>K <span class="op">=</span> np.dot(K,T)</span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>R <span class="op">=</span> np.dot(T,R)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>&nbsp; &nbsp; Finally, we can find the Camera Center (<span class="math inline">\(C\)</span>).</p>
+<p>Finally, we can find the Camera Center (<span class="math inline">\(C\)</span>).</p>
 <p>We have <span class="math inline">\(P_4\)</span>, the 4th column of <span class="math inline">\(P\)</span>.</p>
 <p><span class="math inline">\(P_4 = −MC\)</span></p>
 <p>From this, we can find <span class="math inline">\(C = {-M}^{-1} P_4\)</span></p>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> factorize(P):</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    M <span class="op">=</span> P[:,<span class="dv">0</span>:<span class="dv">3</span>]</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    </span>
@@ -254,19 +254,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    C <span class="op">=</span> np.dot(scipy.linalg.inv(<span class="op">-</span>M),P[:,<span class="dv">3</span>])</span>
 <span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(K,R,C)</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>K,R,C <span class="op">=</span> factorize(P)</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'K'</span>)</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(K)</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'R'</span>)</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(R)</span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'C'</span>)</span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(C)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>K,R,C <span class="op">=</span> factorize(P)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'K'</span>)</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(K)</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'R'</span>)</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(R)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'C'</span>)</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(C)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>K
 [[468.16  91.23 300.  ]

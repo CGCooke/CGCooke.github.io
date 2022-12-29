@@ -248,7 +248,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </figure>
 </div>
 <p>Firstly, lets load in all of the x and y points:</p>
-<div class="cell" data-execution_count="1">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -260,7 +260,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    polygons[x,y] <span class="op">=</span> shape[<span class="st">'points'</span>]    </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Ok, now do some maths, and work out the locations of each vertex of our hexagons.</p>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neighbors <span class="im">import</span> KDTree</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>points <span class="op">=</span> []</span>
@@ -296,7 +296,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now we are presented with a minor problem; in many cases, we annotated the same point up to 3 times, where the vertices of the hexagons meet. So let’s go and find points that are within 10 pixels and then take their average. If we do this, we can effectively over-weight some points in the image at the expense of others.</p>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>points <span class="op">=</span> np.asarray(points)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>np.savetxt(<span class="st">"data/2020-02-23-An-Adventure-In-Camera-Calibration/points.csv"</span>, points)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -356,12 +356,12 @@ Note
 </div>
 </div>
 <p>First, let’s import a bunch of stuff we will need later.</p>
-<div class="cell" data-execution_count="4">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> __future__ <span class="im">import</span> print_function</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> warnings <span class="im">import</span> filterwarnings</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>filterwarnings(<span class="st">'ignore'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="5">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -372,7 +372,7 @@ Note
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"figure.figsize"</span>] <span class="op">=</span> (<span class="dv">20</span>,<span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="6">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>points_2d <span class="op">=</span> unique_points[:,<span class="dv">0</span>:<span class="dv">2</span>]</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>points_3d <span class="op">=</span> unique_points[:,<span class="dv">2</span>:<span class="dv">5</span>]</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -478,7 +478,7 @@ y_c = y(1 + k_1  r + k_2 r^2 + k_3 r^3)
 </section>
 <section id="putting-it-all-together" class="level2">
 <h2 class="anchored" data-anchor-id="putting-it-all-together">Putting it all together</h2>
-<div class="cell" data-execution_count="7">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> project(points, camera_params):</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Convert 3-D points to 2-D by projecting onto images."""</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">#Rotation</span></span>
@@ -536,7 +536,7 @@ y_c = y(1 + k_1  r + k_2 r^2 + k_3 r^3)
 <p>The camera is about 10 meters off the ground.</p>
 <p>Let’s rotate the camera, so it faces directly down to make optimisation easier. This means that the points should be in front of/below it.</p>
 <p>Let’s also assume that the camera is centred above the points. It’s not strictly correct, based on what we see in the image, but it’s not horrifically wrong.</p>
-<div class="cell" data-execution_count="8">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>image_width <span class="op">=</span>  <span class="dv">2251</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>image_height <span class="op">=</span> <span class="dv">1508</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -572,13 +572,13 @@ y_c = y(1 + k_1  r + k_2 r^2 + k_3 r^3)
 <p>This section below is well explained by <a href="https://scipy-cookbook.readthedocs.io/items/bundle_adjustment.html">here</a>.</p>
 <p>We are optimising to minimise a geometric error, that is, the distance between the 2D points we see and the projection of their 3D counterparts.</p>
 <p>Through optimisation, we aim to find parameters that result in a low error, which means they should represent the actual parameters of the camera.</p>
-<div class="cell" data-execution_count="9">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fun(camera_params, points_2d, points_3d):</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">#Compute residuals.</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    points_proj <span class="op">=</span> project(points_3d, camera_params)</span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(points_proj <span class="op">-</span> points_2d).ravel()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="10">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>x0 <span class="op">=</span> camera_params.ravel()</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>optimization_results <span class="op">=</span> least_squares(fun, x0,  verbose<span class="op">=</span><span class="dv">1</span>, x_scale<span class="op">=</span><span class="st">'jac'</span>, ftol<span class="op">=</span><span class="fl">1e-4</span>, method<span class="op">=</span><span class="st">'lm'</span>,</span>
@@ -592,7 +592,7 @@ Function evaluations 970, initial cost 3.7406e+07, final cost 1.7398e+02, first-
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
 <p>Now let’s go and check out the results of our optimization process.</p>
-<div class="cell" data-execution_count="11">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>camera_params <span class="op">=</span> optimization_results.x</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>R_Rodrigues <span class="op">=</span> camera_params[<span class="dv">0</span>:<span class="dv">3</span>]</span>
@@ -632,7 +632,7 @@ Mean error per point: 3.41 pixels </code></pre>
 <p>Ok, the mean error per point is 3-4 pixels. We have found a decent solution; however, some interesting things are happening.</p>
 <p>In particular, the principal point lies outside the image, which is curious. One possibility is that the image was cropped.</p>
 <p>Now let’s have a quick look at the errors for each point.</p>
-<div class="cell" data-execution_count="12">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>plt.hist(<span class="bu">abs</span>(optimization_results.fun),density<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Histogram of Residuals'</span>)</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Absolute Residual (Pixels)'</span>)</span>
@@ -644,7 +644,7 @@ Mean error per point: 3.41 pixels </code></pre>
 </div>
 <p>So the histogram looks pretty good, apart from the one point with a high residual, probably due to sloppy labelling/annotation.</p>
 <p>Now let’s compare the points we annotated, with where they would be projected, using the camera parameters we found:</p>
-<div class="cell" data-execution_count="13">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>points_2d_proj <span class="op">=</span> project(points_3d, optimization_results.x)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> plt.imread(<span class="st">'data/2020-02-23-An-Adventure-In-Camera-Calibration/A300.jpg'</span>)      </span>
@@ -657,7 +657,7 @@ Mean error per point: 3.41 pixels </code></pre>
 </div>
 </div>
 <p>Again, this looks great. Finally, let’s overlay the hexagons on the floor, to build confidence in our solution visually.</p>
-<div class="cell" data-execution_count="14">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_verticies(row,col):</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    x_vertex <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> np.array([<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="op">-</span><span class="dv">1</span>,<span class="op">-</span><span class="dv">2</span>,<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>])</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    y_vertex <span class="op">=</span> <span class="fl">0.5</span> <span class="op">*</span> np.array([np.sqrt(<span class="dv">3</span>),<span class="dv">0</span>,<span class="op">-</span>np.sqrt(<span class="dv">3</span>),<span class="op">-</span>np.sqrt(<span class="dv">3</span>),<span class="dv">0</span>,np.sqrt(<span class="dv">3</span>),np.sqrt(<span class="dv">3</span>)])</span>

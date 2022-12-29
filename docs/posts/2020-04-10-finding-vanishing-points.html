@@ -225,13 +225,13 @@ Important
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The projection of parallel lines in 3D space intersect at a vanishing point in 2D space.</p>
+<p>The projection of parallel lines in 3D space intersects at a vanishing point in 2D space.</p>
 </div>
 </div>
 <p>Sometimes it can be easy to find the location of a vanishing point in an image, for example, when two objects in the real world are very long and quite close together, for example, train tracks. Often it’s a lot more challenging.</p>
-<p>Let’s use a semi-realistic image; I’ve chosen a rendered image from a video game (Counter-Strike). This means that we can, for the moment, ignore some other factors like <em>Radial Distortion</em>.</p>
+<p>Let’s use a semi-realistic image; I’ve chosen a rendered image from a video game (Counter-Strike). This means we can ignore other factors like <em>Radial Distortion</em>.</p>
 <p>Let’s start, as always, by importing what we will need later.</p>
-<div class="cell" data-execution_count="1">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
@@ -239,7 +239,7 @@ Important
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">'figure.figsize'</span>] <span class="op">=</span> [<span class="dv">15</span>, <span class="dv">15</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now let’s visualise the scene.</p>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">'data/2020-04-10-Finding-Vanishing-Points/csgo-dust2-mid.jpeg'</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -249,8 +249,8 @@ Important
 </div>
 <section id="maximum-likelihood-estimate" class="level2">
 <h2 class="anchored" data-anchor-id="maximum-likelihood-estimate">Maximum Likelihood Estimate</h2>
-<p>An ideal camera maps straight lines in 3D space to straight lines in 2D space. We can automate the detection of straight lines using algorithms like a hough transform. However, I’ve used an external program to annotate the image’s straight lines manually. I’ve annotated three sets of lines that correspond to one of 3 different vanishing points.</p>
-<p>Often, we use a <em>manhattan world</em> assumption, assuming that there are three different sets of orthogonal parallel lines present in the world.</p>
+<p>An ideal camera maps straight lines in 3D space to straight lines in 2D space. We can automate the detection of straight lines using algorithms like a hough transform. However, I’ve used an external program to manually annotate the image’s straight lines. I’ve annotated three sets of lines corresponding to one of 3 different vanishing points.</p>
+<p>We often use a <em>manhattan world</em> assumption, assuming that there are three different sets of orthogonal parallel lines in the world.</p>
 <p>We assume that two orthogonal lines form the ground plane. In an image, each set of parallel lines on this plane intersects at the horizon.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -258,11 +258,11 @@ Important
 <p></p><figcaption class="figure-caption">An annotated image</figcaption><p></p>
 </figure>
 </div>
-<p>Now, let’s use linear algebra and least mean squares (and the magic of <a href="https://stackoverflow.com/questions/52088966/nearest-intersection-point-to-many-lines-in-python">Stack Overflow</a>) to find one of the vanishing points.&nbsp;</p>
-<div class="cell" data-execution_count="3">
+<p>Now, let’s use linear algebra and least mean squares (and the magic of <a href="https://stackoverflow.com/questions/52088966/nearest-intersection-point-to-many-lines-in-python">Stack Overflow</a>) to find one of the vanishing points.</p>
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>JSON <span class="op">=</span> json.loads(<span class="bu">open</span>(<span class="st">'data/2020-04-10-Finding-Vanishing-Points/csgo-dust2-mid.json'</span>,<span class="st">'r'</span>).read())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="4">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> intersect_multiple_lines(P0,P1):</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""P0 and P1 are NxD arrays defining N lines.</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">    D is the dimension of the space. This function </span></span>
@@ -287,7 +287,7 @@ Important
 <span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(p)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="5">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_line_data(point_name):</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    P0 <span class="op">=</span> []</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    P1 <span class="op">=</span> []</span>
@@ -309,7 +309,7 @@ Important
 <span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> find_vanishing_point(point_name<span class="op">=</span><span class="st">'VP1'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now let’s visualise the location of vanishing point 1.</p>
-<div class="cell" data-scrolled="true" data-execution_count="6">
+<div class="cell" data-scrolled="true" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>plt.scatter(p[<span class="dv">0</span>],p[<span class="dv">1</span>],color<span class="op">=</span><span class="st">'r'</span>,label<span class="op">=</span><span class="st">'Vanishing point #1'</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
@@ -324,9 +324,9 @@ Important
 <section id="monte-carlo-simulation" class="level2">
 <h2 class="anchored" data-anchor-id="monte-carlo-simulation">Monte Carlo Simulation</h2>
 <p>This is a good start, but I’m interested in how certain we are about the vanishing point.</p>
-<p>For example, when I annotated the lines, I most likely made mistakes in the precise location of each point. We would expect that shorter lines would have a more significant impact on the vanishing point location than longer lines.</p>
+<p>For example, when I annotated the lines, I most likely needed to correct the precise location of each point. We expect that shorter lines would significantly impact the vanishing point location more than longer lines.</p>
 <p>Let’s do a <em>Monte Carlo simulation</em>, to find the distribution of possible vanishing points.</p>
-<div class="cell" data-execution_count="7">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> monte_carlo_simulation(point_name):</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    P0,P1 <span class="op">=</span> load_line_data(point_name)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    </span>
@@ -345,7 +345,7 @@ Important
 <span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>vanishing_points <span class="op">=</span> monte_carlo_simulation(point_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now let’s visualise the distribution of points:</p>
-<div class="cell" data-execution_count="8">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> p <span class="kw">in</span> vanishing_points:</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    plt.scatter(p[<span class="dv">0</span>],p[<span class="dv">1</span>],color<span class="op">=</span><span class="st">'k'</span>,alpha<span class="op">=</span><span class="fl">0.1</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -358,7 +358,7 @@ Important
 </div>
 </div>
 <p>For completeness, we can compute the standard deviation of the points in both the x &amp; y-axis.</p>
-<div class="cell" data-execution_count="9">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(vanishing_points.std(axis<span class="op">=</span><span class="dv">0</span>).ravel())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[3.5399997  2.03944019]</code></pre>
@@ -369,7 +369,7 @@ Important
 <section id="appendix" class="level2">
 <h2 class="anchored" data-anchor-id="appendix">Appendix</h2>
 <p>For completeness, let’s compute the location of the other three vanishing points.</p>
-<div class="cell" data-execution_count="12">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>vanishing_points <span class="op">=</span> {}</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> point_name <span class="kw">in</span> [<span class="st">'VP1'</span>,<span class="st">'VP2'</span>,<span class="st">'VP3'</span>]:</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    vanishing_points[point_name]<span class="op">=</span> find_vanishing_point(point_name)</span>
@@ -391,7 +391,7 @@ VP3 [1272.22463298 7683.01978252]</code></pre>
 <p><img src="2020-04-10-Finding-Vanishing-Points_files/figure-html/cell-11-output-2.png" class="img-fluid"></p>
 </div>
 </div>
-<div class="cell" data-execution_count="11">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> point_name,color <span class="kw">in</span> [(<span class="st">'VP1'</span>,<span class="st">'g'</span>),(<span class="st">'VP2'</span>,<span class="st">'r'</span>),(<span class="st">'VP3'</span>,<span class="st">'b'</span>)]:</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    vanishing_points <span class="op">=</span> monte_carlo_simulation(point_name)</span>
@@ -410,7 +410,7 @@ VP3 [ 20.31361393 217.79742705]</code></pre>
 <p><img src="2020-04-10-Finding-Vanishing-Points_files/figure-html/cell-12-output-2.png" class="img-fluid"></p>
 </div>
 </div>
-<p>We can see that there is a significant amount of uncertainty in the x component (±1728) of the 2nd vanishing point. This is because of the lack of good, long parallel lines running left/right across the image.</p>
+<p>We can see significant uncertainty in the x component (±1728) of the 2nd vanishing point. This is because of the lack of long parallel lines running left/right across the image.</p>
 
 
 </section>

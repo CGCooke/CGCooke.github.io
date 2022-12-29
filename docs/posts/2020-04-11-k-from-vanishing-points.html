@@ -212,7 +212,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 
-<div class="cell" data-execution_count="1">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -221,7 +221,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">'figure.figsize'</span>] <span class="op">=</span> [<span class="dv">15</span>, <span class="dv">15</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">'data/2020-04-10-Finding-Vanishing-Points/csgo-dust2-mid.jpeg'</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -229,12 +229,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="2020-04-11-K-From-Vanishing-Points_files/figure-html/cell-3-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>vanishing_points <span class="op">=</span> {<span class="st">'VP1'</span>: [<span class="fl">1371.892</span>,  <span class="fl">630.421</span>],</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'VP2'</span>: [<span class="op">-</span><span class="fl">10651.54</span> ,    <span class="fl">536.681</span>],</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                    <span class="st">'VP3'</span>: [<span class="fl">1272.225</span>, <span class="fl">7683.02</span> ]}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="4">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> point_name <span class="kw">in</span> [<span class="st">'VP1'</span>,<span class="st">'VP2'</span>,<span class="st">'VP3'</span>]:</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    vp <span class="op">=</span> vanishing_points[point_name]</span>
@@ -245,9 +245,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="2020-04-11-K-From-Vanishing-Points_files/figure-html/cell-5-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>Ok, so we now have three different vanishing points. Using these, let’s try and use them to gain some insights into the cameras’ relationship with the scene.</p>
-<p>Hartley &amp; Zisserman put it best, “Vanishing points are images of points at infinity, and provide orientation (attitude) in- formation in a similar manner to that provided by the fixed stars.”</p>
-<p>Hartley &amp; Zisserman also provide an algorithm (Example 8.27, page 226) to extract the camera calibration matrix K from 3 mutually orthogonal vanishing points.</p>
+<p>We now have three different vanishing points. Using these let’s try and use them to gain some insights into the cameras’ relationship with the scene.</p>
+<p>Hartley &amp; Zisserman (H&amp;Z) put it best, “Vanishing points are images of points at infinity, and provide orientation (attitude) information in a similar manner to that provided by the fixed stars.”</p>
+<p>H&amp;Z also provide an algorithm (Example 8.27, page 226) to extract the camera calibration matrix K from 3 mutually orthogonal vanishing points.</p>
 <p>Let’s go and implement it in practice.</p>
 <section id="some-algebra" class="level3">
 <h3 class="anchored" data-anchor-id="some-algebra">Some algebra</h3>
@@ -256,15 +256,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Where:</p>
 <p><span class="math inline">\(\omega = \begin{bmatrix} w_1 &amp; 0 &amp; w_2\\ 0 &amp; w_1 &amp; w_3\\ w_2 &amp; w_3 &amp; w_4 \end{bmatrix}\)</span></p>
 <p>And:</p>
-$ v_j =
-<span class="math display">\[\begin{bmatrix}
-x_1\\
-y_1\\
-1
-\end{bmatrix}\]</span>
-<p>$</p>
+<p><span class="math inline">\(v_j = \begin{bmatrix} x_1\\ y_1\\ 1 \end{bmatrix}\)</span></p>
 <p><span class="math inline">\(v_i = \begin{bmatrix} x_2 \\ y_2 \\ 1 \end{bmatrix}\)</span></p>
-<p>If we can find this matrix <span class="math inline">\(\omega\)</span>, then we can find the camera calibration matrix if we make some assumptions:</p>
+<p>If we can find this matrix <span class="math inline">\(\omega\)</span>, then we can then find the camera calibration matrix if we make some assumptions:</p>
 <ol type="1">
 <li>Zero Skew</li>
 <li>Square Pixels</li>
@@ -275,12 +269,17 @@ y_1\\
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>K<span class="op">/=</span>K[<span class="dv">2</span>,<span class="dv">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Working backwards, we are faced with the task of finding <span class="math inline">\(\omega\)</span></p>
 <p>Multiplying through, we find that:</p>
-<p>$ v^T_i v_j = x_2(w_1 x_1 + w_2) + y_2(w_1 y_1 + w_3) + w_2 x_1 + w_3 y_1 + w_4$</p>
+<p><span class="math inline">\(v^T_i \omega v_j = x_2(w_1 x_1 + w_2) + y_2(w_1 y_1 + w_3) + w_2 x_1 + w_3 y_1 + w_4\)</span></p>
 <p>Factorising:</p>
-<p>$ v^T_i v_j= w_1(x_2 x_1 + y_2 y_1) + w_2(x_2 + x_1) + w_3(y_2 + y_1) + w_4$</p>
-<p>Great, we can now find all the coefficients we need for our matrix from each pair of vanishing points.</p>
-<p>We have three pairs of vanishing points: 1. 1 &amp; 2 2. 2 &amp; 3 3. 3 &amp; 1</p>
-<p>From each pair we can find a new set of values for <span class="math inline">\(w_1\)</span> to <span class="math inline">\(w_4\)</span>.</p>
+<p><span class="math inline">\(v^T_i \omega v_j= w_1(x_2 x_1 + y_2 y_1) + w_2(x_2 + x_1) + w_3(y_2 + y_1) + w_4\)</span></p>
+<p>We can now find all the coefficients we need for our matrix from each pair of vanishing points.</p>
+<p>We have three pairs of vanishing points:</p>
+<ol type="1">
+<li>1 &amp; 2</li>
+<li>2 &amp; 3</li>
+<li>3 &amp; 1</li>
+</ol>
+<p>From each pair, we can find a new set of values for <span class="math inline">\(w_1\)</span> to <span class="math inline">\(w_4\)</span>.</p>
 <p>Stacking them all on top of each other, we end up with the matrix <span class="math inline">\(A\)</span>.</p>
 <p><span class="math inline">\(A = \begin{bmatrix} w_{11} &amp; w_{12} &amp; w_{13} &amp; w_{14}\\ w_{21} &amp; w_{22} &amp; w_{23} &amp; w_{24}\\ w_{31} &amp; w_{32} &amp; w_{33} &amp; w_{34} \end{bmatrix}\)</span></p>
 <p>In Python:</p>
@@ -301,7 +300,7 @@ y_1\\
 <span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        </span>
 <span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    A <span class="op">=</span> np.array(A)</span>
 <span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(A)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell" data-execution_count="21">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_A(vanishing_points):</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    A <span class="op">=</span> []</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (point_name_1, point_name_2) <span class="kw">in</span> [(<span class="st">'VP1'</span>,<span class="st">'VP2'</span>),(<span class="st">'VP2'</span>,<span class="st">'VP3'</span>),(<span class="st">'VP3'</span>,<span class="st">'VP1'</span>)]:    </span>
@@ -338,7 +337,7 @@ y_1\\
 <span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>A <span class="op">=</span> generate_A(vanishing_points)</span>
 <span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>K <span class="op">=</span> compute_K(A)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="24">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(K)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[[7.276e+02 0.000e+00 1.327e+03]
@@ -356,7 +355,7 @@ y_1\\
 <li>The y coordinate of the camera optical centre <span class="math inline">\(K_{23}\)</span> (706)</li>
 </ol>
 <p><span class="math inline">\(K = \begin{bmatrix} 728 &amp; 0 &amp; 1327\\ 0 &amp; 728 &amp; 706\\ 0 &amp; 0 &amp; 1 \end{bmatrix}\)</span></p>
-<div class="cell" data-execution_count="25">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="25">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>plt.scatter(<span class="dv">2560</span><span class="op">/</span><span class="fl">2.0</span>,<span class="dv">1600</span><span class="op">/</span><span class="fl">2.0</span>,color<span class="op">=</span><span class="st">'G'</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>plt.scatter(K[<span class="dv">0</span>,<span class="dv">2</span>],K[<span class="dv">1</span>,<span class="dv">2</span>],color<span class="op">=</span><span class="st">'R'</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>

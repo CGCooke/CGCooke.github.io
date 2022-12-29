@@ -225,7 +225,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="math inline">\(\begin{equation*} y_d = y(1 + k_1 &nbsp;r + k_2 r^2 + k_3 r^3) \end{equation*}\)</span></p>
 <p>I.e., the function is described using three numbers, k_1, k_2 and k_3.</p>
 <p>Firstly, let’s import some things we need.</p>
-<div class="cell" data-execution_count="1">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> least_squares</span>
@@ -234,7 +234,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"figure.figsize"</span>] <span class="op">=</span> (<span class="dv">10</span>,<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Next, let’s use some distortion coefficients from an actual lens and plot how it maps points based on their radius from the optical centre of the lens.</p>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>k_1 <span class="op">=</span> <span class="op">-</span><span class="fl">0.04436</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>k_2 <span class="op">=</span> <span class="op">-</span><span class="fl">0.35894</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>k_3 <span class="op">=</span>  <span class="fl">0.14944</span></span>
@@ -251,7 +251,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <p>To help understand this mapping, we can visualise the impact on a grid of straight lines. Note how straight lines are mapped to curves.</p>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> distort_line(x,y,k_1,k_2,k_3):</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> np.sqrt(x<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> y<span class="op">**</span><span class="dv">2</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    x_distorted <span class="op">=</span> x<span class="op">*</span>(<span class="dv">1</span> <span class="op">+</span> k_1 <span class="op">*</span> r <span class="op">+</span> k_2 <span class="op">*</span> r<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> k_3 <span class="op">*</span> r<span class="op">**</span><span class="dv">3</span>)</span>
@@ -280,7 +280,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2 class="anchored" data-anchor-id="finding-an-inverse-function">Finding an Inverse Function</h2>
 <p>Now it’s time to find an inverse function, a function that will allow us to take points that have been distorted, and map them back to where they would have been, had the lens been free from distortion.</p>
 <p>Unfortunately, we can’t find an inverse function based on the forward function algebraically. However, we can find an inverse function through a process of optimization.</p>
-<div class="cell" data-execution_count="4">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> undistort_point(undistortion_params,r_distorted):</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    undistorted <span class="op">=</span> r_distorted<span class="op">*</span>(<span class="dv">1</span> <span class="op">+</span> undistortion_params[<span class="dv">0</span>] <span class="op">*</span> r_distorted</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                               <span class="op">+</span> undistortion_params[<span class="dv">1</span>] <span class="op">*</span> r_distorted<span class="op">**</span><span class="dv">2</span></span>
@@ -294,7 +294,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    undistorted <span class="op">=</span> undistort_point(undistortion_params, r_distorted)</span>
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>((undistorted <span class="op">-</span> np.linspace(<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">1000</span>))).ravel()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="5">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>x0 <span class="op">=</span> np.zeros(<span class="dv">5</span>).ravel()</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> least_squares(fun, x0,  verbose<span class="op">=</span><span class="dv">2</span>, ftol<span class="op">=</span><span class="fl">1e-12</span>,loss<span class="op">=</span><span class="st">'linear'</span>, args<span class="op">=</span>([r_distorted]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -307,7 +307,7 @@ Function evaluations 3, initial cost 5.6524e+00, final cost 2.3481e-07, first-or
 </div>
 </div>
 <p>The optimisation process tries to find a set of coefficients that allow us to map the output from the distortion function back to its input.</p>
-<div class="cell" data-execution_count="8">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>undistorted <span class="op">=</span> undistort_point(res.x,r_distorted)    </span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>plt.plot(r_distorted,label<span class="op">=</span><span class="st">'distorted'</span>,alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>plt.plot(undistorted,label<span class="op">=</span><span class="st">'un distorted'</span>,alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
@@ -318,7 +318,7 @@ Function evaluations 3, initial cost 5.6524e+00, final cost 2.3481e-07, first-or
 <p><img src="2020-04-05-Inverse-Radial-Distortion.pynb_files/figure-html/cell-7-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<div class="cell" data-execution_count="7">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(res.x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[ 0.04599498  0.32120247  0.22196835 -0.46283148  0.77191211]</code></pre>
