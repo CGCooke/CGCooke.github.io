@@ -222,7 +222,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <section id="the-context" class="level2">
 <h2 class="anchored" data-anchor-id="the-context">The Context</h2>
-<p>In a previous <a href="https://cgcooke.github.io/Blog/ar/computer%20vision/blender/visualisation/2021/02/17/An-Introduction-To-Augemented-Reality.html">post</a>, I showed how we could use an ArUco tag to find the position and orientation of a camera. This was done using the four exterior points on the tag. If we can detect more points on the tag, we could potentially position the camera more accurately with respect to the tag.</p>
+<p>In a previous <a href="https://cgcooke.github.io/Blog/ar/computer%20vision/blender/visualisation/2021/02/17/An-Introduction-To-Augemented-Reality.html">post</a>, I showed how we could use an ArUco tag to find the position and orientation of a camera. This was done using the four exterior points on the tag. If we detect more points on the tag, we could position the camera more accurately with respect to the tag.</p>
 <p>At a high level, what we can do is: 1. Detect the exterior corners of the tag 2. Compute the homography (relationship) between the tag and its image 3. Detect points in the image 4. Transform them using the homography 5. Detect points in the tag 6. Match the transformed points from the image with points in the tag 7. Use all of the points to position the camera</p>
 <p>As always, let’s start by importing what we need.</p>
 <div class="cell" data-execution_count="1">
@@ -252,7 +252,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>tag_size_pixels <span class="op">=</span> <span class="dv">1_000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now we need to configure our ArUco code detector.</p>
-<p>Firstly, specify that it should be looking for a “4X4_50” type tag.</p>
+<p>Firstly, specify that it should look for a “4X4_50” type tag.</p>
 <div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>arucoDict <span class="op">=</span> cv2.aruco.Dictionary_get(cv2.aruco.DICT_4X4_50)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -331,7 +331,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="transform-the-points-using-the-homography" class="level3">
 <h3 class="anchored" data-anchor-id="transform-the-points-using-the-homography">Transform the points using the homography</h3>
-<p>Now let’s transform the points detected in the image using the homography. This means that a point detected in the image should be in the same x,y position as the corresponding point in the tag after the transform.</p>
+<p>Now let’s transform the points detected in the image using homography. This means that a point seen in the image should be in the same x,y position as the corresponding point in the tag after the transform.</p>
 <div class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>detected_features_image_transformed <span class="op">=</span> cv2.perspectiveTransform(detected_features_image, M)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>detected_features_image_transformed[:,:,<span class="dv">1</span>] <span class="op">=</span> tag_size_pixels <span class="op">-</span> detected_features_image_transformed[:,:,<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -413,7 +413,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="use-all-of-the-points-to-position-the-camera" class="level3">
 <h3 class="anchored" data-anchor-id="use-all-of-the-points-to-position-the-camera">Use all of the points to position the camera</h3>
-<p>Instead of using all of the points, let’s use RANSAC, an algorithm that can pick good inliers.</p>
+<p>Instead of using all the points, let’s use RANSAC, an algorithm that can pick good inliers.</p>
 <div class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>ret, rvec, tvec, inliers <span class="op">=</span> cv2.solvePnPRansac(objectPoints <span class="op">=</span> points_3d,</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                                              imagePoints <span class="op">=</span> points_2d,</span>
@@ -435,7 +435,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
  [ 4.03681725]]</code></pre>
 </div>
 </div>
-<p>Now, let’s visualise the coordinates axes to do a quick sanity check.</p>
+<p>Now, let’s visualise the coordinates axes for a quick sanity check.</p>
 <div class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>axis <span class="op">=</span> np.float32([[<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>], [<span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>], [<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>]]).reshape(<span class="op">-</span><span class="dv">1</span>,<span class="dv">3</span>)</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>imgpts, jac <span class="op">=</span> cv2.projectPoints(axis, rvec, tvec, K, dist)</span>

@@ -219,7 +219,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2 class="anchored" data-anchor-id="the-context">The Context</h2>
 <p>In a previous <a href="https://cgcooke.github.io/Blog/ar/computer%20vision/blender/visualisation/2021/02/17/An-Introduction-To-Augemented-Reality.html">post</a>, I looked at how we could integrate synthetic objects into real-world imagery by determining the position and orientation of the camera.</p>
 <p>Using the OpenCV <em>solvePnP</em> function, we can find the position and orientation of the “chessboard” with respect to the camera. I used a “chessboard” type pattern in the post and used the detected corners to orient the camera. This is because the detected 2d points in the image have corresponding points in 3d space.</p>
-<p>In practice, an <a href="https://en.wikipedia.org/wiki/ARTag">ArUco Tag</a>, a type of fiducial/target, is often used. ArUco tags come in sets called dictionaries; the image below is tag number 0, out of a group of 50. When we detect a tag, we can decode its number.</p>
+<p>When we detect a tag, we can decode its number. In practice, an <a href="https://en.wikipedia.org/wiki/ARTag">ArUco Tag</a>, a type of fiducial/target, is often used. ArUco tags come in sets called dictionaries; the image below is tag number 0 out of a group of 50.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="https://cgcooke.github.io/Blog//images/2021-02-24-Positioning-Using-ArUco-Tags/Tag.png" class="img-fluid figure-img"></p>
@@ -293,9 +293,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="finding-the-tag-position-and-orientation" class="level2">
 <h2 class="anchored" data-anchor-id="finding-the-tag-position-and-orientation">Finding the tag position and orientation</h2>
-<p>Now that we have detected the tags, we can try to compute the position and orientation of the tag with respect to the camera.</p>
-<p>In practice, if we can find the position and orientation of the tag with respect to the camera, we can conversely find the position and orientation of the camera with respect to the tag.</p>
-<p>When <em>cv2.aruco.detectMarkers</em> detects a tag; it gives us the coordinates of the tag, starting from the top left and proceeding in a counterclockwise direction around the tag.</p>
+<p>Now that we have detected the tags, we can compute the position and orientation of the tag with respect to the camera.</p>
+<p>In practice, if we can find the position and orientation of the tag with respect to the camera, we can, conversely, find the position and orientation of the camera with respect to the tag.</p>
+<p>When <em>cv2.aruco.detectMarkers</em> detects a tag; it gives us the tag coordinates, starting from the top left and proceeding in a counterclockwise direction around the tag.</p>
 <p>If we use the tag as the origin for a right-handed - coordinate system and place the origin at the lower-left corner of the tag, we find the 3D coordinates of the corners of the tags are as follows.</p>
 <div class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>points_3d <span class="op">=</span> np.array([[<span class="fl">0.0</span>,<span class="fl">1.0</span>,<span class="fl">0.0</span>],</span>
@@ -303,10 +303,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                      [<span class="fl">1.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>],</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                      [<span class="fl">0.0</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>With the 2d coordinates and corresponding 3d coordinates for the corners of each tag, we can find the relationship between the camera and tag.</p>
+<p>With the 2d coordinates and corresponding 3d coordinates for the corners of each tag, we can find the relationship between the camera and the tag.</p>
 <p>The can be computed using <em>cv2.solvePnP</em>, which will give us the <em>rvec</em> and <em>tvec</em>, which describes the position and orientation of the tag according to the coordinate system of the camera.</p>
 <p><img src="https://cgcooke.github.io/Blog//images/2021-02-17-An-Introduction-To-Augemented-Reality/pinholeCamera.png" class="img-fluid"></p>
-<p>In this case <em>rvec</em> is in <a href="https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula">Rodrigues</a> format.</p>
+<p>In this case, <em>rvec</em> is in <a href="https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula">Rodrigues</a> format.</p>
 <p>Finally, let’s visualize the coordinate system defined by each ArUco tag.</p>
 <div class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(detected_tags)):</span>
@@ -339,14 +339,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="finding-the-camera-position-and-orientation" class="level2">
 <h2 class="anchored" data-anchor-id="finding-the-camera-position-and-orientation">Finding the camera position and orientation</h2>
 <p>For completeness, we can find the location and orientation of the camera with respect to one of the tags.</p>
-<p>In this case, it will be the first tag that we detected, tag number 27 in the low left of the image.</p>
+<p>In this case, it will be the first tag we detected, tag number 27, in the low left of the image.</p>
 <div class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>tag_index <span class="op">=</span> <span class="dv">0</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>points_2d <span class="op">=</span> detected_tags[tag_index].squeeze()</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>ret, rvec, tvec <span class="op">=</span> cv2.solvePnP(objectPoints <span class="op">=</span> points_3d, imagePoints <span class="op">=</span> points_2d, cameraMatrix <span class="op">=</span> K, distCoeffs <span class="op">=</span> dist)<span class="co">#, flags = cv2.SOLVEPNP_IPPE_SQUARE)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Now we can find the camera position <em>Camera_C</em>, and its orientation <em>Camera_R</em> (in Quaternions), with respect to the coordinate system defined by the tag.</p>
+<p>Now we can find the camera position <em>Camera_C</em>and its orientation <em>Camera_R</em> (in Quaternions), with respect to the coordinate system defined by the tag.</p>
 <div class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> Rot.from_rotvec(rvec[:,<span class="dv">0</span>])</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>R <span class="op">=</span> r.as_matrix()</span>
@@ -368,7 +368,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
 <p>For me, ArUco tags offer many exciting possibilities beyond Augmented Reality.</p>
-<p>In particular, they can be applied during photogrammetric surveying projects to provide quick estimates of camera positions and orientations.</p>
+<p>In particular, they can be applied during photogrammetric surveying projects to estimate camera positions and orientations quickly.</p>
 <p>They also allow us to inject scale estimates into a photogrammetric reconstruction, given their known real-world size.</p>
 
 

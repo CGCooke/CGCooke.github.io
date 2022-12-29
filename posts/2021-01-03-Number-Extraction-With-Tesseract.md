@@ -22,7 +22,7 @@ While comparing two different mini-maps can tell us the change in angle/heading 
 ![_config.yml]({{< var baseurl >}}/images/2020-12-18-A-Playground-In-Nuketown/Nuketown-84-1.jpg)
 
 
-By using Optical Character Recognition (OCR), we can read this heading, digitising the player's current heading on a frame by frame basis. I've chosen to use [Tesseract](https://github.com/tesseract-ocr/tesseract), a powerful open-source library for OCR. In Python, we can use [Pytesseract](https://pypi.org/project/pytesseract/), a wrapper around *Tesseract*. 
+Optical Character Recognition (OCR) can read this heading, digitising the player's current heading on a frame-by-frame basis. I've chosen to use [Tesseract](https://github.com/tesseract-ocr/tesseract), a powerful open-source library for OCR. In Python, we can use [Pytesseract](https://pypi.org/project/pytesseract/), a wrapper around *Tesseract*. 
 
 You can find the video I'm digitising [here](https://www.youtube.com/watch?v=dozMeWeraFk).
 
@@ -50,7 +50,7 @@ def load_frame(frame_number):
     return(frame)
 ```
 
-Now let's pre-process the frame by: 
+Now let's preprocess the frame by: 
 
 1. Cropping the image down so that it only contains the number.
 2. Resize the image so that it's larger.
@@ -110,7 +110,7 @@ Processing
 -------------
 
 
-Now that we have pre-processed our images, it's time to use Tesseract to digitise the text.
+Now that we have preprocessed our images, it's time to use Tesseract to digitise the text.
 
 
 We have the opportunity to configure Tesseract; you can read more about the options available [here](https://ai-facets.org/tesseract-ocr-best-practices/).
@@ -156,7 +156,7 @@ Results Analysis
 Finally, let's do a quick analysis of the data extracted.
 
 
-By examining the histogram, we find that Tesseract was often uncertain about its results.
+By examining the histogram, we find that Tesseract often needed to be more certain about its results.
 
 ```python
 ax = sns.histplot(confidences,bins = np.arange(0,100,10))
@@ -167,7 +167,7 @@ ax.set_xlabel('Confidence (%)')
 
 
 
-We can also chart the angles on a frame by frame basis. Note that the limits of the chart are set to the range of 0-360 (degrees).
+We can also chart the angles on a frame-by-frame basis. Note that the limits of the chart are set to the range of 0-360 (degrees).
 
 ```python
 plt.plot(angles,alpha=0.5)
@@ -185,11 +185,11 @@ Using:
 ```python
 np.count_nonzero(~np.isnan(angles))
 ```
-We find that Tesseract managed to extract numbers in 4,049 out of 5,000 frames.
+We find that Tesseract extracted numbers in 4,049 out of 5,000 frames.
 
 Conclusion
 -------------
-Our next step is to take this heading data and integrate it with other data sources to form a more coherent view of the player's position and heading. We can already see that our method will need to be robust to both missing and erroneous data. 
+Our next step is to integrate this heading data with other data sources to form a more coherent view of the player's position and heading. We already see that our method must be robust to missing and erroneous data. 
 
 
 

@@ -20,7 +20,7 @@ toc: true
 
 # Training the model
 
-> Note: To be clear, the following section is adapted directly from an example from PyTorch, which you can see [here](https://pytorch.org/tutorials/intermediate/torchvision_tutorial.html).
+> Note: The following section is adapted directly from an example from PyTorch, which you can see [here](https://pytorch.org/tutorials/intermediate/torchvision_tutorial.html).
 
 
 
@@ -130,14 +130,14 @@ def get_instance_object_detection_model(num_classes):
     return model
 ```
 
-This will make the model ready to be trained and evaluated on our custom dataset.
+This will prepare the model to be trained and evaluated on our custom dataset.
 
 ## Training and evaluation functions
 
 In references/detection/, we have several helper functions to simplify training and evaluating detection models.
 Here, we will use references/detection/engine.py, references/detection/utils.py and references/detection/transforms.py.
 
-Let's copy those files (and their dependencies) here, so they are available in the notebook.
+Let's copy those files (and their dependencies) here so they are available in the notebook.
 
 
 ```python
@@ -157,7 +157,7 @@ cp references/detection/coco_utils.py ../
 ```
 
 
-Let's write some helper functions for data augmentation/transformation, which leverages the functions in `references/detection` that we have just copied:
+Let's write some helper functions for data augmentation/transformation, which leverage the functions in `references/detection` that we have just copied:
 
 ```python
 from engine import train_one_epoch, evaluate
@@ -170,7 +170,7 @@ def get_transform(train):
     transforms.append(T.ToTensor())
     if train:
         # during training, randomly flip the training images
-        # and ground-truth for data augmentation
+        # and ground truth for data augmentation
         transforms.append(T.RandomHorizontalFlip(0.5))
         
     return T.Compose(transforms)

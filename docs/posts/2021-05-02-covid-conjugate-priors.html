@@ -214,10 +214,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="the-context" class="level2">
 <h2 class="anchored" data-anchor-id="the-context">The Context</h2>
 <p>Australia has adopted an isolationist policy in response to the global coronavirus pandemic. Upon arriving in Australia, passengers are isolated in designated hotels for at least 14 days. While this process is highly effective, leaks can and do occur. Fortunately, these are regularly brought under control with effective contact tracing.</p>
-<p>I had previously written a post applying MCMC to infer &amp; estimate the effectiveness of different quarantine programmes. In this post, I’m going to build upon the fantastic work done by Antony Macali, who has diligently catalogued information about leaks for hotel quarantine. You can find the information he’s collected <a href="https://docs.google.com/spreadsheets/d/15kdyqFGfJdFi0KaTbZp-UDw8WwoKu6OPRs5V5ZzO1c0/edit#gid=0">here</a>.</p>
+<p>I had previously written a post applying MCMC to infer &amp; estimate the effectiveness of different quarantine programmes. In this post, I will build upon the fantastic work done by Antony Macali, who has diligently catalogued information about leaks for hotel quarantine. You can find the information he’s collected <a href="https://docs.google.com/spreadsheets/d/15kdyqFGfJdFi0KaTbZp-UDw8WwoKu6OPRs5V5ZzO1c0/edit#gid=0">here</a>.</p>
 <p>With this information, we can chart how effective you would have believed the quarantine system of any state was over time. It’s the belief you would have had, based on the number of people successfully processed and the number of failures that occurred.</p>
 <p>As more infected people are successfully processed, the estimated risk falls; conversely, if there is a breach, the estimated risk immediately rises.</p>
-<p>To be clear, it’s not a chart of how effective the system was at any point in time, just our underlying belief, based on the data we have observed, up until that point in time.</p>
+<p>To be clear, it’s not a chart of how effective the system was at any point in time, just our underlying belief based on the data we have observed up until that point in time.</p>
 </section>
 <section id="the-model" class="level2">
 <h2 class="anchored" data-anchor-id="the-model">The Model</h2>
@@ -321,7 +321,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
 <p>We can now create a real-time estimate of the probability of a breach and understand how it evolves.</p>
 <p>As more infected people are successfully processed, the estimated risk falls; conversely, if there is a breach, the estimated risk immediately rises.</p>
-<p>An implicit assumption is that the underlying risk inherent in the system is static, which may not be accurate in practice as the underlying system evolves. In the case of Victoria, the troubled quarantine system has undergone two evolutions. Time and data will tell if it’s 3rd time lucky.</p>
+<p>An implicit assumption is that the underlying risk inherent in the system is static, which may need to be more accurate in practice as the underlying system evolves. In the case of Victoria, the troubled quarantine system has undergone two evolutions. Time and data will tell if it’s 3rd time lucky.</p>
 
 
 </section>

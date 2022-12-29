@@ -218,7 +218,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2 class="anchored" data-anchor-id="the-context">The Context</h2>
 <p><a href="https://en.wikipedia.org/wiki/Augmented_reality">Augmented Reality</a> is a way of stitching together the virtual and real worlds.</p>
 <p>If we have enough information about a camera, we can render virtual imagery and then composite it with captured imagery of the real world. In particular, we need information about the camera’s intrinsic matrix (K) and its extrinsic matrix, which contains information about its position and attitude in the real world.</p>
-<p>To keep things simple, I will use this chessboard style calibration pattern to orient the pattern. The advantage of using this type of pattern is that we can accurately measure the position of each corner at the intersection between white and black squares.</p>
+<p>To keep things simple, I will use this chessboard-style calibration pattern to orient the pattern. The advantage of using this type of pattern is that we can accurately measure the position of each corner at the intersection between white and black squares.</p>
 <p><img src="https://cgcooke.github.io/Blog//images/2021-02-17-An-Introduction-To-Augemented-Reality/chessboard.jpg" class="img-fluid"></p>
 </section>
 <section id="the-code" class="level2">
@@ -234,7 +234,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"figure.figsize"</span>] <span class="op">=</span> (<span class="dv">10</span>,<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>I’ve already calibrated the camera, which means that we have both the camera matrix (K) and the camera’s distortion parameters.</p>
+<p>I’ve already calibrated the camera, which means we have both the camera matrix (K) and the camera’s distortion parameters.</p>
 <div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>K <span class="op">=</span> np.array([[<span class="fl">3286.9</span>, <span class="fl">0.0</span> , <span class="fl">2032.8</span>],</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>              [<span class="fl">0.0</span>   , <span class="fl">3282.3</span>, <span class="fl">1519.1</span>],</span>
@@ -265,7 +265,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="2021-02-17-An-Introduction-To-Augemented-Reality_files/figure-html/cell-5-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>We also know the 3D location of the points in the corners because it’s a flat grid.</p>
+<p>We also know the 3D location of the points in the corners because it is a flat grid.</p>
 <div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a grid of points</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>points_3d <span class="op">=</span> np.zeros((<span class="dv">6</span><span class="op">*</span><span class="dv">9</span>,<span class="dv">3</span>), np.float32)</span>
@@ -277,7 +277,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>Using the point correspondences and the camera’s intrinsic parameters, we can solve to find the relationship between the camera’s coordinate frame and the world’s coordinate frame.</p>
 <p><img src="https://cgcooke.github.io/Blog//images/2021-02-17-An-Introduction-To-Augemented-Reality/pinholeCamera.png" class="img-fluid"></p>
-<p>In this case <em>rvec</em> is in <a href="https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula">Rodrigues</a> format.</p>
+<p>In this case, <em>rvec</em> is in <a href="https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula">Rodrigues</a> format.</p>
 <div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ret, rvec, tvec <span class="op">=</span> cv2.solvePnP(points_3d, points_2d_precise, K, dist)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -321,7 +321,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>R <span class="op">=</span> r.as_matrix()</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> np.array(tvec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We can see that the camera is located at (-4.5,3,-5.5) units (grid squares).</p>
+<p>We can see that the camera is located at (-4.5, 3, -5.5) units (grid squares).</p>
 <div class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>Camera_C <span class="op">=</span> <span class="op">-</span>np.dot(R.T,tvec)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(Camera_C)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -342,7 +342,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="the-results" class="level2">
 <h2 class="anchored" data-anchor-id="the-results">The Results</h2>
-<p>Given that we have both intrinsic and extrinsic parameters, &nbsp;we can render images using <em>Blender</em>, using the same set of parameters. Then we can composite the synthetically rendered objects back into the original photograph. This results in a convincing illusion, which forms the basis for Augmented Reality.</p>
+<p>Given that we have both intrinsic and extrinsic parameters, we can render images using <em>Blender</em>, using the same set of parameters. Then we can composite the synthetically rendered objects back into the original photograph. This results in a convincing illusion, which forms the basis for Augmented Reality.</p>
 <p><img src="https://cgcooke.github.io/Blog//images/2021-02-17-An-Introduction-To-Augemented-Reality/Render.jpg" class="img-fluid"></p>
 <p><img src="https://cgcooke.github.io/Blog//images/2021-02-17-An-Introduction-To-Augemented-Reality/AR.jpg" class="img-fluid"></p>
 

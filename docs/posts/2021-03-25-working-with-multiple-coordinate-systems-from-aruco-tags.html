@@ -217,11 +217,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>In a previous post, I’ve shown how to determine the position and orientation of a camera using an ArUco code.</p>
-<p>However, when we have multiple ArUco tags, we might want to find the relationships between all of them.</p>
+<p>However, when we have multiple ArUco tags, we might want to find the relationships between them.</p>
 <p>This will require us to work with different coordinate frames and transform coordinates from one frame to another.</p>
 <p>I’ve created a synthetic example, as below.</p>
 <p>It consists of 2 tags, with the ArUco indexes of 0 and 1.</p>
-<p>Tag 0 remains untransformed.</p>
+<p>Tag 0 still needs to be translated.</p>
 <p>Tag 1 has undergone two transformations.</p>
 <ol type="1">
 <li>Translation by [3, 4, 0].</li>
@@ -229,11 +229,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol>
 <p>The camera itself is located at [5, -14, 10].</p>
 <p><img src="https://cgcooke.github.io/Blog//images/2021-25-03-Working-with-multiple-coordinate-systems-from-ArUco-tags/header.png" class="img-fluid"></p>
-<p>Let’s now detect the ArUco tags in the image and then work out the position and orientation of the camera, according to each of the tag’s coordinate systems.</p>
+<p>Let’s now detect the ArUco tags in the image and then work out the position and orientation of the camera according to each of the tag’s coordinate systems.</p>
 </section>
 <section id="extracting-aruco-tags" class="level2">
 <h2 class="anchored" data-anchor-id="extracting-aruco-tags">Extracting ArUco tags</h2>
-<div class="cell" data-execution_count="1">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2.aruco <span class="im">as</span> aruco</span>
@@ -244,7 +244,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>np.set_printoptions(precision<span class="op">=</span><span class="dv">2</span>, suppress<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Because we generated this image synthetically, we can quickly generate the Intrinsic matrix <em>K</em>. We also know that there is no distortion present.</p>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>focal_length_mm <span class="op">=</span> <span class="dv">50</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>width_pixels <span class="op">=</span> <span class="fl">800.0</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>height_pixels <span class="op">=</span> <span class="fl">600.0</span></span>
@@ -260,8 +260,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>dist <span class="op">=</span> np.array([[<span class="fl">0.0</span>],[<span class="fl">0.0</span>],[<span class="fl">0.0</span>],[<span class="fl">0.0</span>],[<span class="fl">0.0</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We also know the dimensions of the target. Let’s set the origin of the target’s coordinate system to be in the centre of the target.</p>
-<div class="cell" data-execution_count="3">
+<p>We also know the dimensions of the target. Let’s set the target’s coordinate system’s origin to be in the target’s centre.</p>
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>points_3d <span class="op">=</span> np.array([[<span class="fl">0.0</span>,<span class="fl">1.2</span>,<span class="fl">0.0</span>],</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                      [<span class="fl">1.2</span>,<span class="fl">1.2</span>,<span class="fl">0.0</span>],</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                      [<span class="fl">1.2</span>,<span class="fl">0.0</span>,<span class="fl">0.0</span>],</span>
@@ -273,7 +273,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>arucoParams <span class="op">=</span> cv2.aruco.DetectorParameters_create()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now we can detect the tags and visualise their coordinate systems.</p>
-<div class="cell" data-execution_count="15">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>f_str <span class="op">=</span> <span class="st">'data/2021-03-25-Working-with-multiple-coordinate-systems-from-ArUco-tags/120.png'</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> cv2.imread(f_str)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>gray <span class="op">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  <span class="co"># Change grayscale</span></span>
@@ -327,7 +327,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Let’s take a bird’s eye view of the situation:</p>
 <p><img src="https://cgcooke.github.io/Blog//images/2021-25-03-Working-with-multiple-coordinate-systems-from-ArUco-tags/Top_Down.png" class="img-fluid"></p>
 <p>Previously, we found the rotation and the camera’s position in the coordinate frame of each tag.</p>
-<div class="cell" data-execution_count="5">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>R_0, C_0 <span class="op">=</span> tags[<span class="dv">0</span>]</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(R_0)</span>
@@ -341,7 +341,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
  [ 10.25]]</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="6">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>R_1, C_1 <span class="op">=</span> tags[<span class="dv">1</span>]</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(R_1)</span>
@@ -357,15 +357,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p><img src="https://cgcooke.github.io/Blog//images/2021-25-03-Working-with-multiple-coordinate-systems-from-ArUco-tags/Vectors2.png" class="img-fluid"></p>
 <p>Given the information we have, what if we want to find the position and orientation of Tag 1 with respect to Tag 0’s coordinate frame?</p>
-<p>Working with all of our measurements in a single frame will provide us with a singular, coherent view of our world.</p>
+<p>Working with all of our measurements in a single frame will provide us with a coherent view of our world.</p>
 <p>Fortunately, this is relatively easy.</p>
 <p>We can first find the relative rotation between the two tags.</p>
-<div class="cell">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Rotatation of Tag 1 with respect to Tag 0</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>R_delta <span class="op">=</span> np.dot(R_0, R_1.T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Once we have done this, we can transform C_1 into Tag 0’s coordinate system and then subtract it from C_0, forming the vector T_1</p>
-<div class="cell" data-execution_count="7">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Position of the tag with respect to the origin</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>T_1 <span class="op">=</span> C_0 <span class="op">-</span> np.dot(R_delta,C_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
@@ -374,19 +374,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
        [-0.02]])</code></pre>
 </div>
 </div>
-<p>We can see that Tag 1 is located at [3.08, 4.21, -0.02]. In reality, the tag is located at [3, 4, 0]. However, there is some noise inherent in the process.</p>
+<p>We can see that Tag 1 is located at [3.08, 4.21, -0.02]. The tag is located at [3, 4, 0]. However, there is some noise inherent in the process.</p>
 <p>Tag 1 was also rotated by an angle (37 degrees) around its Z-axis. We can measure this angle as follows:</p>
-<div class="cell" data-execution_count="17">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.degrees(np.arccos(R_delta[<span class="dv">1</span>,<span class="dv">1</span>])))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>38.19945877152531</code></pre>
 </div>
 </div>
-<p>As before, there is a small error between what we have measured, and reality.</p>
+<p>As before, there is a slight error between what we have measured and reality.</p>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>We can see how we can transform measurements from two different tags, into a single coordinate frame. In another post, I will look at what happens when we have more photos and end up with potentially contradictory measurements due to the measurement noise we will invariably encounter.</p>
+<p>We can see how we can transform measurements from two different tags into a single coordinate frame. In another post, I will look at what happens when we have more photos and end up with potentially contradictory measurements due to the measurement noise we will invariably encounter.</p>
 
 
 </section>

@@ -224,7 +224,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p></p><figcaption class="figure-caption">_config.yml</figcaption><p></p>
 </figure>
 </div>
-<p>By using Optical Character Recognition (OCR), we can read this heading, digitising the player’s current heading on a frame by frame basis. I’ve chosen to use <a href="https://github.com/tesseract-ocr/tesseract">Tesseract</a>, a powerful open-source library for OCR. In Python, we can use <a href="https://pypi.org/project/pytesseract/">Pytesseract</a>, a wrapper around <em>Tesseract</em>.</p>
+<p>Optical Character Recognition (OCR) can read this heading, digitising the player’s current heading on a frame-by-frame basis. I’ve chosen to use <a href="https://github.com/tesseract-ocr/tesseract">Tesseract</a>, a powerful open-source library for OCR. In Python, we can use <a href="https://pypi.org/project/pytesseract/">Pytesseract</a>, a wrapper around <em>Tesseract</em>.</p>
 <p>You can find the video I’m digitising <a href="https://www.youtube.com/watch?v=dozMeWeraFk">here</a>.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -243,7 +243,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    cap.<span class="bu">set</span>(<span class="dv">1</span>, frame_number<span class="op">-</span><span class="dv">1</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    res, frame <span class="op">=</span> cap.read()</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(frame)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Now let’s pre-process the frame by:</p>
+<p>Now let’s preprocess the frame by:</p>
 <ol type="1">
 <li>Cropping the image down so that it only contains the number.</li>
 <li>Resize the image so that it’s larger.</li>
@@ -293,7 +293,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="processing" class="level2">
 <h2 class="anchored" data-anchor-id="processing">Processing</h2>
-<p>Now that we have pre-processed our images, it’s time to use Tesseract to digitise the text.</p>
+<p>Now that we have preprocessed our images, it’s time to use Tesseract to digitise the text.</p>
 <p>We have the opportunity to configure Tesseract; you can read more about the options available <a href="https://ai-facets.org/tesseract-ocr-best-practices/">here</a>.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>tesseract_config <span class="op">=</span> <span class="vs">r'--oem 3 --psm 13'</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>result_dict <span class="op">=</span> pytesseract.image_to_data(img, config <span class="op">=</span> tesseract_config, output_type <span class="op">=</span> pytesseract.Output.DICT)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -320,7 +320,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Results Analysis</p>
 <hr>
 <p>Finally, let’s do a quick analysis of the data extracted.</p>
-<p>By examining the histogram, we find that Tesseract was often uncertain about its results.</p>
+<p>By examining the histogram, we find that Tesseract often needed to be more certain about its results.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> sns.histplot(confidences,bins <span class="op">=</span> np.arange(<span class="dv">0</span>,<span class="dv">100</span>,<span class="dv">10</span>))</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'Confidence (%)'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-figure quarto-figure-center">
@@ -329,7 +329,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p></p><figcaption class="figure-caption">_config.yml</figcaption><p></p>
 </figure>
 </div>
-<p>We can also chart the angles on a frame by frame basis. Note that the limits of the chart are set to the range of 0-360 (degrees).</p>
+<p>We can also chart the angles on a frame-by-frame basis. Note that the limits of the chart are set to the range of 0-360 (degrees).</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>plt.plot(angles,alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>plt.ylim(<span class="dv">0</span>,<span class="dv">360</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Sample Number'</span>)</span>
@@ -343,11 +343,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>Using:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>np.count_nonzero(<span class="op">~</span>np.isnan(angles))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>We find that Tesseract managed to extract numbers in 4,049 out of 5,000 frames.</p>
+<p>We find that Tesseract extracted numbers in 4,049 out of 5,000 frames.</p>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>Our next step is to take this heading data and integrate it with other data sources to form a more coherent view of the player’s position and heading. We can already see that our method will need to be robust to both missing and erroneous data.&nbsp;</p>
+<p>Our next step is to integrate this heading data with other data sources to form a more coherent view of the player’s position and heading. We already see that our method must be robust to missing and erroneous data.</p>
 
 
 </section>

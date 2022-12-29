@@ -218,7 +218,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="the-context" class="level2">
 <h2 class="anchored" data-anchor-id="the-context">The Context</h2>
 <p>Australia has adopted an isolationist policy in response to the global coronavirus pandemic. Upon arriving in Australia, passengers are isolated in designated hotels for at least 14 days. While this process is highly effective, leaks can and do occur. Fortunately, these are regularly brought under control with effective contact tracing.</p>
-<p>There is much discussion about the effectiveness of different state systems for hotel quarantine, and I thought it would be an interesting problem to model using Bayesian Analysis. Fortunately, there have been only a handful of leaks during the processing of more than 100,000 people. As part of this modelling, I want to find the underlying probability of a leak for each processed person. We can estimate this probability independently for each state and use it to understand if there are any fundamental differences.</p>
+<p>There is much discussion about the effectiveness of different state systems for hotel quarantine, and it would be an interesting problem to model using Bayesian Analysis. Fortunately, there have been only a handful of leaks during processing of more than 100,000 people. As part of this modelling, I want to find the underlying leak probability for each processed person. We can estimate this probability independently for each state and use it to understand if there are any fundamental differences.</p>
 </section>
 <section id="the-data" class="level2">
 <h2 class="anchored" data-anchor-id="the-data">The Data</h2>
@@ -238,24 +238,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </thead>
 <tbody>
 <tr class="odd">
-<td>NSW &nbsp;</td>
-<td>91,400 &nbsp;</td>
+<td>NSW</td>
+<td>91,400</td>
 </tr>
 <tr class="even">
-<td>VIC &nbsp;</td>
-<td>26,710 &nbsp;</td>
+<td>VIC</td>
+<td>26,710</td>
 </tr>
 <tr class="odd">
-<td>QLD &nbsp;</td>
-<td>23,830 &nbsp;</td>
+<td>QLD</td>
+<td>23,830</td>
 </tr>
 <tr class="even">
-<td>SA &nbsp; &nbsp;</td>
-<td>5,510 &nbsp; &nbsp;</td>
+<td>SA</td>
+<td>5,510</td>
 </tr>
 <tr class="odd">
-<td>WA &nbsp; &nbsp;</td>
-<td>16,740 &nbsp;</td>
+<td>WA</td>
+<td>16,740</td>
 </tr>
 </tbody>
 </table>
@@ -276,7 +276,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>We can build a simple but effective model by treating the number of leaks as a <em>binomial</em> variable.</p>
 <p>We can then infer the probability each processed person results in a leak based on the number of people processed and the number of leaks observed.</p>
-<p>We need to provide a prior estimate for the probability of processing any one person resulting in a leak. We could guess that 1% of people returning have covid, and 1% of them will result in a leak, for a <em>probability of leak</em> of 0.0001. However, I will use a very broad, non-informative prior estimate that is uniform between 0 and 1.</p>
+<p>We need to provide a prior estimate for the probability of processing any one person resulting in a leak. 1% of people returning have covid, and 1% of them will result in a leak, for a <em>probability of leak</em> of 0.0001. However, I will use a very broad, non-informative prior estimate that is uniform between 0 and 1.</p>
 <div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pm.Model() <span class="im">as</span> model: </span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">#Set up our model</span></span>
@@ -286,7 +286,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    prob_of_leak <span class="op">=</span> pm.Uniform(<span class="st">'prob_of_leak'</span>,lower<span class="op">=</span><span class="dv">0</span>, upper<span class="op">=</span><span class="dv">1</span>, shape<span class="op">=</span><span class="dv">5</span>)  </span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    number_of_leaks <span class="op">=</span> pm.Binomial(<span class="st">'number_of_leaks'</span>, n <span class="op">=</span> number_of_people_processed, p <span class="op">=</span> prob_of_leak, observed <span class="op">=</span> number_of_leaks_observed)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Now we can use <em>Markov Chain Monte Carlo</em> (MCMC) to find the distribution of the underlying parameter (<em>p</em>). We are trying to find the distribution of values for <em>p</em>, where it “makes sense”, given the data we have observed and our prior estimate for it.</p>
+<p>Now we can use <em>Markov Chain Monte Carlo</em> (MCMC) to find the distribution of the underlying parameter (<em>p</em>). We are trying to find the distribution of values for <em>p</em>, where it “makes sense”, given the data we have observed and our prior estimate.</p>
 <div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>num_chains <span class="op">=</span> <span class="dv">2</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>num_samples <span class="op">=</span> <span class="dv">1_000</span></span>
@@ -363,13 +363,13 @@ NUTS: [prob_of_leak]</code></pre>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>We can clearly see that there are two clusters of states.</p>
+<p>We can see that there are two clusters of states.</p>
 <ul>
 <li>NSW, QLD and WA all have rates of leakage below 1 in 10,000</li>
 <li>VIC and SA, where the rate is 2-3 times higher.</li>
 </ul>
-<p>NSW, in particular, has a relative risk approximately 2.9 times lower than VIC.</p>
-<p>Using Bayesian Analysis, we can be confident that there might be underlying differences in the effectiveness of different hotel quarantine programmes, and we could use this to learn from those representing the <em>Gold Standard</em>.</p>
+<p>NSW, in particular, has a relative risk of approximately 2.9 times lower than VIC.</p>
+<p>Using Bayesian Analysis, we can be confident that there might be underlying differences in the effectiveness of different hotel quarantine programmes. We could use this to learn from those representing the <em>Gold Standard</em>.</p>
 
 
 </section>

@@ -222,11 +222,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2 class="anchored" data-anchor-id="the-model">The Model</h2>
 <p>We can build a simple but effective model by treating the number of leaks as a <em>binomial</em> variable.</p>
 <p>We can then infer the probability each processed person results in a leak based on the number of people processed and the number of leaks observed.</p>
-<p>We need to provide a prior estimate for the probability of processing any one person resulting in a leak. We could guess that 1% of people returning have covid, and 1% of them will result in a leak, for a <em>probability of leak</em> of 0.0001. This seems like a reasonable assumption, and to encode it; I will use a beta distribution.</p>
+<p>We need to provide a prior estimate for the probability of processing any one person resulting in a leak. 1% of people returning have covid, and 1% of them will result in a leak, for a <em>probability of leak</em> of 0.0001. This is a reasonable assumption, and to encode it; I will use a beta distribution.</p>
 <p>What is the impact of using a more informed prior than when I last looked at this problem?</p>
-<p>Well, in the case where we have less data, for example, in the case of ACT &amp; Tasmania, we will end up with a smaller posterior estimate because we have used a more informed prior.</p>
-<p>There will be little change in the case of other states/territories and countries, like NZ &amp; NSW. The data will drown out our choice of prior.</p>
-<div class="cell" data-execution_count="1">
+<p>In the case where we have less data, for example, in the case of ACT &amp; Tasmania, we will end up with a smaller posterior estimate because we have used a more informed prior.</p>
+<p>The case of other states/territories and countries will remain the same, like NZ &amp; NSW. The data will drown out our choice of prior.</p>
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pymc3 <span class="im">as</span> pm</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
@@ -237,7 +237,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>filterwarnings(<span class="st">'ignore'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Let’s create a pandas dataframe containing the data from the paper.</p>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>states <span class="op">=</span> [<span class="st">'NZ'</span>,<span class="st">'ACT'</span>,<span class="st">'QLD'</span>,<span class="st">'NSW'</span>,<span class="st">'NT'</span>,<span class="st">'SA'</span>,<span class="st">'TAS'</span>,<span class="st">'VIC'</span>,<span class="st">'WA'</span>]</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>number_of_people_processed <span class="op">=</span> [<span class="dv">127_730</span>,<span class="dv">765</span>,<span class="dv">40_896</span>,<span class="dv">128_646</span>,<span class="dv">9_180</span>, <span class="dv">13_023</span>, <span class="dv">405</span>, <span class="dv">33_300</span>, <span class="dv">29_383</span>, ]</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>number_of_leaks_observed <span class="op">=</span> [<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">4</span>, <span class="dv">1</span>]</span>
@@ -329,7 +329,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 </div>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>num_chains <span class="op">=</span> <span class="dv">2</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>num_samples <span class="op">=</span> <span class="dv">1_000</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pm.Model() <span class="im">as</span> leak_model: </span>
@@ -368,7 +368,7 @@ NUTS: [prob_of_leak]</code></pre>
 There was 1 divergence after tuning. Increase `target_accept` or reparameterize.</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="4">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>state_col <span class="op">=</span> []</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>prob_of_leak_col <span class="op">=</span> []</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">9</span>):</span>
@@ -380,7 +380,7 @@ There was 1 divergence after tuning. Increase `target_accept` or reparameterize.
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> {<span class="st">'State'</span>:state_col,<span class="st">'prob_of_leak'</span>:prob_of_leak_col}</span>
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span>  pd.DataFrame.from_dict(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="60">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="60">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>new_order <span class="op">=</span> df.groupby(by<span class="op">=</span>[<span class="st">"State"</span>])[<span class="st">"prob_of_leak"</span>].median().sort_values().index</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Visualise the data.</span></span>
