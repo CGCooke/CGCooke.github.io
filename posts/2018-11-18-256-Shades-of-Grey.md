@@ -16,7 +16,7 @@ On February 22, 2000, after 11 days of measurements, the most comprehensive map 
 
 The resulting Digital Elevation Map (DEM)  is in the public domain and provides the measured terrain height at ~90-meter resolution. The mission mapped 99.98% of the area between 60 degrees North and 56 degrees South.  
 
-This post will examine how to process the raw DEM to be more intuitively interpreted through *hill-shading*,*slope shading* & *hypsometric tinting*. 
+This post will examine how to process the raw DEM to be more intuitively interpreted through *hill-shading*, *slope shading* & *hypsometric tinting*. 
 
 
 
@@ -28,17 +28,17 @@ In order, we need to:
 1. Download a DEM as a GeoTIFF
 2. Extract a subsection of the GeoTIFF
 3. Reproject the subsection
-4. Make an image by hill shading
+4. Make an image with hill shading
 5. Make an image by colouring the subsection according to altitude
-6. Make an image by colouring the subsection according to slope
+6. Make an image by colouring the subsection according to the slope
 7. Combine the three images into a final composite
 
 DEM
 ===============
 
-Several different DEMs have been created from the data collected on the SRTM mission. I will use the CGIAR [SRTM 90m Digital Elevation Database](http://www.cgiar-csi.org/data/srtm-90m-digital-elevation-database-v4-1). Data is provided in 5x5 degree tiles, with each degree of latitude equal to approximately 111Km. 
+Several different DEMs have been created from the data collected on the SRTM mission. I will use the CGIAR [SRTM 90m Digital Elevation Database](http://www.cgiar-csi.org/data/srtm-90m-digital-elevation-database-v4-1). Data is provided in 5x5 degree tiles, with each degree of latitude equal to approximately 111 km. 
 
-Our first task is to acquire a tile. Tiles can be downloaded from http://data.cgiar-csi.org/srtm/tiles/GeoTIFF/ using wget. 
+Our first task is to acquire a tile. Tiles can be downloaded from [here](http://data.cgiar-csi.org/srtm/tiles/GeoTIFF/) using wget. 
 
 
 
@@ -91,18 +91,18 @@ Let's use [GDAL](http://www.gdal.org/) to extract a subsection of the tile. The 
 !! gdalwarp -q -te -125 48 -122 50 -srcnodata -32768 -dstnodata 0 srtm_12_03.tif subset.tif
 ```
 
-Our next step is to transform the subsection of the tile to a different projection. The points in the subsection are located on a grid 1/1200th of a degree apart. While degrees of latitude are always ~110Km in size, resulting in ~92.5M resolution, degrees of longitude decrease in size, from ~111Km at the equator to 0Km at the poles. A different scale exists between the latitude & longitude axis and a longitude scale that depends on the latitude.
+Our next step is to transform the subsection of the tile to a different projection. The points in the subsection are located on a grid 1/1200th of a degree apart. A separate scale exists between the latitude & longitude axis and a longitude scale that depends on the latitude. While degrees of latitude are always ~110 km in size, resulting in ~92.5M resolution, degrees of longitude decrease from ~111 km at the equator to 0 km at the poles.
 
 A solution is to project that points to have a consistent and equal scale in the X/Y plane. One choice is to use a family of projections called [Universal Transverse Mercator](http://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system). Each UTM projection can map points from longitude & latitude to X & Y coordinates in meters. The UTM projection is helpful because it locally preserves both shapes and distances over distances of up to several hundred kilometres.
 
 The tradeoff is that several different UTM projections are required for different points on earth, 120 to be precise. 
-Fortunately, it is relatively trivial to work out the required projection based on the longitude and latitude. Almost every conceivable projection has been assigned a code by the European Petroleum Survey Group (EPSG). This EPSG code can be used to specify the projection being used unambiguously. With UTM, each code starts with either 327 or 326, depending on the hemisphere of the projection. 
+Fortunately, working out the required projection based on the longitude and latitude is relatively trivial. Almost every conceivable projection has been assigned a code by the European Petroleum Survey Group (EPSG). You can use this EPSG code to specify the projection being used unambiguously. With UTM, each code starts with either 327 or 326, depending on the hemisphere of the projection. 
 
 
 ```python
 utmZone = int((math.floor((lon + 180)/6) % 60) + 1)
 
-''' Check to see if file is in northern or southern hemisphere '''
+''' Check to see if the file is in the northern or southern hemisphere '''
 if lat<0:
     EPSGCode = 'EPSG:327'+str(utmZone)
 else:
@@ -141,9 +141,9 @@ At this point, we can begin to visualise the DEM. One highly effective method is
 Hypsometric Tinting
 ===============
 
-Hillshading can also be combined with height information to aid the interpretation of the topography. The technical name for colouring a DEM based on height is *hypsometric tinting*. The process is simple, with GDAL mapping colours to cell heights using a provided colour scheme. 
+Hillshading can also be combined with height information to aid the interpretation of the topography. The process is simple, with GDAL mapping colours to cell heights using a provided colour scheme. The technical name for colouring a DEM based on height is *hypsometric tinting*. 
 
-![_config.yml]({{< var baseurl >}}/images/2018-11-18-256-Shades-of-Grey/color_relief.png)
+![]({{< var baseurl >}}/images/2018-11-18-256-Shades-of-Grey/color_relief.png)
 
 
 ```python
@@ -178,9 +178,9 @@ Slope Shading
 
 Another technique for visualising terrain is slope shading. While hypsometric tinting assigns colours to cells based on elevation, slope shading assigns colours to pixels based on the slope (0º to 90º). In this case, white (255,255,255) is assigned to slopes of 0º and black (0,0,0) is assigned to slopes of 90º, with varying shades of grey for slopes in-between. 
 
-![_config.yml]({{< var baseurl >}}/images/2018-11-18-256-Shades-of-Grey/slopeshade.png)
+![]({{< var baseurl >}}/images/2018-11-18-256-Shades-of-Grey/slopeshade.png)
 
-This color scheme is encoded in a txt file for gdaldem as follows: 
+This colour scheme is encoded in a txt file for gdaldem as follows: 
 
 
 
@@ -207,28 +207,27 @@ The computation of the slope shaded dem takes place over two steps.
 Layer Merging
 ===============
 
-The final step in producing the final product is to merge the three different created images. The Python Image Library (PIL) is a quick and dirty way to accomplish this task, with the three layers are merged using pixel by pixel multiplication. 
+The final step in producing the final product is to merge the three different created images. The Python Image Library (PIL) is a quick and dirty way to accomplish this task, combining the three layers using pixel-by-pixel multiplication. 
 
-One important detail to note is that the pixel by pixel multiplication occurs in the RGB space. From a theoretical perspective, it's probably better that each pixel is first transformed to the Hue, Saturation, Value (HSV) colour space. The value is then multiplied by the hill-shade and slope shade values before being transformed into the RGB colour space. However, in practical terms, the RGB space multiplication is a very reasonable approximation.
+One crucial detail to note is that the pixel-by-pixel multiplication occurs in the RGB space. Theoretically, each pixel should be first transformed to the Hue, Saturation, Value (HSV) colour space. The value is then multiplied by the hill-shade and slope-shade values before being transformed into the RGB colour space. However, the RGB space multiplication is a very reasonable approximation in practical terms.
 
 In one final tweak, the brightness of the output image is increased by 40% to offset the average reduction in brightness caused by multiplying the layers together. 
 
-![_config.yml]({{< var baseurl >}}/2018-11-18-256-Shades-of-Grey/256_Shades_of_Grey/blended.png)
-
+![]({{< var baseurl >}}/images/2018-11-18-256-Shades-of-Grey/blended.png)
 ```python
 ''' Merge components using Python Image Lib '''
 slopeshade = Image.open("slopeshade.tif").convert('L')
 hillshade = Image.open("hillshade.tif")
 colorRelief = Image.open("color_relief.tif")
 
-#Lets just fill in any gaps in the hillshading
+# Let's fill in any gaps in the hill shading
 ref = Image.new('L', slopeshade.size,180)
 hillshade = ImageChops.lighter(hillshade,ref)
 
 shading = ImageChops.multiply(slopeshade, hillshade).convert('RGB')
 merged = ImageChops.multiply(shading,colorRelief)
 
-''' Adjust the brightness to take into account the reduction caused by hillshading'''
+''' Adjust the brightness to take into account the reduction caused by hill shading.''
 enhancer = ImageEnhance.Brightness(merged)
 img_enhanced = enhancer.enhance(1.4)
 img_enhanced.save('Merged.png')
@@ -239,6 +238,6 @@ Further reading
 I found the following sources to be invaluable in compiling this post:
 
 * [Creating colour relief and slope shading](http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html)
-* [A workflow for creating beautiful relief shaded DEMs using gdal](http://linfiniti.com/2010/12/a-workflow-for-creating-beautiful-relief-shaded-dems-using-gdal/)
+* [A workflow for creating beautiful relief-shaded DEMs using gdal](http://linfiniti.com/2010/12/a-workflow-for-creating-beautiful-relief-shaded-dems-using-gdal/)
 * [Shaded relief map in python](http://www.geophysique.be/2014/02/25/shaded-relief-map-in-python/)
 * [Stamen Design](http://openterrain.tumblr.com/)

@@ -217,22 +217,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <p>On February 22, 2000, after 11 days of measurements, the most comprehensive map ever created of the earth’s topography was complete. The space shuttle <em>Endeavor</em> had just completed the Shuttle Radar Topography Mission, using a specialised radar to image the earth’s surface.</p>
 <p>The resulting Digital Elevation Map (DEM) is in the public domain and provides the measured terrain height at ~90-meter resolution. The mission mapped 99.98% of the area between 60 degrees North and 56 degrees South.</p>
-<p>This post will examine how to process the raw DEM to be more intuitively interpreted through <em>hill-shading</em>,<em>slope shading</em> &amp; <em>hypsometric tinting</em>.</p>
+<p>This post will examine how to process the raw DEM to be more intuitively interpreted through <em>hill-shading</em>, <em>slope shading</em> &amp; <em>hypsometric tinting</em>.</p>
 <p>Transforming the raw GeoTIFF into the final imagery product is simple. GDAL, the Geospatial Data Abstraction Library, carries out much of the grunt work.</p>
 <p>In order, we need to:</p>
 <ol type="1">
 <li>Download a DEM as a GeoTIFF</li>
 <li>Extract a subsection of the GeoTIFF</li>
 <li>Reproject the subsection</li>
-<li>Make an image by hill shading</li>
+<li>Make an image with hill shading</li>
 <li>Make an image by colouring the subsection according to altitude</li>
-<li>Make an image by colouring the subsection according to slope</li>
+<li>Make an image by colouring the subsection according to the slope</li>
 <li>Combine the three images into a final composite</li>
 </ol>
 <section id="dem" class="level1">
 <h1>DEM</h1>
-<p>Several different DEMs have been created from the data collected on the SRTM mission. I will use the CGIAR <a href="http://www.cgiar-csi.org/data/srtm-90m-digital-elevation-database-v4-1">SRTM 90m Digital Elevation Database</a>. Data is provided in 5x5 degree tiles, with each degree of latitude equal to approximately 111Km.</p>
-<p>Our first task is to acquire a tile. Tiles can be downloaded from http://data.cgiar-csi.org/srtm/tiles/GeoTIFF/ using wget.</p>
+<p>Several different DEMs have been created from the data collected on the SRTM mission. I will use the CGIAR <a href="http://www.cgiar-csi.org/data/srtm-90m-digital-elevation-database-v4-1">SRTM 90m Digital Elevation Database</a>. Data is provided in 5x5 degree tiles, with each degree of latitude equal to approximately 111 km.</p>
+<p>Our first task is to acquire a tile. Tiles can be downloaded from <a href="http://data.cgiar-csi.org/srtm/tiles/GeoTIFF/">here</a> using wget.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image, ImageChops, ImageEnhance</span>
@@ -260,12 +260,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The area I have selected covers Washington State and British Columbia, with file name <em>srtm_12_03.tif</em>.</p>
 <p>Let’s use <a href="http://www.gdal.org/">GDAL</a> to extract a subsection of the tile. The subsection covers Vancouver Island and the Pacific Ranges, stretching from 125ºW - 122ºW &amp; 48ºN - 50ºN. Using gdalwarp:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="op">!!</span> gdalwarp <span class="op">-</span>q <span class="op">-</span>te <span class="op">-</span><span class="dv">125</span> <span class="dv">48</span> <span class="op">-</span><span class="dv">122</span> <span class="dv">50</span> <span class="op">-</span>srcnodata <span class="op">-</span><span class="dv">32768</span> <span class="op">-</span>dstnodata <span class="dv">0</span> srtm_12_03.tif subset.tif</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Our next step is to transform the subsection of the tile to a different projection. The points in the subsection are located on a grid 1/1200th of a degree apart. While degrees of latitude are always ~110Km in size, resulting in ~92.5M resolution, degrees of longitude decrease in size, from ~111Km at the equator to 0Km at the poles. A different scale exists between the latitude &amp; longitude axis and a longitude scale that depends on the latitude.</p>
+<p>Our next step is to transform the subsection of the tile to a different projection. The points in the subsection are located on a grid 1/1200th of a degree apart. A separate scale exists between the latitude &amp; longitude axis and a longitude scale that depends on the latitude. While degrees of latitude are always ~110 km in size, resulting in ~92.5M resolution, degrees of longitude decrease from ~111 km at the equator to 0 km at the poles.</p>
 <p>A solution is to project that points to have a consistent and equal scale in the X/Y plane. One choice is to use a family of projections called <a href="http://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system">Universal Transverse Mercator</a>. Each UTM projection can map points from longitude &amp; latitude to X &amp; Y coordinates in meters. The UTM projection is helpful because it locally preserves both shapes and distances over distances of up to several hundred kilometres.</p>
-<p>The tradeoff is that several different UTM projections are required for different points on earth, 120 to be precise. Fortunately, it is relatively trivial to work out the required projection based on the longitude and latitude. Almost every conceivable projection has been assigned a code by the European Petroleum Survey Group (EPSG). This EPSG code can be used to specify the projection being used unambiguously. With UTM, each code starts with either 327 or 326, depending on the hemisphere of the projection.</p>
+<p>The tradeoff is that several different UTM projections are required for different points on earth, 120 to be precise. Fortunately, working out the required projection based on the longitude and latitude is relatively trivial. Almost every conceivable projection has been assigned a code by the European Petroleum Survey Group (EPSG). You can use this EPSG code to specify the projection being used unambiguously. With UTM, each code starts with either 327 or 326, depending on the hemisphere of the projection.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>utmZone <span class="op">=</span> <span class="bu">int</span>((math.floor((lon <span class="op">+</span> <span class="dv">180</span>)<span class="op">/</span><span class="dv">6</span>) <span class="op">%</span> <span class="dv">60</span>) <span class="op">+</span> <span class="dv">1</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">''' Check to see if file is in northern or southern hemisphere '''</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">''' Check to see if the file is in the northern or southern hemisphere '''</span></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> lat<span class="op">&lt;</span><span class="dv">0</span>:</span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    EPSGCode <span class="op">=</span> <span class="st">'EPSG:327'</span><span class="op">+</span><span class="bu">str</span>(utmZone)</span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
@@ -283,13 +283,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="hypsometric-tinting" class="level1">
 <h1>Hypsometric Tinting</h1>
-<p>Hillshading can also be combined with height information to aid the interpretation of the topography. The technical name for colouring a DEM based on height is <em>hypsometric tinting</em>. The process is simple, with GDAL mapping colours to cell heights using a provided colour scheme.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://cgcooke.github.io//images/2018-11-18-256-Shades-of-Grey/color_relief.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">_config.yml</figcaption><p></p>
-</figure>
-</div>
+<p>Hillshading can also be combined with height information to aid the interpretation of the topography. The process is simple, with GDAL mapping colours to cell heights using a provided colour scheme. The technical name for colouring a DEM based on height is <em>hypsometric tinting</em>.</p>
+<p><img src="https://cgcooke.github.io//images/2018-11-18-256-Shades-of-Grey/color_relief.png" class="img-fluid"></p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> createColorMapLUT(minHeight,maxHeight,cmap <span class="op">=</span> cm.YlGn_r,numSteps<span class="op">=</span><span class="dv">256</span>):</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">'''</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Create a colourmap for visualisation</span></span>
@@ -311,13 +306,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="slope-shading" class="level1">
 <h1>Slope Shading</h1>
 <p>Another technique for visualising terrain is slope shading. While hypsometric tinting assigns colours to cells based on elevation, slope shading assigns colours to pixels based on the slope (0º to 90º). In this case, white (255,255,255) is assigned to slopes of 0º and black (0,0,0) is assigned to slopes of 90º, with varying shades of grey for slopes in-between.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://cgcooke.github.io//images/2018-11-18-256-Shades-of-Grey/slopeshade.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">_config.yml</figcaption><p></p>
-</figure>
-</div>
-<p>This color scheme is encoded in a txt file for gdaldem as follows:</p>
+<p><img src="https://cgcooke.github.io//images/2018-11-18-256-Shades-of-Grey/slopeshade.png" class="img-fluid"></p>
+<p>This colour scheme is encoded in a txt file for gdaldem as follows:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>f <span class="op">=</span> <span class="bu">open</span>(<span class="st">'color_slope.txt'</span>,<span class="st">'w'</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>f.write(<span class="st">'0 255 255 255</span><span class="ch">\n</span><span class="st">'</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>f.write(<span class="st">'90 0 0 0</span><span class="ch">\n</span><span class="st">'</span>)</span>
@@ -332,38 +322,33 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="layer-merging" class="level1">
 <h1>Layer Merging</h1>
-<p>The final step in producing the final product is to merge the three different created images. The Python Image Library (PIL) is a quick and dirty way to accomplish this task, with the three layers are merged using pixel by pixel multiplication.</p>
-<p>One important detail to note is that the pixel by pixel multiplication occurs in the RGB space. From a theoretical perspective, it’s probably better that each pixel is first transformed to the Hue, Saturation, Value (HSV) colour space. The value is then multiplied by the hill-shade and slope shade values before being transformed into the RGB colour space. However, in practical terms, the RGB space multiplication is a very reasonable approximation.</p>
+<p>The final step in producing the final product is to merge the three different created images. The Python Image Library (PIL) is a quick and dirty way to accomplish this task, combining the three layers using pixel-by-pixel multiplication.</p>
+<p>One crucial detail to note is that the pixel-by-pixel multiplication occurs in the RGB space. Theoretically, each pixel should be first transformed to the Hue, Saturation, Value (HSV) colour space. The value is then multiplied by the hill-shade and slope-shade values before being transformed into the RGB colour space. However, the RGB space multiplication is a very reasonable approximation in practical terms.</p>
 <p>In one final tweak, the brightness of the output image is increased by 40% to offset the average reduction in brightness caused by multiplying the layers together.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="https://cgcooke.github.io//2018-11-18-256-Shades-of-Grey/256_Shades_of_Grey/blended.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">_config.yml</figcaption><p></p>
-</figure>
-</div>
+<p><img src="https://cgcooke.github.io//images/2018-11-18-256-Shades-of-Grey/blended.png" class="img-fluid"></p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">''' Merge components using Python Image Lib '''</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>slopeshade <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">"slopeshade.tif"</span>).convert(<span class="st">'L'</span>)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>hillshade <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">"hillshade.tif"</span>)</span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>colorRelief <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">"color_relief.tif"</span>)</span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">#Lets just fill in any gaps in the hillshading</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Let's fill in any gaps in the hill shading</span></span>
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>ref <span class="op">=</span> Image.new(<span class="st">'L'</span>, slopeshade.size,<span class="dv">180</span>)</span>
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>hillshade <span class="op">=</span> ImageChops.lighter(hillshade,ref)</span>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>shading <span class="op">=</span> ImageChops.multiply(slopeshade, hillshade).convert(<span class="st">'RGB'</span>)</span>
 <span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>merged <span class="op">=</span> ImageChops.multiply(shading,colorRelief)</span>
 <span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co">''' Adjust the brightness to take into account the reduction caused by hillshading'''</span></span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>enhancer <span class="op">=</span> ImageEnhance.Brightness(merged)</span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>img_enhanced <span class="op">=</span> enhancer.enhance(<span class="fl">1.4</span>)</span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>img_enhanced.save(<span class="st">'Merged.png'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co">''' Adjust the brightness to take into account the reduction caused by hill shading.''</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co">enhancer = ImageEnhance.Brightness(merged)</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co">img_enhanced = enhancer.enhance(1.4)</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co">img_enhanced.save('Merged.png')</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="further-reading" class="level1">
 <h1>Further reading</h1>
 <p>I found the following sources to be invaluable in compiling this post:</p>
 <ul>
 <li><a href="http://blog.thematicmapping.org/2012/06/creating-color-relief-and-slope-shading.html">Creating colour relief and slope shading</a></li>
-<li><a href="http://linfiniti.com/2010/12/a-workflow-for-creating-beautiful-relief-shaded-dems-using-gdal/">A workflow for creating beautiful relief shaded DEMs using gdal</a></li>
+<li><a href="http://linfiniti.com/2010/12/a-workflow-for-creating-beautiful-relief-shaded-dems-using-gdal/">A workflow for creating beautiful relief-shaded DEMs using gdal</a></li>
 <li><a href="http://www.geophysique.be/2014/02/25/shaded-relief-map-in-python/">Shaded relief map in python</a></li>
 <li><a href="http://openterrain.tumblr.com/">Stamen Design</a></li>
 </ul>
