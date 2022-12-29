@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="dcterms.date" content="2020-04-29">
-<meta name="description" content="A Bayesian approach">
+<meta name="description" content="A Bayesian approach.">
 
 <title>Adventures with Numbers - How long is the Blacklist?</title>
 <style>
@@ -169,7 +169,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <h1 class="title">How long is the Blacklist?</h1>
                   <div>
         <div class="description">
-          A Bayesian approach
+          A Bayesian approach.
         </div>
       </div>
                           <div class="quarto-categories">
@@ -215,25 +215,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview">Overview</h2>
-<p>I’m in the process of learning French, and as part of my language learning journey, I’m slowly working my way through <em>The Blacklist</em> on Netflix.</p>
-<p>The show’s premise involves an antihero played by James Spader working his way through a list of nefarious characters, taking them down one at a time.</p>
-<p>Out of idle intellectual curiosity, I was curious about how many names are on the list, based on the sample of names that are given. It’s an interesting problem we can solve using Bayesian analysis, more commonly known as the “German Tank Problem” or the “Locomotive Problem”.</p>
-<p>It’s also an interesting intro to Bayesian analysis. We are trying to infer an unknown quantity (The number of people on the list) while only being able to observe samples from this distribution.</p>
+<p>I’m learning French, and as part of my language-learning journey, I’m slowly working through <em>The Blacklist</em> on Netflix.</p>
+<p>The show’s premise involves an antihero, played by James Spader, working through a list of nefarious characters, taking them down one at a time.</p>
+<p>Out of idle intellectual curiosity, I was curious about how many names are on the list based on the sample of names given. It’s an interesting problem we can solve using Bayesian analysis, more commonly known as the “German Tank Problem” or the “Locomotive Problem”.</p>
+<p>It’s also an exciting intro to Bayesian analysis. We are trying to infer an unknown quantity (The number of people on the list) while only being able to observe samples from this distribution.</p>
 </section>
 <section id="bayes-in-brief" class="level2">
 <h2 class="anchored" data-anchor-id="bayes-in-brief">Bayes in Brief</h2>
-<p>There are many other, far better blog posts that cover this topic, particularly this <a href="https://www.isaacslavitt.com/2015/12/19/german-tank-problem-with-pymc-and-pystan/">one</a>.</p>
+<p>Many other, far better blog posts cover this topic, particularly this <a href="https://www.isaacslavitt.com/2015/12/19/german-tank-problem-with-pymc-and-pystan/">one</a>.</p>
 <p>With that out of the way, let’s talk about the problem at hand and how we can solve it with Bayesian analysis.</p>
-<p>We have some evidence, <span class="math inline">\(E\)</span>, which is what we observe. In this case, it’s the index in the black list that we find out each episode. IE, in the first episode, it is entry number <span class="math inline">\(52\)</span>.</p>
-<p>Then we have what we want to know, an estimate of the length of the Blacklist, given the evidence we have observed. Given the evidence <span class="math inline">\(P(H|E)\)</span>, this is the probability of a hypothesis.</p>
-<p>It’s a probability because we don’t know for sure how long the Blacklist is, given what we have observed, but we can work out how confident we can be about each potential option.</p>
+<p>We have some evidence, <span class="math inline">\(E\)</span>, which is what we observe. In this case, it’s the index in the blacklist that we find out about each episode. IE, in the first episode, it is entry number <span class="math inline">\(52\)</span>.</p>
+<p>Then we have what we want to know, an estimate of the length of the blacklist, given the evidence we have observed. Given the evidence <span class="math inline">\(P(H|E)\)</span>, this is the probability of a hypothesis.</p>
+<p>It’s a probability because we don’t know how long the blacklist is, given what we have observed, but we can work out how confident we can be about each potential option.</p>
 <p>Given that <span class="math inline">\(P(H|E)\)</span> is what we want, we can use <em>Baye’s Formula</em> to find it.</p>
 <p><span class="math inline">\(P(H|E) = \frac{P(E|H) P(H)}{P(E)}\)</span></p>
-<p>We need three more pieces of the puzzle, <span class="math inline">\(P(E|H)\)</span>, <span class="math inline">\(P(H)\)</span> and <span class="math inline">\(P(E)\)</span>.</p>
-<p>Now, <span class="math inline">\(P(E|H)\)</span> is the probability of the evidence, given the Hypothesis. This term is also known as the <em>Likelihood</em>and is the term that I found most confusing while initially learning about Bayesian analysis. In this case, it’s almost confusingly simple.</p>
-<p><span class="math inline">\(P(H)\)</span> is our prior belief about what the possible Hypothesis could be. In this case, it’s long we plausibly think the Blacklist could be. In practice, we know it has to be as long as any of the entries we have observed.</p>
-<p>Much of the criticism of Baysian analysis comes from the fact we can inject our own beliefs into the process. In this case, I don’t have a strong view about the length of the Blacklist, but it’s reasonable to assume that it’s probably less than 200 entries long.</p>
-<p>Let’s assume that the Blacklist is of length <span class="math inline">\(N\)</span>. Let’s also assume any given entry is as likely to be the subject of each episode as any other. Then the probability of drawing any given number is <span class="math inline">\(\frac{1}{N}\)</span>. This is the likelihood. Also, note the subtle point that N has to be at least as large as the number we have drawn.</p>
+<p>We need three more pieces of the puzzle: <span class="math inline">\(P(E|H)\)</span>, <span class="math inline">\(P(H)\)</span> and <span class="math inline">\(P(E)\)</span>.</p>
+<p><span class="math inline">\(P(E|H)\)</span> is the probability of the evidence, given the hypothesis. This term is also known as the <em>Likelihood</em> and is the one I found most confusing while initially learning about Bayesian analysis. In this case, it could be more complex.</p>
+<p><span class="math inline">\(P(H)\)</span> is our prior belief about the possible hypothesis. In this case, it’s long we plausibly think the blacklist could be. In practice, we know it has to be as long as any of the entries we have observed.</p>
+<p>Much of the criticism of Baysian analysis comes from the fact we can inject our own beliefs into the process. In this case, I don’t have a strong view about the length of the blacklist, but it’s reasonable to assume that it’s probably less than 200 entries long.</p>
+<p>Let’s assume that the blacklist is of length <span class="math inline">\(N\)</span>. Let’s also believe any given entry is as likely to be the subject of each episode as any other. Then the probability of drawing any given number is <span class="math inline">\(\frac{1}{N}\)</span>. This is the likelihood. Also, note the subtle point that N has to be at least as large as the number we have drawn.</p>
 <p>Finally, we have <span class="math inline">\(P(E)\)</span>, which is the probability of the evidence. This is just a normalisation factor, which is often ignored.</p>
 <p>Let’s get down to business. Fortunately, Wikipedia has all the data we need.</p>
 <table class="table">
@@ -526,7 +526,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="2020-04-29-How-Long-Is-The-Blacklist_files/figure-html/cell-3-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>Now let’s say that we have a sample of only the first ten episodes; what can we infer from this sample?</p>
+<p>Let’s say we have a sample of only the first ten episodes; what can we infer from this sample?</p>
 <div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>y_sample <span class="op">=</span> y[<span class="dv">0</span>:<span class="dv">10</span>]</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>plt.stem(np.sort(y_sample), use_line_collection<span class="op">=</span><span class="va">True</span>)</span>
@@ -544,7 +544,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        likelyhood <span class="op">=</span> <span class="fl">1.0</span><span class="op">/</span>i</span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(likelyhood)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Now let’s define the prior belif <span class="math inline">\(P(H)\)</span> of what we think the length of the Blacklist could be.</p>
+<p>Now let’s define the prior belief <span class="math inline">\(P(H)\)</span> of what we think the length of the Blacklist could be.</p>
 <div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>prior <span class="op">=</span> np.ones(<span class="dv">200</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>prior <span class="op">/=</span> prior.<span class="bu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -598,7 +598,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="2020-04-29-How-Long-Is-The-Blacklist_files/figure-html/cell-8-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>From the above, we can see that as we see more data, our confidence in the length of the list increases. Let’s look at the cumulative probability for different list lengths:</p>
+<p>From the above, as we see more data, our confidence in the length of the list increases. Let’s look at the cumulative probability for different list lengths:</p>
 <div class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>plt.plot(np.cumsum(posterior))</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>plt.grid()</span>
@@ -615,7 +615,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
 <p>We have taken a lightning tour of how Bayesian analysis can allow us to infer from what we can observe a quantity we are interested in when a random process is involved.</p>
-<p>In practice, Bayesian analysis isn’t conducted from first principles but instead uses a purpose-built library. Next time, I want to go and demonstrate how to do this analysis using PyMC3.</p>
+<p>In practice, Bayesian analysis isn’t conducted from first principles but instead uses a purpose-built library. Next time, I want to demonstrate how to do this analysis using PyMC3.</p>
 
 
 </section>

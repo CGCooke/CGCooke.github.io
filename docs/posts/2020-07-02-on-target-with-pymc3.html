@@ -219,13 +219,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="the-context" class="level2">
 <h2 class="anchored" data-anchor-id="the-context">The context</h2>
 <p>Last weekend I was relaxing in the countryside at a colleague’s château, and we decided to take turns shooting at a target with an air rifle.</p>
-<p>Unfortunately, we were all terrible shots, and the rifle was uncalibrated, so we didn’t do a particularly good job of hitting the target.</p>
+<p>Unfortunately, we were all terrible shots, and the rifle was uncalibrated, so we could have done a better job of hitting the target.</p>
 <p>To improve our aim, we need to adjust the rifle sights so that the pellet impacts are centred on the middle of the target.</p>
 </section>
 <section id="the-model" class="level2">
 <h2 class="anchored" data-anchor-id="the-model">The model</h2>
 <p>Let’s start modelling this situation in Python.</p>
-<div class="cell" data-execution_count="1">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
@@ -237,11 +237,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">'figure.figsize'</span>] <span class="op">=</span> [<span class="dv">20</span>,<span class="dv">20</span>]</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">1337</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Let’s pretend our rifle is incorrectly sighted/calibrated such that, when we are aiming precisely at the centre of the target, our pellets will land 120 units to the right and 80 pixels down.</p>
+<p>Let’s pretend our rifle is incorrectly sighted/calibrated so that when we aim at the target’s centre, our pellets will land 120 units to the right and 80 pixels down.</p>
 <p>Let’s also pretend that they will be normally distributed around this point, with a standard deviation of 85 pixels in each axis due to the wind/humidity/our terrible aim.</p>
 <p>This is our generative model, and we use it to generate some fake data. We will later use the same model construct and try and infer the <em>x_offset</em> and <em>y_offset</em>.</p>
 <p>Let’s go ahead and randomly generate the results of 5 shots at the target.</p>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>x_offset <span class="op">=</span> <span class="dv">120</span> <span class="co">#units/pixels</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>y_offset <span class="op">=</span> <span class="op">-</span><span class="dv">80</span> <span class="co">#units/pixels</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>standard_deviation <span class="op">=</span> <span class="dv">85</span> <span class="co">#units/pixels</span></span>
@@ -249,7 +249,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>x_observed <span class="op">=</span> np.random.normal(x_offset,standard_deviation,<span class="dv">5</span>)</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>y_observed <span class="op">=</span> np.random.normal(y_offset,standard_deviation,<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">'data/2020-07-02-On-Target-With-PyMC3/1000px-10_m_Air_Rifle_target.svg.png'</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
@@ -264,8 +264,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Now, given we have observed this target. What adjustments should we make to improve our aim?</p>
 <p>As part of Bayesian analysis, we need to provide a prior distribution, which tells us what plausible values of <em>x_offset</em> and <em>y_offset</em> could be.</p>
 <p>Based on the impact locations, PyMC3 will try to infer potential values <em>x_offset</em> and <em>y_offset</em>, which are the adjustments we need to make to our rifle.</p>
-<p>The beauty of Bayesian analysis is that we don’t get a single value as a result but a distribution of values. This allows us to understand how certain we can be about the results.</p>
-<div class="cell">
+<p>The beauty of Bayesian analysis is that we don’t get a single value but a distribution of values. This allows us to understand how certain we can be about the results.</p>
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pm.Model() <span class="im">as</span> model: </span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">#Set up our model</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    x_offset <span class="op">=</span> pm.Normal(<span class="st">'x_offset'</span>,mu <span class="op">=</span> <span class="dv">0</span>, sigma<span class="op">=</span><span class="dv">250</span>)</span>
@@ -278,7 +278,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now that we have finished setting up our model, we can use <em>Markov Chain Monte-Carlo</em> (MCMC) to infer what <em>x_offset</em> and <em>y_offset</em> could be.</p>
-<div class="cell" data-execution_count="4">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pm.Model() <span class="im">as</span> model: </span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">#The magic line that </span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    trace <span class="op">=</span> pm.sample(draws<span class="op">=</span><span class="dv">10_000</span>, tune<span class="op">=</span><span class="dv">1_000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -296,7 +296,7 @@ There was 1 divergence after tuning. Increase `target_accept` or reparameterize.
 <h2 class="anchored" data-anchor-id="results">Results</h2>
 <p>Now it’s time to look at the results; PyMC3 provides several options for understanding them.</p>
 <p>Let’s start with a numerical summary. From this, we can see the mean value of <em>x_offset</em> is 65.6 and <em>y_offset</em> is -109.7. Our best guess of where we need to aim is 65.6 units to the left and -109.7 units up.</p>
-<div class="cell" data-execution_count="5">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pm.summary(trace)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 
@@ -367,26 +367,26 @@ There was 1 divergence after tuning. Increase `target_accept` or reparameterize.
 </div>
 </div>
 </div>
-<p>A trace plot is a helpful way to diagnose what is going on. I’m yet to find an excellent tutorial on interpreting it, but here are a few key points that I’ve picked up.</p>
+<p>A trace plot is a helpful way to diagnose what is going on. I’m still looking for an excellent tutorial on interpreting it, but here are a few key points I’ve picked up.</p>
 <ul>
 <li><p>Left-Hand Column: Curves should closely overlap. If they don’t, then it means that you can’t rely on the results.</p></li>
 <li><p>Right-Hand Column: The chart should look like a “Fuzzy Caterpillar”. This means that you are effectively exploring the parameter space.</p></li>
 </ul>
-<div class="cell" data-execution_count="6">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>pm.traceplot(trace)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img src="2020-07-02-On-Target-With-PyMC3_files/figure-html/cell-8-output-1.png" class="img-fluid"></p>
 </div>
 </div>
 <p>The posterior plot tells you what values your parameters are likely to have. For example, according to our model, there is a 94% chance that x_offset is between -36 and 157.&nbsp;</p>
-<div class="cell" data-execution_count="7">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pm.plot_posterior(trace)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img src="2020-07-02-On-Target-With-PyMC3_files/figure-html/cell-9-output-1.png" class="img-fluid"></p>
 </div>
 </div>
 <p>Finally, because we have two variables, we can plot them together and understand their joint distribution using Seaborn.</p>
-<div class="cell" data-execution_count="10">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>plot <span class="op">=</span> sns.jointplot(trace[:][<span class="st">'x_offset'</span>]<span class="op">+</span><span class="dv">500</span>, trace[:][<span class="st">'y_offset'</span>]<span class="op">+</span><span class="dv">500</span>, kind<span class="op">=</span><span class="st">"hex"</span>)<span class="op">;</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
@@ -395,7 +395,7 @@ There was 1 divergence after tuning. Increase `target_accept` or reparameterize.
 </div>
 <p>Putting it all together, we can visualise the potential locations (in red) for the centroid of the actual location of where the pellets will land. With only five samples observed, there is a considerable amount of uncertainty. As the number of samples increases, this uncertainty decreases.</p>
 <p>We can also see that the green point, which marks the actual offset, is within this distribution of potential red locations.</p>
-<div class="cell" data-execution_count="12">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>plt.scatter(trace[:][<span class="st">'x_offset'</span>]<span class="op">+</span><span class="dv">500</span>,<span class="dv">500</span><span class="op">-</span>trace[:][<span class="st">'y_offset'</span>],alpha<span class="op">=</span><span class="fl">0.5</span>,s <span class="op">=</span> <span class="dv">1</span>,color<span class="op">=</span><span class="st">'r'</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>plt.scatter(x_observed<span class="op">+</span><span class="dv">500</span>,<span class="dv">500</span><span class="op">-</span>y_observed,alpha<span class="op">=</span><span class="fl">0.9</span>,s <span class="op">=</span> <span class="dv">1000</span>)</span>

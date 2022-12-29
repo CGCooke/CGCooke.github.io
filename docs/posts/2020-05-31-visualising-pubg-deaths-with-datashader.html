@@ -221,12 +221,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="an-introduction-to-pubg" class="level2">
 <h2 class="anchored" data-anchor-id="an-introduction-to-pubg">An Introduction to PUBG</h2>
 <p>Wikipedia sums up the aim of the game pretty well: &gt; “In the game, up to one hundred players parachute onto an island and scavenge for weapons and equipment to kill others while avoiding getting killed themselves. The available safe area of the game’s map decreases in size over time, directing surviving players into tighter areas to force encounters. The last player or team standing wins the round.”</p>
-<p>But for something a bit less dry, but just as accurate, there is this <a href="https://youtu.be/8c7RLtbFiJA">video</a> on Youtube.</p>
+<p>But for something a bit less dry but just as accurate, there is this <a href="https://youtu.be/8c7RLtbFiJA">video</a> on Youtube.</p>
 </section>
 <section id="data-preprocessing" class="level2">
 <h2 class="anchored" data-anchor-id="data-preprocessing">Data preprocessing</h2>
-<p>First off, let’s load some of the libraries we will later need.</p>
-<div class="cell" data-execution_count="1">
+<p>First, let’s load some of the libraries we will need later.</p>
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> glob</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> datashader <span class="im">as</span> ds</span>
@@ -243,8 +243,8 @@ https://github.com/matplotlib/matplotlib/blob/v3.1.3/matplotlibrc.template
 or from the matplotlib source distribution</code></pre>
 </div>
 </div>
-<p>The <a href="https://www.kaggle.com/skihikingkevin/pubg-match-deaths/">dataset</a> itself comes in several different .csv files, which we will load and concatenate.</p>
-<div class="cell" data-execution_count="2">
+<p>The <a href="https://www.kaggle.com/skihikingkevin/pubg-match-deaths/">dataset</a> comes in several different .csv files, which we will load and concatenate.</p>
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_deaths():</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    li <span class="op">=</span> []</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> filename <span class="kw">in</span> glob.glob(<span class="st">"/Users/cooke_c/Documents/Blog_Staging/PUBG/9372_13466_bundle_archive/deaths/*.csv"</span>):</span>
@@ -254,7 +254,7 @@ or from the matplotlib source distribution</code></pre>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.concat(li, axis<span class="op">=</span><span class="dv">0</span>, ignore_index<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>deaths_df <span class="op">=</span> load_deaths()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Matches in PUBG are limited in time to approximately 32.5 minutes. Let’s create a new categorical variable called “phase”. It will represent which of the following match phases a player died in:</p>
@@ -263,7 +263,7 @@ or from the matplotlib source distribution</code></pre>
 <li>Mid Phase (10-25m) (Cyan points)</li>
 <li>Late Phase (&gt;25m) (Purple points)</li>
 </ol>
-<div class="cell" data-execution_count="4">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_phase_category(deaths_df):</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    conditions <span class="op">=</span> [</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        (<span class="dv">1</span><span class="op">*</span><span class="dv">60</span><span class="op">&lt;</span>deaths_df.time) <span class="op">&amp;</span> (deaths_df.time<span class="op">&lt;</span><span class="dv">10</span><span class="op">*</span><span class="dv">60</span>),</span>
@@ -276,30 +276,30 @@ or from the matplotlib source distribution</code></pre>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(deaths_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="5">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>deaths_df <span class="op">=</span> create_phase_category(deaths_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="datashader" class="level2">
 <h2 class="anchored" data-anchor-id="datashader">Datashader</h2>
 <p>Now, this is where the fun begins.</p>
-<p><a href="https://datashader.org/">Datashader</a> is a highly efficient Python library for visualising a massive amount of data.</p>
+<p><a href="https://datashader.org/">Datashader</a> is a highly efficient Python library for visualising massive data.</p>
 <p>Taking Pandas data frames as inputs, Datashader aggregates the data to form visualisations.</p>
 <p>There are three key components that we use to generate our visualisation:</p>
 <ol type="1">
-<li>&nbsp;Defining a canvas. It’s going to be 4,000 by 4,000 pixels. The data range we want to visualise is 800,000 by 800,000.</li>
+<li>Defining a canvas. It’s going to be 4,000 by 4,000 pixels. The data range we want to visualise is 800,000 by 800,000.</li>
 </ol>
 <div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>cvs <span class="op">=</span> ds.Canvas(plot_width<span class="op">=</span><span class="dv">4_000</span>, plot_height<span class="op">=</span><span class="dv">4_000</span>, x_range<span class="op">=</span>[<span class="dv">0</span>,<span class="dv">800_000</span>],y_range<span class="op">=</span>[<span class="dv">0</span>,<span class="dv">800_000</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ol start="2" type="1">
-<li>We want to aggregate data from deaths_df, using the ‘victim_position_x’ variable as the x coordinate and ‘victim_position_y’ as the y coordinate. Effectively, we are computing a seperate 2D histogram for each category (game phase).</li>
+<li>We want to aggregate data from deaths_df, using the ‘victim_position_x’ variable as the x coordinate and ‘victim_position_y’ as the y coordinate. Effectively, we are computing a separate 2D histogram for each category (game phase).</li>
 </ol>
 <div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>agg <span class="op">=</span> cvs.points(deaths_df, <span class="st">'victim_position_x'</span>, <span class="st">'victim_position_y'</span>,ds.count_cat(<span class="st">'phase'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ol start="3" type="1">
-<li>We visualise our 2D histogram, coloring each bin/pixel according to our color map. We also use histogram equalization (how=‘eq_hist’).</li>
+<li>We visualise our 2D histogram, colouring each bin/pixel according to our colour map. We also use histogram equalisation (how=‘eq_hist’).</li>
 </ol>
 <div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> tf.shade(agg, color_key<span class="op">=</span>color_key, how<span class="op">=</span><span class="st">'eq_hist'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This post is heavily inspired by this <a href="https://examples.pyviz.org/census/census.html">example</a>, which is more detailed about the pipeline involved.</p>
-<div class="cell" data-execution_count="6">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> visualise_with_datashader(deaths_df):</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    color_key <span class="op">=</span> {<span class="st">'very_early'</span>:<span class="st">'black'</span>, <span class="st">'early'</span>:<span class="st">'lime'</span>,  <span class="st">'mid'</span>:<span class="st">'aqua'</span>, <span class="st">'late'</span>:<span class="st">'fuchsia'</span>}</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    </span>
@@ -312,7 +312,7 @@ or from the matplotlib source distribution</code></pre>
 <span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(img)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>One minor detail is that we need to invert the y coordinates we want to render to match the coordinate system used for the game maps.</p>
-<div class="cell" data-execution_count="7">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>deaths_df.victim_position_y <span class="op">=</span> <span class="dv">800_000</span> <span class="op">-</span> deaths_df.victim_position_y</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
@@ -323,7 +323,7 @@ or from the matplotlib source distribution</code></pre>
 <li>Mid Phase (10-25m) (Cyan points)</li>
 <li>Late Phase (&gt;25m) (Purple points)</li>
 </ol>
-<div class="cell" data-execution_count="8">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>erangel_df <span class="op">=</span> deaths_df[deaths_df.<span class="bu">map</span><span class="op">==</span><span class="st">'ERANGEL'</span>]</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>num_points <span class="op">=</span> erangel_df.shape[<span class="dv">0</span>]</span>
@@ -345,7 +345,7 @@ or from the matplotlib source distribution</code></pre>
 <li>Mid Phase (10-25m) (Cyan points)</li>
 <li>Late Phase (&gt;25m) (Purple points)</li>
 </ol>
-<div class="cell" data-execution_count="9">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>miramar_df <span class="op">=</span> deaths_df[deaths_df.<span class="bu">map</span><span class="op">==</span><span class="st">'MIRAMAR'</span>]</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>num_points <span class="op">=</span> miramar_df.shape[<span class="dv">0</span>]</span>
@@ -361,9 +361,9 @@ or from the matplotlib source distribution</code></pre>
 </section>
 <section id="analysis" class="level2">
 <h2 class="anchored" data-anchor-id="analysis">Analysis</h2>
-<p>Let’s finish by taking a closer look at the lower part of the Erangel map.</p>
+<p>Let’s take a closer look at the lower part of the Erangel map.</p>
 <p>We can see three different phases of the game, the early phase in green, the mid-phase in cyan, and the later phase in purple.</p>
-<p>I will confess to having played a grand total of 2 games of PUBG before deciding that playing virtual hide and seek wasn’t that fun. Hence, I’m not an expert, but we can see some clear patterns.</p>
+<p>I will confess to having played a total of 2 games of PUBG before deciding that playing virtual hide and seek wasn’t that fun. Hence, we can see some clear patterns.</p>
 <p>In the early phases of the game, deaths are in and around buildings as players search for supplies and weapons.</p>
 <p>In the middle phase, the deaths appear to be more spread over the map, with concentrations on roads and natural chokepoints like bridges.</p>
 <p>In the last phase of the game, the decreasing size of the “safe zone” forces the players into a concentrated area for a final stand. This results in the constellation of purple dots spread across the map.</p>

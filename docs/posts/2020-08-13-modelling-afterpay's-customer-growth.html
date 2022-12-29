@@ -304,7 +304,7 @@ Important
 </div>
 </div>
 <p>We can see a rapid, accelerating growth in the number of customers over time.</p>
-<p>One model we could use is the <a href="https://www.sciencedirect.com/science/article/pii/S1877705811001597/pdf?md5=a6adf115754239aeb12922ec06a20a9e&amp;pid=1-s2.0-S1877705811001597-main.pdf">sigmoidal model</a>. Also known as “The <em>S</em> shaped curve”, it’s a model where growth starts slow, accelerates, before slowing again. It’s often used in technology adoption or introducing a new product.</p>
+<p>One model we could use is the <a href="https://www.sciencedirect.com/science/article/pii/S1877705811001597/pdf?md5=a6adf115754239aeb12922ec06a20a9e&amp;pid=1-s2.0-S1877705811001597-main.pdf">sigmoidal model</a>. Also known as “The <em>S</em> shaped curve”, it’s a model where growth starts slow, accelerates, before slowing again. It’s often used in technology adoption or the introduction of a new product.</p>
 <p><span class="math display">\[\frac{1}{1+e^{-x}}\]</span></p>
 <div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.arange(<span class="op">-</span><span class="dv">10</span>,<span class="dv">10</span>,<span class="fl">0.01</span>)</span>
@@ -320,8 +320,8 @@ Important
 <p><span class="math display">\[\frac{L}{1+e^{-k(x-x_0)}}\]</span></p>
 <p>We can fit this model to the data provided by Afterpay using PyMC3.</p>
 <p>We can also utilise priors to inject things we might know or suspect.</p>
-<p>For example, while I am open-minded about what proportion of Australians may choose to become customers of Afterpay, I limit the model to a maximum of 25M customers (population of Australia). &nbsp;I’m using a <em>Uniform</em> distribution to emphasise that I have no firm belief about the final number of customers.</p>
-<p>I’m also using uniform priors for <span class="math inline">\(k\)</span>, the growth rate, and <span class="math inline">\(x_0\)</span>, the time, in months at which growth is the fastest.</p>
+<p>For example, while I am open-minded about what proportion of Australians may choose to become customers of Afterpay, I limit the model to a maximum of 25M customers (population of Australia). I’m using a <em>Uniform</em> distribution to emphasise that I have no firm belief about the final number of customers.</p>
+<p>I’m also using uniform priors for <span class="math inline">\(k\)</span>, the growth rate, and <span class="math inline">\(x_0\)</span>, the time in months at which growth is the fastest.</p>
 <p>In general, this isn’t great practice because I explicitly exclude the possibility that there could be more than 25M customers, and no amount of data will be able to change my mind.</p>
 <p>To quote Cromwell : <em>I beseech you, in the bowels of Christ, think it possible that you may be mistaken.</em></p>
 <p>Let’s compose this as a Bayesian Regression problem.</p>
@@ -352,8 +352,8 @@ The number of effective samples is smaller than 25% for some parameters.</code><
 </section>
 <section id="the-results" class="level2">
 <h2 class="anchored" data-anchor-id="the-results">The Results</h2>
-<p>From the following plots, we can notice several things. Firstly, and most importantly, our model converged well. Secondly, according to our model, we expect the number of customers to most likely saturate below 5m people. Still, we might have a lot more customers, even 25m.</p>
-<p>Finally, we can see that there is a lot of uncertainty around the timing of the peak of the growth. This ranges from approximately two to four years after the initial introduction of <em>Afterpay</em>.</p>
+<p>From the following plots, we can notice several things. Firstly, and most importantly, our model converged well. Secondly, according to our model, we expect the number of customers to saturate below 5m people. Still, we might have a lot more customers, even 25m.</p>
+<p>Finally, there is a lot of uncertainty around the timing of the peak of the growth. This ranges from approximately two to four years after the introduction of <em>Afterpay</em>.</p>
 <div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pm.traceplot(trace)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
@@ -455,7 +455,7 @@ The number of effective samples is smaller than 25% for some parameters.</code><
 <p><img src="2020-08-13-Modelling-Afterpay's-Customer-Growth_files/figure-html/cell-10-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>Now let’s start forecasting into the future. We can compare what we modelled to the actual customer numbers (3.1M) reported by Afterpay 54 months after they launched. <a href="https://www.afterpaytouch.com/images/27022019-H1-FY20-Results-Presentation.pdf">Page 6</a></p>
+<p>Now let’s start forecasting the future. We can compare what we modelled to the actual customer numbers (3.1M) <a href="https://www.afterpaytouch.com/images/27022019-H1-FY20-Results-Presentation.pdf">reported</a> by Afterpay 54 months after they launched.</p>
 <div class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">10_000</span>):</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.arange(<span class="dv">0</span>,<span class="dv">51</span>)</span>
@@ -491,10 +491,10 @@ The number of effective samples is smaller than 25% for some parameters.</code><
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>In conclusion, Bayesian analysis is a powerful tool because it allows us to understand how confident we are in our predictions. It’s also powerful because we can feed in the information that we might already believe. If you are 80% confident that no more than 20% of the Australian population will use Afterpay, you can feed this in as a prior.</p>
+<p>In conclusion, Bayesian analysis is a powerful tool because it allows us to understand how confident we are in our predictions. It’s also powerful because we can feed in the information we might already believe. If you are 80% sure that at most 20% of the Australian population will use Afterpay, you can feed this in as a prior.</p>
 <p>This type of analysis is also essential, as the <a href="https://www.afr.com/markets/equity-markets/afterpay-s-fate-tied-to-us-growth-20200827-p55pwu">AFR</a> makes clear, <em>Afterpay’s</em> fate is intricately linked to their customer growth.</p>
 <p>While this is a relatively <em>rough and ready</em> model, It’s interesting. We can see considerable uncertainty in the final number of customers we expect Afterpay to have.</p>
-<p>We also need to remember that we might have picked an inappropriate model to fit, which might not appropriately fit reality.</p>
+<p>We also must remember that we picked an inappropriate model to fit, which might not fit reality appropriately.</p>
 
 
 </section>

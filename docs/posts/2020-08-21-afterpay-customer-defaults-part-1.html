@@ -222,8 +222,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>I’m interested in what a typical default with <em>Afterpay</em> looks like. I have probably read hundreds of pages of information published by <em>Afterpay</em>, but I’m yet to see them mention the average default size.</p>
-<p>Because I’m curious, and I’m looking for a way to entertain myself on a long train ride, I decided to try and work it out myself.</p>
+<p>I’m interested in what a typical default with <em>Afterpay</em> looks like. I have read hundreds of pages of information published by <em>Afterpay</em>, but I’m yet to see them mention the average default size.</p>
+<p>Because I’m curious and looking for a way to entertain myself on a long train ride, I decided to work it out myself.</p>
 <div class="callout-important callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -242,24 +242,25 @@ Important
 <h2 class="anchored" data-anchor-id="what-do-we-know">What do we know?</h2>
 <ul>
 <li>Late Fees Revenue: 46.1 million AUD (Page 54 FY2019 Annual report)</li>
-<li>Average Transaction Value: Approximately 150 AUD (Page 25 FY2019 Annual report) &nbsp; &nbsp; Furthermore, we know that the lowest and highest fee you can charge for a single transaction is 10 AUD and 68 AUD. Hence, this, in turn, bounds the average of the late fees.</li>
+<li>Average Transaction Value: Approximately 150 AUD (Page 25 FY2019 Annual report)</li>
 </ul>
+<p>Furthermore, we know that the lowest and highest fee you can charge for a single transaction is 10 AUD and 68 AUD. Hence, this, in turn, bounds the average of the late fees.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="../images/2020-08-21-Afterpay-Customer-Defaults-Part-1/Page43.png" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption">Page 43 of the Afterpay FY2019 Annual Report</figcaption><p></p>
 </figure>
 </div>
-<p>Let’s spend a minute thinking about the different paths a transaction could take.</p>
+<p>Let’s think about the different paths a transaction could take.</p>
 <ol type="1">
-<li><p>The customer makes good on all their payments, on time.</p></li>
+<li><p>The customer makes good on all their payments on time.</p></li>
 <li><p>The customer makes no payments, including late fees.</p></li>
 <li><p>The customer is continually late making payments but, in the end, makes all the payments required.</p></li>
-<li><p>A combination of 2 and 3, where the customer makes some payments before ultimately defaulting.</p></li>
+<li><p>A combination of 2 and 3, where the customer makes some payments before defaulting.</p></li>
 </ol>
-<p>In cases 2 and 4, there will be a contribution to <em>GROSS LOSS</em> (Afterpay doesn’t get paid what’s owed in full).</p>
+<p>In cases 2 and 4, there will be a contribution to <em>GROSS LOSS</em> (Afterpay doesn’t get paid what’s owed in total).</p>
 <p>In the case of 3 and 4, there will be a contribution to <em>LATE FEES</em> (Afterpay doesn’t get paid on time).</p>
-<p>I will use PyMC3 to perform a <em>Monte Carlo</em> simulation, estimating how often cases 3 and 4 occur.&nbsp;</p>
+<p>I will use PyMC3 to perform a <em>Monte Carlo</em> simulation, estimating how often cases 3 and 4 occur.</p>
 <div class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pymc3 <span class="im">as</span> pm</span>
@@ -273,7 +274,7 @@ Important
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> warnings <span class="im">import</span> filterwarnings</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>filterwarnings(<span class="st">'ignore'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>While not strictly necessary, I’m modelling “underlying_sales_aud”, “late_fees_rev_aud” and “average_transaction_value_aud” as random variables so that they show up in the variable graph.</p>
+<p>While not strictly necessary, I’m modelling “underlying_sales_aud”, “late_fees_rev_aud”, and “average_transaction_value_aud” as random variables so that they show up in the variable graph.</p>
 <p>I’m also going to model <em>average_transaction_value_aud</em>, assuming they have rounded to the nearest 10 AUD.</p>
 <div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pm.Model() <span class="im">as</span> model:</span>
@@ -290,7 +291,7 @@ Important
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    late_payment_rate <span class="op">=</span> pm.Deterministic(<span class="st">'late_payment_rate'</span>,late_fees_rev_aud <span class="op">/</span> (number_of_transactions <span class="op">*</span> average_late_fee_aud))</span>
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Now that we have instantiated all of the random variables, we will take 50,000 draws from them to perform our <em>Monte Carlo</em> simulation.</p>
+<p>Now that we have instantiated all the random variables, we will take 50,000 draws from them to perform our <em>Monte Carlo</em> simulation.</p>
 <div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> model:</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    samples <span class="op">=</span> pm.sample_prior_predictive(samples<span class="op">=</span><span class="dv">50_000</span>, random_seed<span class="op">=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -319,7 +320,7 @@ Important
 <p><img src="2020-08-21-Afterpay-Customer-Defaults-Part-1_files/figure-html/cell-6-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>From this chart, we can see a high <em>likelihood</em> the value of this parameter is bounded between 2 and 14%.</p>
+<p>From this chart, we can see a high <em>likelihood</em> that the value of this parameter is bounded between 2 and 14%.</p>
 <p>We can find a 94% chance the value is between 1.9% and 9.8% using PyMC3’s summary function.</p>
 <div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pm.summary(samples[<span class="st">'late_payment_rate'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -370,8 +371,9 @@ Important
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>Based on our assumptions, we can get a high-level understanding of how common it is for <em>Afterpay</em> customers to be late in payment. Based on our model and assumptions, it’s approximately 4.3% of the time. However, this is almost certainly wrong&nbsp; because:</p>
-<p>We made several implicit assumptions: &nbsp;1. All payments are the same size. &nbsp;2. The average late fee is uniformly distributed between 10 AUD and 68 AUD. &nbsp; In future posts, I want to further refine the model, build a more accurate distribution, narrow itsbounds, and try atodetermine a result we can have more confidence in.</p>
+<p>Based on our assumptions, we can understand how common it is for <em>Afterpay</em> customers to be late in payment. Based on our model and beliefs, it’s approximately 4.3% of the time. However, this is almost certainly wrong because:</p>
+<p>We made several implicit assumptions: 1. All payments are the same size. 2. The average late fee is uniformly distributed between 10 AUD and 68 AUD.</p>
+<p>In future posts, I want to refine the model further, build a more accurate distribution, narrow its bounds, and try to determine a result we can have more confidence in.</p>
 
 
 </section>

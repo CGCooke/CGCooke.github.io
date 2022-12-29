@@ -216,12 +216,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <section id="an-introduction-to-pymc3" class="level2">
 <h2 class="anchored" data-anchor-id="an-introduction-to-pymc3">An Introduction to PyMC3</h2>
-<p>In the Last post, I took a first-principles approach to computationally solving a Bayesian analysis problem. In practice, problems can be far more complex. Fortunately, sophisticated software libraries already exist. We can leverage that to solve equally tricky problems. While several options are available, my current favourite is <a href="https://docs.pymc.io/">PyMC3</a>.</p>
-<p>If you want to be inspired by what’s possible, I strongly suggest checking out the fantastic set of <a href="https://docs.pymc.io/nb_examples/index.html">examples</a> on the PyMC3 site. &nbsp;</p>
+<p>In the Last post, I took a first-principles approach to solve a Bayesian analysis problem computationally. In practice, problems can be far more complex. Fortunately, sophisticated software libraries already exist. We can leverage that to solve equally tricky problems. While several options are available, my current favourite is <a href="https://docs.pymc.io/">PyMC3</a>.</p>
+<p>If you want to be inspired by what’s possible, I strongly suggest checking out the fantastic set of <a href="https://docs.pymc.io/nb_examples/index.html">examples</a> on the PyMC3 site.</p>
 </section>
 <section id="putting-it-into-practice" class="level2">
 <h2 class="anchored" data-anchor-id="putting-it-into-practice">Putting it into practice</h2>
-<p>Let’s start as we did last time, by taking a sample of the first 10 elements from the blacklist.</p>
+<p>Let’s start as we did last time by taking a sample of the first ten elements from the blacklist.</p>
 <div class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -290,11 +290,11 @@ The number of effective samples is smaller than 10% for some parameters.</code><
 <p><img src="2020-05-20-How-Long-Is-The-Blacklist-With-PyMC3_files/figure-html/cell-4-output-3.png" class="img-fluid"></p>
 </div>
 </div>
-<p>Ok, we are 94% confident the answer (the length of the Blacklist) is in the range from 163 to 166.</p>
+<p>Ok, we are 94% confident the answer (the length of the Blacklist) is in the range of 163 to 166.</p>
 </section>
 <section id="line-by-line." class="level2">
 <h2 class="anchored" data-anchor-id="line-by-line.">Line by Line.</h2>
-<p>Let’s step through now line by line, to understand what’s going on.</p>
+<p>Let’s step through now, line by line, to understand what’s going on.</p>
 <ol type="1">
 <li>Import PyMC3.</li>
 </ol>
@@ -308,7 +308,7 @@ The number of effective samples is smaller than 10% for some parameters.</code><
 </ol>
 <div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> model:</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ol start="4" type="1">
-<li>Create a distribution for <span class="math inline">\(N\)</span>, our prior belief of the length of the Blacklist (<span class="math inline">\(P(H)\)</span>). In layman’s terms, we say that <span class="math inline">\(N\)</span> is equally likely to any integer between the highest index we observe in our sample of data, 500. The number 500 is arbitrary; ultimately, the data we observe will “wash out” any assumptions we have made.</li>
+<li>Create a distribution for <span class="math inline">\(N\)</span>, our prior belief of the length of the Blacklist (<span class="math inline">\(P(H)\)</span>). In layperson’s terms, $ N $ is equally likely to be any integer between the highest index we observe in our sample of data, 500. The number 500 is arbitrary; ultimately, the data we observe will “wash out” any assumptions we have made.</li>
 </ol>
 <div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>N <span class="op">=</span> pm.DiscreteUniform(<span class="st">"N"</span>, lower<span class="op">=</span>y.<span class="bu">max</span>(), upper<span class="op">=</span><span class="dv">500</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ol start="5" type="1">
@@ -326,7 +326,7 @@ The number of effective samples is smaller than 10% for some parameters.</code><
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>In conclusion, PyMC3 can be used to quickly and efficiently conduct Bayesian analysis. I hope to do more examples in future posts, looking at other ‘real world’ problems.</p>
+<p>In conclusion, PyMC3 can quickly and efficiently conduct Bayesian analysis. I hope to do more examples in future posts, looking at other ‘real world’ problems.</p>
 
 
 </section>
