@@ -227,20 +227,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <section id="the-context" class="level2">
 <h2 class="anchored" data-anchor-id="the-context">The Context</h2>
-<p>It’s February 1972; the <a href="https://en.wikipedia.org/wiki/Airbus_A300">A300</a> airliner is being unveiled in Toulouse; let’s go on an adventure (In camera calibration!).</p>
+<p>It’s February 1972; the <a href="https://en.wikipedia.org/wiki/Airbus_A300">A300</a> airliner is being unveiled in Toulouse; let’s go on an adventure (In-camera calibration!).</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="../images/2020-02-23-An-Adventure-In-Camera-Calibration/A300.jpg" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption">An image of the Airbus A300 Final Assembly line in Toulouse</figcaption><p></p>
 </figure>
 </div>
-<p>Let’s say we have seen this photo published in a magazine, and we want to try and learn as much about the dimensions of Airbus’s new aircraft as possible. To do so, we will need to mathematically reconstruct the camera used to take the photo and the scene itself.</p>
+<p>We have seen this photo published in a magazine, and we want to learn as much about the dimensions of Airbus’s new aircraft as possible. To do so, we will need to mathematically reconstruct the camera used to take the photo and the scene itself.</p>
 </section>
 <section id="control-points" class="level2">
 <h2 class="anchored" data-anchor-id="control-points">Control points</h2>
-<p>In this case, we are lucky because we notice the hexagonal pattern on the floor. In particular, we see that it’s a tessellating hexagonal pattern, which can only happen if all the hexagons have identical dimensions.</p>
-<p>While we don’t know the dimensions of the hexagon, we guess that each side is approximately 1.6m long, based on the height of the people in the photo. If we assume some point on the ground, say the centre of a polygon is the point 0,0, we can work out the X &amp; Y location of each other polygon vertex we can see. Furthermore, we could also assume that the factory floor is flat and level. Hence the Z coordinate of each point is 0.</p>
-<p>Let’s spend ±5 minutes annotating the image, using an annotation tool like label me. I’ve generated a file, which you can find attached here:</p>
+<p>In this case, we are lucky because we notice the hexagonal pattern on the floor. In particular, it’s a tessellating hexagonal pattern, which can only happen if all the hexagons have identical dimensions.</p>
+<p>While we don’t know the hexagon’s dimensions, each side is approximately 1.6m long, based on the height of the people in the photo. If we assume some point on the ground, say the centre of a polygon is the point 0,0, we can work out the X &amp; Y location of each other polygon vertex we can see. Hence the Z coordinate of each point is 0. Furthermore, we could also assume that the factory floor is flat and level.</p>
+<p>Let’s spend ±5 minutes annotating the image using an annotation tool like label me. I’ve generated a file, which you can find attached here:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="../images/2020-02-23-An-Adventure-In-Camera-Calibration/Hexagons.jpg" class="img-fluid figure-img"></p>
@@ -295,7 +295,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        points.append([i,j,X,Y,Z])</span>
 <span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Now we are presented with a minor problem; in many cases, we annotated the same point up to 3 times, where the vertices of the hexagons meet. So let’s go and find points that are within 10 pixels and then take their average. If we don’t do this, we effectively over-weight some points in the image at the expense of others.</p>
+<p>Now we are presented with a minor problem; in many cases, we annotated the same point up to 3 times, where the vertices of the hexagons meet. So let’s go and find points that are within 10 pixels and then take their average. If we do this, we can effectively over-weight some points in the image at the expense of others.</p>
 <div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>points <span class="op">=</span> np.asarray(points)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>np.savetxt(<span class="st">"data/2020-02-23-An-Adventure-In-Camera-Calibration/points.csv"</span>, points)</span>
@@ -323,7 +323,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="camera-parameters" class="level2">
 <h2 class="anchored" data-anchor-id="camera-parameters">Camera Parameters</h2>
 <p>So, now we have many 3D points and corresponding 2D points in the photo.</p>
-<p>Now it’s time to turn to the real magic, bundle adjustment. Our task is to find a camera that best fits the data we have measured.</p>
+<p>Now it’s time to turn to the real magic, bundle adjustment. Our task is to find a camera that best fits our measured data.</p>
 <p>Let’s talk more about cameras.</p>
 <div class="callout-important callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
@@ -338,9 +338,9 @@ Important
 <p>There are many correct ways to model a camera mathematically. This is one way.</p>
 </div>
 </div>
-<p>Mathematically, cameras are composed of two types of parameters, <em>Intrinsic</em> and <em>Extrinsic</em>. The <em>Extrinsic</em> parameters define the position and rotation of the camera with respect to the origin of the points it’s observing.</p>
-<p>The <em>Intrinsic</em> parameters define the camera’s parameters, such as the Focal length, the location of the camera’s radial centre, and distortion induced by the lens.</p>
-<p>The <em>Extrinsic</em> parameters comprise 6 degrees of freedom, given our world is three dimensional, and there are three dimensions to rotate around.</p>
+<p>Mathematically, cameras are composed of two parameters, <em>Intrinsic</em> and <em>Extrinsic</em>. The <em>Extrinsic</em> parameters define the position and rotation of the camera with respect to the origin of the points it’s observing.</p>
+<p>The <em>Intrinsic</em> parameters define the camera’s parameters, such as the Focal length, the location of the camera’s radial centre, and the distortion induced by the lens.</p>
+<p>The <em>Extrinsic</em> parameters comprise 6 degrees of freedom, given our world is three-dimensional, and there are three dimensions to rotate around.</p>
 <p>The <em>Intrinsic</em> parameters are more complex. There are some great resources, for example, <em>Multiple View Geometry in Computer Vision</em> or the OpenCV documentation. However, In this case, I am assuming that the principal point, the focal length, and the radial parameters are unknown.</p>
 <div class="callout-note callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
@@ -355,7 +355,7 @@ Note
 <p>To be clear, I’m building on the shoulders of giants; I’ve heavily adapted this example from this incredible demo by <em>Nikolay Mayorov</em> which you can find <a href="https://scipy-cookbook.readthedocs.io/items/bundle_adjustment.html">here</a></p>
 </div>
 </div>
-<p>Firstly, let’s go and import a bunch of stuff we will need later.</p>
+<p>First, let’s import a bunch of stuff we will need later.</p>
 <div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> __future__ <span class="im">import</span> print_function</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> warnings <span class="im">import</span> filterwarnings</span>
@@ -408,19 +408,27 @@ f &amp; 0 &amp; c_{x} \\
 0 &amp; 0 &amp; 1
 \end{bmatrix}
 \end{equation*}\]</span></p>
-<p>We have the focal length, <span class="math inline">\(f\)</span>, and the camera optical center <span class="math inline">\(c_x\)</span> and <span class="math inline">\(c_y\)</span>.</p>
+<p>We have the focal length, <span class="math inline">\(f\)</span>, and the camera optical centre <span class="math inline">\(c_x\)</span> and <span class="math inline">\(c_y\)</span>.</p>
 </section>
 <section id="extrinsic-matrix" class="level3">
 <h3 class="anchored" data-anchor-id="extrinsic-matrix">Extrinsic Matrix</h3>
 <p>Now let’s talk about the camera’s extrinsic matrix.</p>
 <p>The 6 degrees of freedom describe its position and orientation within the world. That’s 3 degrees for the position and 3 for the orientation. At its heart, what we are doing is simple but confusing.</p>
-<p>There are so many ways to represent our setup: 1. Coordinate systems: 2D and 3D. * Left Handed or Right Handed? &nbsp; &nbsp; 2. Rotations: * Quaternions? * Proper Euler angles (6 different ways)? * Tait–Bryan angles (6 different ways)? * Rodrigues rotation formula? * A rotation matrix?</p>
-<ol start="3" type="1">
+<p>There are so many ways to represent our setup: 1. Coordinate systems: 2D and 3D. * Left-Handed or Right Handed?</p>
+<ol start="2" type="1">
+<li>Rotations:
+<ul>
+<li>Quaternions?</li>
+<li>Proper Euler angles (6 different ways)?</li>
+<li>Tait–Bryan angles (6 different ways)?</li>
+<li>Rodrigues rotation formula?</li>
+<li>A rotation matrix?</li>
+</ul></li>
 <li>The location of the camera in the world. (2 Different ways).</li>
 </ol>
-<p>Today, we will use two different ways to represent the rotations; firstly, a <a href="https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula">Rodrigues rotation vector</a> representation and a rotation matrix.</p>
-<p>We use two different representations because it’s easier to optimise when we have 3 degrees of freedom, rather than a naive rotation matrix that uses nine numbers to represent 3 degrees of freedom.</p>
-<p>R represents the camera’s orientation in the World Coordinate Frame (The frame which we use to describe our 3D points).</p>
+<p>Today, we will use two ways to represent the rotations: a <a href="https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula">Rodrigues rotation vector</a> representation and a rotation matrix.</p>
+<p>We use two different representations because it’s easier to optimise when we have 3 degrees of freedom than a naive rotation matrix with nine numbers representing 3 degrees of freedom.</p>
+<p>R represents the camera’s orientation in the World Coordinate Frame (The frame we use to describe our 3D points).</p>
 <p>In python, we can use convert from the Rodrigues rotation vector to the Rotation matrix as follows:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.spatial.transform <span class="im">import</span> Rotation <span class="im">as</span> Rot</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>rotation_vector <span class="op">=</span> camera_params[:<span class="dv">3</span>]</span>
@@ -462,7 +470,7 @@ x_c = x(1 + k_1  r + k_2  r^2 + k_3 r^3)
 \end{equation*}\]</span> <span class="math display">\[\begin{equation*}
 y_c = y(1 + k_1  r + k_2 r^2 + k_3 r^3)
 \end{equation*}\]</span></p>
-<p>In python, we end up with:</p>
+<p>In python, we end up with the following:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> np.sqrt(np.<span class="bu">sum</span>(points_proj<span class="op">**</span><span class="dv">2</span>, axis<span class="op">=</span><span class="dv">1</span>)))</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> <span class="dv">1</span> <span class="op">+</span> k1 \times r <span class="op">+</span> k2 <span class="op">*</span> r<span class="op">**</span><span class="dv">2</span> <span class="op">+</span> k3 <span class="op">*</span> r<span class="op">**</span><span class="dv">3</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>points_proj <span class="op">*=</span> r[:, np.newaxis]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -523,11 +531,11 @@ y_c = y(1 + k_1  r + k_2 r^2 + k_3 r^3)
 </section>
 <section id="initial-parameters" class="level2">
 <h2 class="anchored" data-anchor-id="initial-parameters">Initial Parameters</h2>
-<p>Let’s start by providing some hints to the optimiser about what the solution could be like, by putting in some reasonable starting conditions.</p>
+<p>Let’s start by providing hints to the optimiser about the solution by putting in some reasonable starting conditions.</p>
 <p>We know both the image width and height, and we can assume that the principal point is in the centre of the image.</p>
-<p>I think the camera is about 10 meters off the ground.</p>
-<p>To make optimisation easier, let’s rotate the camera so that it’s facing directly down. This means that the points should be in front of/below it.</p>
-<p>Let’s also assume that the camera is centred above the points. It’s not strictly correct, based on what we see in the image, but it’s not horrifically wrong.&nbsp;</p>
+<p>The camera is about 10 meters off the ground.</p>
+<p>Let’s rotate the camera, so it faces directly down to make optimisation easier. This means that the points should be in front of/below it.</p>
+<p>Let’s also assume that the camera is centred above the points. It’s not strictly correct, based on what we see in the image, but it’s not horrifically wrong.</p>
 <div class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>image_width <span class="op">=</span>  <span class="dv">2251</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>image_height <span class="op">=</span> <span class="dv">1508</span></span>
@@ -562,8 +570,8 @@ y_c = y(1 + k_1  r + k_2 r^2 + k_3 r^3)
 <section id="optimisation" class="level2">
 <h2 class="anchored" data-anchor-id="optimisation">Optimisation</h2>
 <p>This section below is well explained by <a href="https://scipy-cookbook.readthedocs.io/items/bundle_adjustment.html">here</a>.</p>
-<p>We are optimising to minimise a geometric error that is the distance between the 2D points we see and the projection of their 3D counterparts.</p>
-<p>Through a process of optimisation, we aim to find parameters that result in a low error, which means they should represent the actual parameters of the camera.</p>
+<p>We are optimising to minimise a geometric error, that is, the distance between the 2D points we see and the projection of their 3D counterparts.</p>
+<p>Through optimisation, we aim to find parameters that result in a low error, which means they should represent the actual parameters of the camera.</p>
 <div class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fun(camera_params, points_2d, points_3d):</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">#Compute residuals.</span></span>
@@ -621,8 +629,8 @@ K_1, K_2, K_3 : -0.327041, 0.175031, -0.030751
 Mean error per point: 3.41 pixels </code></pre>
 </div>
 </div>
-<p>Ok, first things first, the mean error per point is 3-4 pixels, which is not great, not terrible. It’s clear that we have found a decent solution; however, there are some interesting things going on.</p>
-<p>In particular, the principal point lies outside the image, which is curious, to say the least. One possibility is that the image was cropped.</p>
+<p>Ok, the mean error per point is 3-4 pixels. We have found a decent solution; however, some interesting things are happening.</p>
+<p>In particular, the principal point lies outside the image, which is curious. One possibility is that the image was cropped.</p>
 <p>Now let’s have a quick look at the errors for each point.</p>
 <div class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>plt.hist(<span class="bu">abs</span>(optimization_results.fun),density<span class="op">=</span><span class="va">True</span>)</span>
@@ -634,7 +642,7 @@ Mean error per point: 3.41 pixels </code></pre>
 <p><img src="2020-02-23-An-Adventure-In-Camera-Calibration_files/figure-html/cell-13-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>So the histogram looks pretty good, apart from the one point with a high residual, which is probably due to sloppy labelling/annotation.</p>
+<p>So the histogram looks pretty good, apart from the one point with a high residual, probably due to sloppy labelling/annotation.</p>
 <p>Now let’s compare the points we annotated, with where they would be projected, using the camera parameters we found:</p>
 <div class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>points_2d_proj <span class="op">=</span> project(points_3d, optimization_results.x)</span>
@@ -687,11 +695,11 @@ Mean error per point: 3.41 pixels </code></pre>
 </section>
 <section id="in-conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="in-conclusion">In Conclusion</h2>
-<p>We can see that we have found a semi-reasonable solution.</p>
-<p>However, I’m worried about the location of the principal point of the image. Usually, this is near the centre of the image with most cameras. In our case, it isn’t. There are several reasons why this could be the case; for example, the image might have been cropped; however, it’s a little concerning.</p>
-<p>I’m also worried about the camera’s height, which is only 2.75M above the ground. The camera looks like it’s at approximately the same height as the aircraft’s roof, which would typically be 7-10m above the ground.</p>
-<p>In the future, Let’s look more at how we can extract some more useful information from this image and understand how confident we can be in our solution.</p>
-<p>Thanks to <em>Nikolay Mayorov</em> who created the excellent demo of optimization in Scipy that I built upon, you can find the original code <a href="https://scipy-cookbook.readthedocs.io/items/bundle_adjustment.html">here</a>.</p>
+<p>We have found a semi-reasonable solution.</p>
+<p>However, I need to figure out the location of the principal point of the image. Usually, this is near the centre of the image with most cameras. In our case, it isn’t. There are several reasons why this could be the case; for example, the image might have been cropped; however, it’s a little concerning.</p>
+<p>I’m also worried about the camera’s height, only 2.75M above the ground. The camera looks approximately the same height as the aircraft’s roof, which is 7-10m above the ground.</p>
+<p>In the future, Let’s look at how we can extract more useful information from this image and understand how confident we can be in our solution.</p>
+<p>Thanks to <em>Nikolay Mayorov</em> who created the excellent optimisation demo in Scipy that I built upon, you can find the original code <a href="https://scipy-cookbook.readthedocs.io/items/bundle_adjustment.html">here</a>.</p>
 <p>Multiple View Geometry in Computer Vision is an incredible book that I learn more from each time I read it. in particular, for further information, see:</p>
 <ul>
 <li>Finite cameras. Page 153, Multiple View Geometry in Computer Vision (Second edition)</li>
