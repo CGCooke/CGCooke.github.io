@@ -17,21 +17,21 @@ toc: true
 What is Blender?
 -------------
 
-[Blender](https://www.blender.org/) is a software application for open source 3D scene creation and rendering. 
+[Blender](https://www.blender.org/) is a software application for open-source 3D scene creation and rendering. 
 
 Why would we want to automate Blender?
 -------------
-I have many reasons, but my real focus is on creating synthetic data to train new machine learning algorithms. I'm interested in trying to do more with less annotated data, and mixing real data with synthetic data is an up-and-coming solution. 
+I have many reasons, but my focus is on creating synthetic data to train new machine learning algorithms. I'm interested in doing more with less annotated data, and mixing actual data with synthetic data is an up-and-coming solution. 
 
-Using *Blender*, we can generate arbitrary amounts of synthetic data, where we can precisely control the scene. Because of this, we can create metadata simultaneously and try to generate data that better covers the available input space. 
+Using *Blender*, we can generate arbitrary amounts of synthetic data and precisely control the scene. Because of this, we can create metadata simultaneously and generate data that covers the available input space better. 
 
-A classic example of this is the [CLEVR](https://github.com/facebookresearch/clevr-dataset-gen) dataset, used for *Visual Reasoning*.
+A classic example is the [CLEVR](https://github.com/facebookresearch/clevr-dataset-gen) dataset, used for *Visual Reasoning*.
 
 How can we automate Blender?
 -------------
 *Blender* has a [comprehensively documented](https://docs.blender.org/api/current/index.html) API. However, I love using *Blender*'s [scripting mode](https://www.youtube.com/watch?v=5e56gdHZtB0) to experiment.
 
-In short, we can create a python script, which we can then run using *Blender*.
+In short, we can create a python script, which we can run using *Blender*.
 
 `blender --background --python myscript.py`
 
@@ -48,7 +48,7 @@ import bpy
 
 ### Objects
 
-When *Blender* loads, the default scene contains a cube, called *Cube*. 
+When *Blender* loads, the default scene contains a cube called *Cube*. 
 Let's adjust its position and scale.
 
 ```python 
@@ -57,7 +57,7 @@ bpy.data.objects["Cube"].scale = (cube_scale,cube_scale,cube_scale)
 bpy.data.objects["Cube"].location = (0,0,cube_scale)
 ```
 
-Now we can alos create a ground plane, and add that to the scene.
+We can also create a ground plane and add that to the scene.
 ```python 
 bpy.ops.mesh.primitive_plane_add(size=1000, enter_editmode=False, align='WORLD', location=(0, 0, 0), scale=(1, 1, 1))
 ```

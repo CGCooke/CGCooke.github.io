@@ -225,14 +225,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>Supervised learning in computer vision is fundamentally about building a model that can transform an input <em>x</em>into an output <em>y</em>.</p>
+<p>Supervised learning in computer vision is fundamentally about building a model that can transform an input <em>x</em> into an output <em>y</em>.</p>
 <p>Using <em>Blender</em>, we have seen how we can generate arbitrary scenes, and in this post, I will look at how we can create <em>Semantic Segmentation Maps</em> and <em>Depth Maps</em>.</p>
 <p>While writing this post, I found <a href="http://www.tobias-weis.de/groundtruth-data-for-computer-vision-with-blender/">this</a> post by <em>Tobias Weis</em> to be beneficial for understanding rendering nodes.</p>
-<p>For a more industrial solution, I suggest looking at the <a href="https://github.com/DIYer22/bpycv">bpycv</a> project on Github.</p>
+<p>For a more industrial solution, I suggest looking at the <a href="https://github.com/DIYer22/bpycv">bpycv</a> project on GitHub.</p>
 </section>
 <section id="the-code" class="level2">
 <h2 class="anchored" data-anchor-id="the-code">The Code</h2>
-<p>Let’s start by importing the <em>bpy</em> library, and removing a cube that already exists in the scene.</p>
+<p>Let’s start by importing the <em>bpy</em> library and removing a cube in the scene.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> bpy</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>bpy.data.objects.remove(bpy.data.objects[<span class="st">'Cube'</span>], do_unlink <span class="op">=</span> <span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -240,28 +240,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3 class="anchored" data-anchor-id="objects">Objects</h3>
 <p>Let’s create a ground plane and then place three dragons on it.</p>
 <p>I’m using the dragon model from the <a href="http://graphics.stanford.edu/data/3Dscanrep/">Stanford scanning dataset</a>.</p>
-<p>A key point to note is that I’m assigning each dragon a unique index or identifier. Later during the rendering process, the renderer will tell us the object’s index that makes up each pixel. This will allow us to generate a pixel by pixel semantic map of the image.</p>
+<p>A key point to note is that I’m assigning each dragon a unique index or identifier. Later during the rendering process, the renderer will tell us the object’s index that makes up each pixel. This will allow us to generate a pixel-by-pixel semantic map of the image.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_dragon(location, rotation, rgba, index):</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="co">#Load the mesh</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; bpy.ops.import_mesh.ply(filepath<span class="op">=</span>os.getcwd()<span class="op">+</span><span class="st">"/dragon_vrip.ply"</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; ob <span class="op">=</span> bpy.context.active_object <span class="co">#Set active object to variable</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>        <span class="co">#Load the mesh</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        bpy.ops.import_mesh.ply(filepath<span class="op">=</span>os.getcwd()<span class="op">+</span><span class="st">"/dragon_vrip.ply"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        ob <span class="op">=</span> bpy.context.active_object <span class="co">#Set active object to the variable</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; ob.scale <span class="op">=</span> (<span class="dv">10</span>,<span class="dv">10</span>,<span class="dv">10</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; ob.location <span class="op">=</span> location</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; ob.rotation_euler <span class="op">=</span> rotation</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        ob.scale <span class="op">=</span> (<span class="dv">10</span>,<span class="dv">10</span>,<span class="dv">10</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        ob.location <span class="op">=</span> location</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        ob.rotation_euler <span class="op">=</span> rotation</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="co">#Assign the object an index, which is used to generate a semantic segmentation map</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; bpy.context.<span class="bu">object</span>.pass_index <span class="op">=</span> index</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="co">#Assign the object an index, which is used to generate a semantic segmentation map</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        bpy.context.<span class="bu">object</span>.pass_index <span class="op">=</span> index</span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="co">#Create and add material to the object</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; mat <span class="op">=</span> create_dragon_material(<span class="st">'Dragon_'</span><span class="op">+</span><span class="bu">str</span>(index)<span class="op">+</span><span class="st">'_Material'</span>,rgba<span class="op">=</span>rgba)</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; ob.data.materials.append(mat)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="co">#Create and add material to the object</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        mat <span class="op">=</span> create_dragon_material(<span class="st">'Dragon_'</span><span class="op">+</span><span class="bu">str</span>(index)<span class="op">+</span><span class="st">'_Material'</span>,rgba<span class="op">=</span>rgba)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        ob.data.materials.append(mat)</span>
 <span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_floor():</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; bpy.ops.mesh.primitive_plane_add(size<span class="op">=</span><span class="dv">1000</span>, enter_editmode<span class="op">=</span><span class="va">False</span>, align<span class="op">=</span><span class="st">'WORLD'</span>, location<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), scale<span class="op">=</span>(<span class="dv">100</span>, <span class="dv">100</span>, <span class="dv">1</span>))</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; mat <span class="op">=</span> create_floor_material(material_name<span class="op">=</span><span class="st">'Floor'</span>, rgba <span class="op">=</span> &nbsp;(<span class="fl">0.9</span>, <span class="fl">0.9</span>, <span class="fl">0.9</span>, <span class="dv">0</span>)) </span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; activeObject <span class="op">=</span> bpy.context.active_object <span class="co">#Set active object to variable</span></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; activeObject.data.materials.append(mat)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        bpy.ops.mesh.primitive_plane_add(size<span class="op">=</span><span class="dv">1000</span>, enter_editmode<span class="op">=</span><span class="va">False</span>, align<span class="op">=</span><span class="st">'WORLD'</span>, location<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), scale<span class="op">=</span>(<span class="dv">100</span>, <span class="dv">100</span>, <span class="dv">1</span>))</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        mat <span class="op">=</span> create_floor_material(material_name<span class="op">=</span><span class="st">'Floor'</span>, rgba <span class="op">=</span>  (<span class="fl">0.9</span>, <span class="fl">0.9</span>, <span class="fl">0.9</span>, <span class="dv">0</span>)) </span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        activeObject <span class="op">=</span> bpy.context.active_object <span class="co">#Set active object to the variable</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        activeObject.data.materials.append(mat)</span>
 <span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>create_floor()</span>
 <span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>create_dragon(location<span class="op">=</span>(<span class="dv">0</span>,<span class="fl">0.78</span>,<span class="op">-</span><span class="fl">0.56</span>), rotation<span class="op">=</span>(np.radians(<span class="dv">90</span>),<span class="dv">0</span>,<span class="dv">0</span>), rgba<span class="op">=</span>(<span class="fl">0.799</span>, <span class="fl">0.125</span>, <span class="fl">0.0423</span>, <span class="dv">1</span>), index<span class="op">=</span><span class="dv">1</span>)</span>
@@ -272,36 +272,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3 class="anchored" data-anchor-id="materials">Materials</h3>
 <p>I will create a semi-translucent plastic material with some subsurface scattering and a reflective coating for the dragons.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_dragon_material(material_name,rgba):</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; mat <span class="op">=</span> bpy.data.materials.new(name<span class="op">=</span>material_name)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; mat.use_nodes <span class="op">=</span> <span class="va">True</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; nodes <span class="op">=</span> mat.node_tree.nodes</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>        mat <span class="op">=</span> bpy.data.materials.new(name<span class="op">=</span>material_name)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>        mat.use_nodes <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        nodes <span class="op">=</span> mat.node_tree.nodes</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; nodes[<span class="st">"Principled BSDF"</span>].inputs[<span class="st">'Base Color'</span>].default_value <span class="op">=</span> rgba</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        nodes[<span class="st">"Principled BSDF"</span>].inputs[<span class="st">'Base Color'</span>].default_value <span class="op">=</span> rgba</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        nodes[<span class="st">"Principled BSDF"</span>].inputs[<span class="st">'Subsurface'</span>].default_value <span class="op">=</span> <span class="fl">0.5</span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        nodes[<span class="st">"Principled BSDF"</span>].inputs[<span class="st">'Subsurface Color'</span>].default_value <span class="op">=</span> rgba</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; nodes[<span class="st">"Principled BSDF"</span>].inputs[<span class="st">'Clearoat'</span>].default_value <span class="op">=</span> <span class="fl">0.5</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="cf">return</span>(mat)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        nodes[<span class="st">"Principled BSDF"</span>].inputs[<span class="st">'Clearoat'</span>].default_value <span class="op">=</span> <span class="fl">0.5</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span>(mat)</span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> create_floor_material(material_name,rgba):</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; mat <span class="op">=</span> bpy.data.materials.new(name<span class="op">=</span>material_name)</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; mat.use_nodes <span class="op">=</span> <span class="va">True</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; nodes <span class="op">=</span> mat.node_tree.nodes</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        mat <span class="op">=</span> bpy.data.materials.new(name<span class="op">=</span>material_name)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        mat.use_nodes <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>        nodes <span class="op">=</span> mat.node_tree.nodes</span>
 <span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; nodes[<span class="st">"Principled BSDF"</span>].inputs[<span class="st">'Base Color'</span>].default_value <span class="op">=</span> rgba</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; nodes[<span class="st">"Principled BSDF"</span>].inputs[<span class="st">'Clearcoat'</span>].default_value <span class="op">=</span> <span class="fl">0.5</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="cf">return</span>(mat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        nodes[<span class="st">"Principled BSDF"</span>].inputs[<span class="st">'Base Color'</span>].default_value <span class="op">=</span> rgba</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        nodes[<span class="st">"Principled BSDF"</span>].inputs[<span class="st">'Clearcoat'</span>].default_value <span class="op">=</span> <span class="fl">0.5</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span>(mat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="light-camera" class="level3">
 <h3 class="anchored" data-anchor-id="light-camera">Light &amp; Camera</h3>
 <div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> configure_light():</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; bpy.data.objects[<span class="st">"Light"</span>].data.<span class="bu">type</span> <span class="op">=</span> <span class="st">'AREA'</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; bpy.data.objects[<span class="st">"Light"</span>].scale[<span class="dv">0</span>] <span class="op">=</span> <span class="dv">20</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; bpy.data.objects[<span class="st">"Light"</span>].scale[<span class="dv">1</span>] <span class="op">=</span> <span class="dv">20</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>        bpy.data.objects[<span class="st">"Light"</span>].data.<span class="bu">type</span> <span class="op">=</span> <span class="st">'AREA'</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        bpy.data.objects[<span class="st">"Light"</span>].scale[<span class="dv">0</span>] <span class="op">=</span> <span class="dv">20</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        bpy.data.objects[<span class="st">"Light"</span>].scale[<span class="dv">1</span>] <span class="op">=</span> <span class="dv">20</span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> configure_camera():</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; bpy.data.objects[<span class="st">"Camera"</span>].location <span class="op">=</span> (<span class="dv">0</span>,<span class="op">-</span><span class="fl">4.96579</span>,<span class="fl">2.45831</span>)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; bpy.data.objects[<span class="st">"Camera"</span>].rotation_euler <span class="op">=</span> (np.radians(<span class="dv">75</span>),<span class="dv">0</span>,<span class="dv">0</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        bpy.data.objects[<span class="st">"Camera"</span>].location <span class="op">=</span> (<span class="dv">0</span>,<span class="op">-</span><span class="fl">4.96579</span>,<span class="fl">2.45831</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        bpy.data.objects[<span class="st">"Camera"</span>].rotation_euler <span class="op">=</span> (np.radians(<span class="dv">75</span>),<span class="dv">0</span>,<span class="dv">0</span>)</span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>configure_camera()</span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>configure_light()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -309,56 +309,56 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="renderer" class="level3">
 <h3 class="anchored" data-anchor-id="renderer">Renderer</h3>
 <p>Much of the complexity comes in configuring the renderer.</p>
-<p>In particular, we need to create three different output nodes then link the relevant output from the render to each node.</p>
+<p>In particular, we need to create three different output nodes and then link the relevant output from the render to each node.</p>
 <p>We also need to configure the renderer to record the object index, which we use for building our semantic map.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> configure_render():</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; bpy.context.scene.render.engine <span class="op">=</span> <span class="st">'CYCLES'</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; bpy.context.scene.render.filepath <span class="op">=</span> os.getcwd()<span class="op">+</span><span class="st">"/Metadata"</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>        bpy.context.scene.render.engine <span class="op">=</span> <span class="st">'CYCLES'</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>        bpy.context.scene.render.filepath <span class="op">=</span> os.getcwd()<span class="op">+</span><span class="st">"/Metadata"</span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="co">#Output open exr .exr files</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; bpy.context.scene.render.image_settings.file_format <span class="op">=</span> <span class="st">'OPEN_EXR'</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; bpy.context.scene.cycles.samples <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">#Output open exr .exr files</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>        bpy.context.scene.render.image_settings.file_format <span class="op">=</span> <span class="st">'OPEN_EXR'</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>        bpy.context.scene.cycles.samples <span class="op">=</span> <span class="dv">1</span></span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="co"># Configure renderer to record object index</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; bpy.context.scene.view_layers[<span class="st">"ViewLayer"</span>].use_pass_object_index <span class="op">=</span> <span class="va">True</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; bpy.context.scene.view_layers[<span class="st">"ViewLayer"</span>].use_pass_z <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Configure renderer to record object index</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>        bpy.context.scene.view_layers[<span class="st">"ViewLayer"</span>].use_pass_object_index <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        bpy.context.scene.view_layers[<span class="st">"ViewLayer"</span>].use_pass_z <span class="op">=</span> <span class="va">True</span></span>
 <span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="co"># Switch on nodes and get reference</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; bpy.context.scene.use_nodes <span class="op">=</span> <span class="va">True</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; tree <span class="op">=</span> bpy.context.scene.node_tree</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; links <span class="op">=</span> tree.links</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Switch on nodes and get reference</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        bpy.context.scene.use_nodes <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        tree <span class="op">=</span> bpy.context.scene.node_tree</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>        links <span class="op">=</span> tree.links</span>
 <span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="co">## Clear default nodes</span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="cf">for</span> node <span class="kw">in</span> tree.nodes:</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; tree.nodes.remove(node)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>        <span class="co">## Clear default nodes</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> node <span class="kw">in</span> tree.nodes:</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>            tree.nodes.remove(node)</span>
 <span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="co"># Create a node for outputting the rendered image</span></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; image_output_node <span class="op">=</span> tree.nodes.new(<span class="bu">type</span><span class="op">=</span><span class="st">"CompositorNodeOutputFile"</span>)</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; image_output_node.label <span class="op">=</span> <span class="st">"Image_Output"</span></span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; image_output_node.base_path <span class="op">=</span> <span class="st">"Metadata/Image"</span></span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; image_output_node.location <span class="op">=</span> <span class="dv">400</span>,<span class="dv">0</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create a node for outputting the rendered image</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>        image_output_node <span class="op">=</span> tree.nodes.new(<span class="bu">type</span><span class="op">=</span><span class="st">"CompositorNodeOutputFile"</span>)</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>        image_output_node.label <span class="op">=</span> <span class="st">"Image_Output"</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>        image_output_node.base_path <span class="op">=</span> <span class="st">"Metadata/Image"</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>        image_output_node.location <span class="op">=</span> <span class="dv">400</span>,<span class="dv">0</span></span>
 <span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="co"># Create a node for outputting the depth of each pixel from the camera</span></span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; depth_output_node <span class="op">=</span> tree.nodes.new(<span class="bu">type</span><span class="op">=</span><span class="st">"CompositorNodeOutputFile"</span>)</span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; depth_output_node.label <span class="op">=</span> <span class="st">"Depth_Output"</span></span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; depth_output_node.base_path <span class="op">=</span> <span class="st">"Metadata/Depth"</span></span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; depth_output_node.location <span class="op">=</span> <span class="dv">400</span>,<span class="op">-</span><span class="dv">100</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create a node for outputting the depth of each pixel from the camera</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>        depth_output_node <span class="op">=</span> tree.nodes.new(<span class="bu">type</span><span class="op">=</span><span class="st">"CompositorNodeOutputFile"</span>)</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>        depth_output_node.label <span class="op">=</span> <span class="st">"Depth_Output"</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>        depth_output_node.base_path <span class="op">=</span> <span class="st">"Metadata/Depth"</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>        depth_output_node.location <span class="op">=</span> <span class="dv">400</span>,<span class="op">-</span><span class="dv">100</span></span>
 <span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="co"># Create a node for outputting the index of each object</span></span>
-<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; index_output_node <span class="op">=</span> tree.nodes.new(<span class="bu">type</span><span class="op">=</span><span class="st">"CompositorNodeOutputFile"</span>)</span>
-<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; index_output_node.label <span class="op">=</span> <span class="st">"Index_Output"</span></span>
-<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; index_output_node.base_path <span class="op">=</span> <span class="st">"Metadata/Index"</span></span>
-<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; index_output_node.location <span class="op">=</span> <span class="dv">400</span>,<span class="op">-</span><span class="dv">200</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create a node for outputting the index of each object</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>        index_output_node <span class="op">=</span> tree.nodes.new(<span class="bu">type</span><span class="op">=</span><span class="st">"CompositorNodeOutputFile"</span>)</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>        index_output_node.label <span class="op">=</span> <span class="st">"Index_Output"</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>        index_output_node.base_path <span class="op">=</span> <span class="st">"Metadata/Index"</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>        index_output_node.location <span class="op">=</span> <span class="dv">400</span>,<span class="op">-</span><span class="dv">200</span></span>
 <span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="co"># Create a node for the output from the renderer</span></span>
-<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; render_layers_node <span class="op">=</span> tree.nodes.new(<span class="bu">type</span><span class="op">=</span><span class="st">"CompositorNodeRLayers"</span>)</span>
-<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; render_layers_node.location <span class="op">=</span> <span class="dv">0</span>,<span class="dv">0</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Create a node for the output from the renderer</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>        render_layers_node <span class="op">=</span> tree.nodes.new(<span class="bu">type</span><span class="op">=</span><span class="st">"CompositorNodeRLayers"</span>)</span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>        render_layers_node.location <span class="op">=</span> <span class="dv">0</span>,<span class="dv">0</span></span>
 <span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; <span class="co"># Link all the nodes together</span></span>
-<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; links.new(render_layers_node.outputs[<span class="st">'Image'</span>], image_output_node.inputs[<span class="st">'Image'</span>])</span>
-<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; links.new(render_layers_node.outputs[<span class="st">'Depth'</span>], depth_output_node.inputs[<span class="st">'Image'</span>])</span>
-<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>&nbsp; &nbsp; &nbsp; &nbsp; links.new(render_layers_node.outputs[<span class="st">'IndexOB'</span>], index_output_node.inputs[<span class="st">'Image'</span>])</span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Link all the nodes together</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>        links.new(render_layers_node.outputs[<span class="st">'Image'</span>], image_output_node.inputs[<span class="st">'Image'</span>])</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>        links.new(render_layers_node.outputs[<span class="st">'Depth'</span>], depth_output_node.inputs[<span class="st">'Image'</span>])</span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>        links.new(render_layers_node.outputs[<span class="st">'IndexOB'</span>], index_output_node.inputs[<span class="st">'Image'</span>])</span>
 <span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>configure_render()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This is what it looks like in the <em>Blender</em> compositing interface when the configuration is complete:</p>

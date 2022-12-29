@@ -214,8 +214,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <section id="the-context" class="level2">
 <h2 class="anchored" data-anchor-id="the-context">The Context</h2>
-<p>As we saw in the last post, we can use FFT Phase Correlation to find the x &amp; y translation between two different images/arrays. However, what if there is a rotation between two images/arrays instead?</p>
-<p>This is a real problem when comparing two different mini-maps, where the player might have rotated between them.</p>
+<p>As we saw in the last post, we can use FFT Phase Correlation to find the x &amp; y translation between two images/arrays. However, what if there is a rotation between two images/arrays instead?</p>
+<p>This is a problem when comparing two mini-maps where the player might have rotated between them.</p>
 <p>One solution is the Log-Polar transformation, which transforms the image from x,y space to <span class="math inline">\(\rho\)</span>,<span class="math inline">\(\theta\)</span> space. In <span class="math inline">\(\rho\)</span>,<span class="math inline">\(\theta\)</span> space, scaling and rotation between the two images manifest as 2d translations. Once we have identified the rotation between the two images, we can correct it before finding the 2d translation.</p>
 <p>While understanding this process, I found this excellent <a href="https://sthoduka.github.io/imreg_fmt/docs/overall-pipeline/">explanation</a> by Santosh Thoduka, which helped make things much clearer for me. Scikit-image also has a good <a href="https://scikit-image.org/docs/stable/auto_examples/registration/plot_register_rotation.html#sphx-glr-auto-examples-registration-plot-register-rotation-py">demo</a>, from which I learnt a lot.</p>
 </section>
@@ -224,7 +224,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The log polar transform points from (x,y) to (<span class="math inline">\(\rho\)</span>,<span class="math inline">\(\theta\)</span>) as follows:</p>
 <p><span class="math inline">\(\rho = \ln\sqrt{x^2 + y^2}\)</span></p>
 <p><span class="math inline">\(\theta = atan2(y-y_c,x-x_c)\)</span></p>
-<p>To help visualise this process, let’s do some experiments with <em>Mondarian’s Tableau I</em>.</p>
+<p>To help visualise this process, let’s experiment with <em>Mondarian’s Tableau I</em>.</p>
 <div class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -264,7 +264,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="2020-12-20-The-Log-Polar-Transform_files/figure-html/cell-4-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>Now let’s rotate the Mondarin to better understand the power of the log-polar transform.</p>
+<p>Now let’s rotate the Mondrian to understand the power of the log-polar transform better.</p>
 <div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mondarin_rotated <span class="op">=</span> skimage.transform.rotate(mondarin, <span class="dv">90</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -279,7 +279,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="2020-12-20-The-Log-Polar-Transform_files/figure-html/cell-5-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>By comparing the original and the rotated <em>Mondarin</em>transform, we can see that a rotation in the original domain corresponds to a translation/shift in the log-polar domain.</p>
+<p>By comparing the original and the rotated <em>Mondrian</em>, we can see that a rotation in the original domain corresponds to a translation/shift in the log-polar domain.</p>
 <div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>monarin_rotated_warped <span class="op">=</span> skimage.transform.warp_polar(mondarin_rotated, radius<span class="op">=</span><span class="dv">700</span>, output_shape<span class="op">=</span>shape, scaling<span class="op">=</span><span class="st">'linear'</span>, order<span class="op">=</span><span class="dv">0</span>, multichannel<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>

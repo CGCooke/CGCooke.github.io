@@ -17,9 +17,9 @@ Computer vision is a powerful way to learn more about the world around us. Deep 
 
 One exciting data source is video games, and I've settled on the fast, frantic, mega-franchise *Call of Duty: Black Ops Cold War*. [Nuketown84](https://callofduty.fandom.com/wiki/Nuketown_%2784) is one of the maps/levels, which presents a gritty, decaying ambience, perfect for learning more about how we can apply computer vision in practice. You can see some of the action [here](https://www.youtube.com/watch?v=dozMeWeraFk).
 
-If our goal is to recognise where we are in the world, based on what we can see, then our starting point is having some ground truth data (where we actually are). Capturing this ground truth data is an exciting challenge, which I will slowly build up over the next few posts.
+If our goal is to recognise where we are in the world based on what we can see, then our starting point is having some ground truth data (where we are). Capturing this ground truth data is an exciting challenge, which I will slowly build up over the next few posts.
 
-One strategy is to infer the player's position from both the mini-map and the on-screen compass. By combining different measurements over time, we should understand where the player is in the world. 
+One strategy is to infer the player's position from the mini-map and the on-screen compass. Combining different measurements over time, we should understand where the player is in the world. 
 
 
 

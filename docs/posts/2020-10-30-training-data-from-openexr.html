@@ -221,10 +221,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>At the end of the <a href="https://cgcooke.github.io/Blog/computer%20vision/blender/2020/10/23/Synthetic-Training-Data-With-Blender.html">previous post</a>, I had shown how to use <em>Blender</em> to generate depth maps and semantic segmentation maps.</p>
-<p>However, this information is in <a href="https://en.wikipedia.org/wiki/OpenEXR">OpenEXR</a> format, and we need to transform it to a form more suitable for training a computer vision model.</p>
+<p>At the end of the <a href="https://cgcooke.github.io/Blog/computer%20vision/blender/2020/10/23/Synthetic-Training-Data-With-Blender.html">previous post</a>, I showed how to use <em>Blender</em> to generate depth maps and semantic segmentation maps.</p>
+<p>However, this information is in <a href="https://en.wikipedia.org/wiki/OpenEXR">OpenEXR</a> format, and we need to transform it into a form more suitable for training a computer vision model.</p>
 <p>While writing this post, I found <a href="http://www.tobias-weis.de/groundtruth-data-for-computer-vision-with-blender/">this</a> post by <em>Tobias Weis</em> to be beneficial.</p>
-<div class="cell" data-execution_count="1">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> OpenEXR</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> Imath</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
@@ -238,8 +238,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <section id="extracting-numpy-array" class="level3">
 <h3 class="anchored" data-anchor-id="extracting-numpy-array">Extracting numpy array</h3>
-<p>Next, we can use some “boilerplate” code to convert the exr file into a Numpy array.</p>
-<div class="cell" data-execution_count="2">
+<p>Next, we can use some boilerplate code to convert the exr file into a Numpy array.</p>
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> exr2numpy(exr_path, chanel_name):</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">'''</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">    See:</span></span>
@@ -261,7 +261,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="semantic-index" class="level3">
 <h3 class="anchored" data-anchor-id="semantic-index">Semantic Index</h3>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>exr_path <span class="op">=</span> <span class="st">"Data/2020-10-30-Training-Data-From-OpenEXR/Index/Image0001.exr"</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>semantic_index <span class="op">=</span> exr2numpy(exr_path, chanel_name<span class="op">=</span> <span class="st">'R'</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure()</span>
@@ -279,7 +279,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="depth-meters" class="level3">
 <h3 class="anchored" data-anchor-id="depth-meters">Depth (Meters)</h3>
-<div class="cell" data-execution_count="4">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>exr_path <span class="op">=</span> <span class="st">"Data/2020-10-30-Training-Data-From-OpenEXR/Depth/Image0001.exr"</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>depth <span class="op">=</span> exr2numpy(exr_path, chanel_name<span class="op">=</span> <span class="st">'R'</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plt.figure()</span>
@@ -297,7 +297,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="rgb-image" class="level3">
 <h3 class="anchored" data-anchor-id="rgb-image">RGB Image</h3>
-<div class="cell" data-execution_count="5">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> EncodeToSRGB(v):</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(np.where(v<span class="op">&lt;=</span><span class="fl">0.0031308</span>,v <span class="op">*</span> <span class="fl">12.92</span>, <span class="fl">1.055</span><span class="op">*</span>(v<span class="op">**</span>(<span class="fl">1.0</span><span class="op">/</span><span class="fl">2.4</span>)) <span class="op">-</span> <span class="fl">0.055</span>))</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -326,7 +326,7 @@ Clipping input data to the valid range for imshow with RGB data ([0..1] for floa
 <section id="creating-bounding-boxes" class="level3">
 <h3 class="anchored" data-anchor-id="creating-bounding-boxes">Creating Bounding boxes</h3>
 <p>Now we can create bounding boxes for each object in the image. Depending on what we want to do next, we could generate annotations in <a href="https://www.immersivelimit.com/tutorials/create-coco-annotations-from-scratch">COCO</a> format.</p>
-<div class="cell" data-scrolled="true" data-execution_count="6">
+<div class="cell" data-scrolled="true" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create figure and axes</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the image</span></span>
@@ -355,14 +355,14 @@ Clipping input data to the valid range for imshow with RGB data ([0..1] for floa
 </section>
 <section id="exporting-as-.png" class="level3">
 <h3 class="anchored" data-anchor-id="exporting-as-.png">Exporting as .png</h3>
-<div class="cell" data-execution_count="7">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> Image.fromarray(np.uint8(RGB<span class="op">*</span><span class="dv">255</span>))</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>img.save(<span class="st">'image.png'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="creating-json-metadata." class="level3">
 <h3 class="anchored" data-anchor-id="creating-json-metadata.">Creating JSON metadata.</h3>
-<div class="cell" data-execution_count="8">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>shapes <span class="op">=</span> []</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> np.unique(semantic_index):</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">#index 0 is the background</span></span>

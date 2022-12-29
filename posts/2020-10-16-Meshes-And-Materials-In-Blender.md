@@ -6,7 +6,7 @@ categories:
 - Computer Vision
 - Blender
 date: '2020-10-16'
-description: In this post, I want to dig deeper into materials and importing meshes.
+description: I want to dig deeper into materials and import meshes in this post.
 image: images/2020-10-16-Meshes-And-Materials-In-Blender/header.png
 layout: post
 toc: true

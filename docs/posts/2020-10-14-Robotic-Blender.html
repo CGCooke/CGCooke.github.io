@@ -223,18 +223,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <section id="what-is-blender" class="level2">
 <h2 class="anchored" data-anchor-id="what-is-blender">What is Blender?</h2>
-<p><a href="https://www.blender.org/">Blender</a> is a software application for open source 3D scene creation and rendering.</p>
+<p><a href="https://www.blender.org/">Blender</a> is a software application for open-source 3D scene creation and rendering.</p>
 </section>
 <section id="why-would-we-want-to-automate-blender" class="level2">
 <h2 class="anchored" data-anchor-id="why-would-we-want-to-automate-blender">Why would we want to automate Blender?</h2>
-<p>I have many reasons, but my real focus is on creating synthetic data to train new machine learning algorithms. I’m interested in trying to do more with less annotated data, and mixing real data with synthetic data is an up-and-coming solution.</p>
-<p>Using <em>Blender</em>, we can generate arbitrary amounts of synthetic data, where we can precisely control the scene. Because of this, we can create metadata simultaneously and try to generate data that better covers the available input space.&nbsp;</p>
-<p>A classic example of this is the <a href="https://github.com/facebookresearch/clevr-dataset-gen">CLEVR</a> dataset, used for <em>Visual Reasoning</em>.</p>
+<p>I have many reasons, but my focus is on creating synthetic data to train new machine learning algorithms. I’m interested in doing more with less annotated data, and mixing actual data with synthetic data is an up-and-coming solution.</p>
+<p>Using <em>Blender</em>, we can generate arbitrary amounts of synthetic data and precisely control the scene. Because of this, we can create metadata simultaneously and generate data that covers the available input space better.</p>
+<p>A classic example is the <a href="https://github.com/facebookresearch/clevr-dataset-gen">CLEVR</a> dataset, used for <em>Visual Reasoning</em>.</p>
 </section>
 <section id="how-can-we-automate-blender" class="level2">
 <h2 class="anchored" data-anchor-id="how-can-we-automate-blender">How can we automate Blender?</h2>
 <p><em>Blender</em> has a <a href="https://docs.blender.org/api/current/index.html">comprehensively documented</a> API. However, I love using <em>Blender</em>’s <a href="https://www.youtube.com/watch?v=5e56gdHZtB0">scripting mode</a> to experiment.</p>
-<p>In short, we can create a python script, which we can then run using <em>Blender</em>.</p>
+<p>In short, we can create a python script, which we can run using <em>Blender</em>.</p>
 <p><code>blender --background --python myscript.py</code></p>
 </section>
 <section id="hello-world" class="level2">
@@ -244,11 +244,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> bpy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <section id="objects" class="level3">
 <h3 class="anchored" data-anchor-id="objects">Objects</h3>
-<p>When <em>Blender</em> loads, the default scene contains a cube, called <em>Cube</em>. Let’s adjust its position and scale.</p>
+<p>When <em>Blender</em> loads, the default scene contains a cube called <em>Cube</em>. Let’s adjust its position and scale.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>cube_scale <span class="op">=</span> <span class="fl">0.5</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>bpy.data.objects[<span class="st">"Cube"</span>].scale <span class="op">=</span> (cube_scale,cube_scale,cube_scale)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>bpy.data.objects[<span class="st">"Cube"</span>].location <span class="op">=</span> (<span class="dv">0</span>,<span class="dv">0</span>,cube_scale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Now we can alos create a ground plane, and add that to the scene.</p>
+<p>We can also create a ground plane and add that to the scene.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>bpy.ops.mesh.primitive_plane_add(size<span class="op">=</span><span class="dv">1000</span>, enter_editmode<span class="op">=</span><span class="va">False</span>, align<span class="op">=</span><span class="st">'WORLD'</span>, location<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), scale<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Our next task is to create materials for the objects we have added to the scene.</p>
 </section>

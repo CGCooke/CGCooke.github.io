@@ -221,7 +221,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>Now that we have some more data from <em>Afterpay</em>on the actual rate of purchases that attract late fees (±10%), I wanted to go back and compute the average late fees. This post is effectively an adaption of the work I did in <a href="https://cgcooke.github.io/Blog/bayesian/pymc3/finance/monte%20carlo%20simulation/afterpay/2020/08/21/Afterpay-Customer-Defaults-Part-1.html">this</a> post.</p>
+<p>Now that we have more data from <em>Afterpay</em>on the actual rate of purchases that attract late fees (±10%), I wanted to go back and compute the average late fees. This post is effectively an adaption of the work I did in <a href="https://cgcooke.github.io/Blog/bayesian/pymc3/finance/monte%20carlo%20simulation/afterpay/2020/08/21/Afterpay-Customer-Defaults-Part-1.html">this</a> post.</p>
 <div class="callout-important callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -238,7 +238,7 @@ Important
 </section>
 <section id="average-late-fees" class="level2">
 <h2 class="anchored" data-anchor-id="average-late-fees">Average Late Fees</h2>
-<div class="cell" data-execution_count="1">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pymc3 <span class="im">as</span> pm</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -251,7 +251,7 @@ Important
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> warnings <span class="im">import</span> filterwarnings</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>filterwarnings(<span class="st">'ignore'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pm.Model() <span class="im">as</span> average_late_fee_model:</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    underlying_sales_aud <span class="op">=</span> pm.Uniform(<span class="st">'underlying_sales_aud'</span>, lower<span class="op">=</span><span class="fl">5.24715</span><span class="op">*</span><span class="dv">10</span><span class="op">**</span><span class="dv">9</span>, upper<span class="op">=</span><span class="fl">5.247249</span><span class="op">*</span><span class="dv">10</span><span class="op">**</span><span class="dv">9</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    </span>
@@ -275,7 +275,7 @@ Important
 </section>
 <section id="results" class="level2">
 <h2 class="anchored" data-anchor-id="results">Results</h2>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>late_fee_samples <span class="op">=</span> samples[<span class="st">'average_late_fee_aud'</span>]</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Histogram of late fees'</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Relative Frequency'</span>)</span>
@@ -286,7 +286,7 @@ Important
 <p><img src="2020-08-29-Afterpay-Customer-Defaults-Part-5_files/figure-html/cell-4-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>pm.summary(samples[<span class="st">"average_late_fee_aud"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>arviz.stats.stats_utils - WARNING - Shape validation failed: input_shape: (1, 100000), minimum_shape: (chains=2, draws=4)</code></pre>
@@ -335,7 +335,7 @@ Important
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>The late fees that <em>Afterpay</em> customers pay are pretty low on average, somewhere between 12 AUD and 14 AUD. This fits what we observed in previous <a href="https://cgcooke.github.io/Blog/bayesian/pymc3/finance/monte%20carlo%20simulation/afterpay/2020/08/27/Afterpay-Customer-Defaults-Part-4.html#Conclusion">posts</a>, where customers were typically late on only one of the four payments.</p>
+<p>The late fees that <em>Afterpay</em> customers pay are low, somewhere between 12 AUD and 14 AUD on average. This fits what we observed in previous <a href="https://cgcooke.github.io/Blog/bayesian/pymc3/finance/monte%20carlo%20simulation/afterpay/2020/08/27/Afterpay-Customer-Defaults-Part-4.html#Conclusion">posts</a>, where customers were typically late on only one of the four payments.</p>
 
 
 </section>
