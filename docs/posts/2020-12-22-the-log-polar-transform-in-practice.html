@@ -124,6 +124,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-submit-button-title": "Submit"
   }
 }</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-9MFEPRN75Y"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-9MFEPRN75Y', { 'anonymize_ip': true});
+</script>
 
 
 <link rel="stylesheet" href="../styles.css">
@@ -263,13 +272,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.<span class="bu">abs</span>(cross_correlation), shifts</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Let’s start by loading the image, converting it to grayscale, and then mean-centering it.</p>
+<p>Let’s start by loading the image, converting it to grayscale, and then mean-centring it.</p>
 <div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>frame <span class="op">=</span> skimage.io.imread(<span class="st">'data/2020-12-20-The-Log-Polar-Transform/Frame.jpg'</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>img1 <span class="op">=</span> rgb2gray(frame[<span class="dv">50</span>:<span class="dv">165</span>,<span class="dv">55</span>:<span class="dv">170</span>])</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>img1 <span class="op">-=</span> img1.mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>We can now create a synthetic example by first translating then rotating the image we loaded. I’ve arbitrarily chosen to rotate the image by 30 degrees clockwise and shift it down and to the right by 10 and 20 pixels, respectively.</p>
+<p>We can now create a synthetic example by first translating and then rotating the image we loaded. I’ve arbitrarily chosen to rotate the image by 30 degrees clockwise and shift it down and to the right by 10 and 20 pixels, respectively.</p>
 <div class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>angle_degrees <span class="op">=</span> <span class="dv">30</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>shift_y_pixels <span class="op">=</span> <span class="dv">10</span></span>
@@ -296,7 +305,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2 class="anchored" data-anchor-id="finding-the-rotation">Finding the Rotation</h2>
 <p>Now that we have two images, we can start finding the rotation between them.</p>
 <p>We can start by performing <em>Difference of Gaussians</em> filtering as a form of feature engineering/preprocessing.</p>
-<p>Next, we window the images, which will help reduce the impact of the edges of the image on the frequency spectrum of the image.</p>
+<p>Next, we window the images, which will help reduce the impact of the image’s edges on the image’s frequency spectrum.</p>
 <div class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># First, band-pass filter both images</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>img1_dog <span class="op">=</span> skimage.filters.difference_of_gaussians(img1, <span class="dv">1</span>, <span class="dv">4</span>)</span>
@@ -317,9 +326,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="2020-12-22-The-Log-Polar-Transform-In-Practice_files/figure-html/cell-6-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>Now we compute each image’s <em>Power Spectral Density</em> (PSD).</p>
-<p>While it’s not immediately obvious, if we look carefully at the PSD of each image, we can notice that there is a slight (30 degree) rotation between the two.</p>
-<p>The beauty of the PSD is that it is, to some degree, invariant to the translation of the two images.</p>
+<p>We compute each image’s <em>Power Spectral Density</em> (PSD).</p>
+<p>While it’s not immediately obvious, if we look carefully at the PSD of each image, we can notice a slight (30-degree) rotation between the two.</p>
+<p>The beauty of the PSD is that it is invariant to the translation of the two images.</p>
 <div class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># work with shifted FFT magnitudes</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>image1_fs <span class="op">=</span> np.<span class="bu">abs</span>(np.fft.fftshift(np.fft.fft2(wimage_1)))<span class="op">**</span><span class="dv">2</span></span>
@@ -370,7 +379,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="2020-12-22-The-Log-Polar-Transform-In-Practice_files/figure-html/cell-8-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>Now we can compute the cross-correlation of the two transformed PSDs. This will allow us to find the translation between them that best matches, which will enable us to compute the best matching rotation.</p>
+<p>Now we can compute the cross-correlation of the two transformed PSDs. This will allow us to find the translation between them that best matches, enabling us to compute the best matching rotation.</p>
 <div class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>warped_image1_fs <span class="op">=</span> warped_image1_fs[:image1_fs.shape[<span class="dv">0</span>] <span class="op">//</span> <span class="dv">2</span>, :]  <span class="co"># only use half of FFT, because it's symetrical</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>warped_image2_fs <span class="op">=</span> warped_image2_fs[:image1_fs.shape[<span class="dv">0</span>] <span class="op">//</span> <span class="dv">2</span>, :]</span>
@@ -390,7 +399,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><img src="2020-12-22-The-Log-Polar-Transform-In-Practice_files/figure-html/cell-9-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>The log-polar transform allows us to find both changes in rotation and scale, but we know that the scale between the two images is constant. This corresponds to the left-most column of the map, and if we plot this in 2D, we can see a peak at 30 degrees.</p>
+<p>The log-polar transform allows us to find both changes in rotation and scale, but we know that the scale between the two images is constant. This corresponds to the leftmost column of the map, and if we plot this in 2D, we can see a peak at 30 degrees.</p>
 <div class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>cross_correlation_score <span class="op">=</span> cross_correlation[:,<span class="dv">0</span>].ravel()</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>plt.plot(cross_correlation_score)</span>
@@ -425,7 +434,7 @@ Computed rotation: 31.3 degrees</code></pre>
 </section>
 <section id="finding-the-translation" class="level2">
 <h2 class="anchored" data-anchor-id="finding-the-translation">Finding the Translation</h2>
-<p>Now it’s time to find the rotation. Our first task is to rotate the img2, so that its orientation matches img1.</p>
+<p>Now it’s time to find the rotation. Our first task is to rotate the img2 so that its orientation matches img1.</p>
 <div class="cell" data-scrolled="true" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>img2_rotated <span class="op">=</span> skimage.transform.rotate(img2, <span class="op">-</span>recovered_angle_degrees)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -442,7 +451,7 @@ Computed rotation: 31.3 degrees</code></pre>
 <p><img src="2020-12-22-The-Log-Polar-Transform-In-Practice_files/figure-html/cell-12-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>Now that the orientations of both images match, we can now find the translation between the two images using cross-correlation. As before, we first window both images to reduce edge effects.</p>
+<p>Now that the orientations of both images match, we can find the translation between the two images using cross-correlation. As before, we first window both images to reduce edge effects.</p>
 <div class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>wimage_1 <span class="op">=</span> img1 <span class="op">*</span> skimage.filters.window(<span class="st">'hann'</span>, img1.shape)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>wimage_2_rotated <span class="op">=</span> img2_rotated <span class="op">*</span> skimage.filters.window(<span class="st">'hann'</span>,img2.shape)</span>
@@ -463,7 +472,7 @@ Computed rotation: 31.3 degrees</code></pre>
 <p><img src="2020-12-22-The-Log-Polar-Transform-In-Practice_files/figure-html/cell-13-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>We can see a peak in the bottom right corner of the cross-correlation map, which corresponds to a shift down and the right by 10 and 20 pixels, respectively, between the first and second image. We can now correct the second image to perfectly align with the first image.</p>
+<p>We can see a peak in the bottom right corner of the cross-correlation map, which corresponds to a shift down and the right by 10 and 20 pixels, respectively, between the first and second images. We can now correct the second image to align perfectly with the first image.</p>
 <div class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>shift_x <span class="op">=</span>  <span class="bu">int</span>(shift[<span class="dv">1</span>])</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>shift_y <span class="op">=</span>  <span class="bu">int</span>(shift[<span class="dv">0</span>])</span>

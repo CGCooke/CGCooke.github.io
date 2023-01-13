@@ -124,6 +124,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-submit-button-title": "Submit"
   }
 }</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-9MFEPRN75Y"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-9MFEPRN75Y', { 'anonymize_ip': true});
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
@@ -264,7 +273,7 @@ Important
 <section id="the-model" class="level2">
 <h2 class="anchored" data-anchor-id="the-model">The Model</h2>
 <p>First off, let’s load the libraries we will later need.</p>
-<div class="cell" data-execution_count="1">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pymc3 <span class="im">as</span> pm</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -279,7 +288,7 @@ Important
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> warnings <span class="im">import</span> filterwarnings</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>filterwarnings(<span class="st">'ignore'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>csv_data <span class="op">=</span> StringIO(<span class="st">'''millions_customers,date,month_count</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="st">            0.0,30-sep-2015,0 </span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="st">            0.0,31-dec-2015,3 </span></span>
@@ -306,7 +315,7 @@ Important
 <p>We can see a rapid, accelerating growth in the number of customers over time.</p>
 <p>One model we could use is the <a href="https://www.sciencedirect.com/science/article/pii/S1877705811001597/pdf?md5=a6adf115754239aeb12922ec06a20a9e&amp;pid=1-s2.0-S1877705811001597-main.pdf">sigmoidal model</a>. Also known as “The <em>S</em> shaped curve”, it’s a model where growth starts slow, accelerates, before slowing again. It’s often used in technology adoption or the introduction of a new product.</p>
 <p><span class="math display">\[\frac{1}{1+e^{-x}}\]</span></p>
-<div class="cell" data-execution_count="3">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.arange(<span class="op">-</span><span class="dv">10</span>,<span class="dv">10</span>,<span class="fl">0.01</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="dv">1</span><span class="op">/</span>(<span class="dv">1</span><span class="op">+</span>math.e<span class="op">**-</span>x)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>plt.plot(x,y,color<span class="op">=</span><span class="st">'k'</span>)</span>
@@ -325,7 +334,7 @@ Important
 <p>In general, this isn’t great practice because I explicitly exclude the possibility that there could be more than 25M customers, and no amount of data will be able to change my mind.</p>
 <p>To quote Cromwell : <em>I beseech you, in the bowels of Christ, think it possible that you may be mistaken.</em></p>
 <p>Let’s compose this as a Bayesian Regression problem.</p>
-<div class="cell" data-execution_count="4">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pm.Model() <span class="im">as</span> model:</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    millions_customers <span class="op">=</span> df.millions_customers.values</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> df.month_count.values.astype(np.float64)</span>
@@ -337,7 +346,7 @@ Important
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    customers <span class="op">=</span> pm.Normal(<span class="st">'customers'</span>, mu <span class="op">=</span> customers_predicted, sigma <span class="op">=</span> <span class="fl">0.1</span>, observed <span class="op">=</span> millions_customers)</span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="5">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> model:</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    trace <span class="op">=</span> pm.sample(draws<span class="op">=</span><span class="dv">10_000</span>,tune<span class="op">=</span><span class="dv">5_000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -354,19 +363,19 @@ The number of effective samples is smaller than 25% for some parameters.</code><
 <h2 class="anchored" data-anchor-id="the-results">The Results</h2>
 <p>From the following plots, we can notice several things. Firstly, and most importantly, our model converged well. Secondly, according to our model, we expect the number of customers to saturate below 5m people. Still, we might have a lot more customers, even 25m.</p>
 <p>Finally, there is a lot of uncertainty around the timing of the peak of the growth. This ranges from approximately two to four years after the introduction of <em>Afterpay</em>.</p>
-<div class="cell" data-execution_count="6">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pm.traceplot(trace)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img src="2020-08-13-Modelling-Afterpay's-Customer-Growth_files/figure-html/cell-7-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<div class="cell" data-execution_count="7">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>pm.plot_posterior(trace)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img src="2020-08-13-Modelling-Afterpay's-Customer-Growth_files/figure-html/cell-8-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<div class="cell" data-execution_count="8">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pm.summary(trace)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
 
@@ -441,7 +450,7 @@ The number of effective samples is smaller than 25% for some parameters.</code><
 <section id="posterior-predictive-checks" class="level2">
 <h2 class="anchored" data-anchor-id="posterior-predictive-checks">Posterior Predictive Checks</h2>
 <p>Let’s see if our model makes sense. By drawing samples from our model, we can further investigate the potential growth rates of Afterpay.</p>
-<div class="cell" data-execution_count="9">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">1_000</span>):</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.arange(<span class="dv">0</span>,<span class="dv">30</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    plt.plot(x,trace[<span class="st">'L'</span>][i]<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span>math.e<span class="op">**</span>(<span class="op">-</span>trace[<span class="st">'k'</span>][i]<span class="op">*</span>(x<span class="op">-</span>trace[<span class="st">'x0'</span>][i]))),color<span class="op">=</span><span class="st">'k'</span>,alpha<span class="op">=</span><span class="fl">0.01</span>)</span>
@@ -456,7 +465,7 @@ The number of effective samples is smaller than 25% for some parameters.</code><
 </div>
 </div>
 <p>Now let’s start forecasting the future. We can compare what we modelled to the actual customer numbers (3.1M) <a href="https://www.afterpaytouch.com/images/27022019-H1-FY20-Results-Presentation.pdf">reported</a> by Afterpay 54 months after they launched.</p>
-<div class="cell" data-execution_count="10">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">10_000</span>):</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.arange(<span class="dv">0</span>,<span class="dv">51</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    plt.plot(x,trace[<span class="st">'L'</span>][i]<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span>math.e<span class="op">**</span>(<span class="op">-</span>trace[<span class="st">'k'</span>][i]<span class="op">*</span>(x<span class="op">-</span>trace[<span class="st">'x0'</span>][i]))),color<span class="op">=</span><span class="st">'k'</span>,alpha<span class="op">=</span><span class="fl">0.01</span>)</span>
@@ -474,7 +483,7 @@ The number of effective samples is smaller than 25% for some parameters.</code><
 </div>
 </div>
 <p>We can also generate a histogram and compare the predictions of our model with the actual true number of 3.1M.</p>
-<div class="cell" data-execution_count="11">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> <span class="dv">51</span><span class="op">*</span>np.ones(<span class="dv">20000</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> trace[<span class="st">'L'</span>]<span class="op">/</span>(<span class="dv">1</span><span class="op">+</span>math.e<span class="op">**</span>(<span class="op">-</span>trace[<span class="st">'k'</span>]<span class="op">*</span>(x<span class="op">-</span>trace[<span class="st">'x0'</span>])))                              </span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>plt.hist(y,bins<span class="op">=</span>np.arange(<span class="dv">0</span>,<span class="dv">25</span>,<span class="fl">0.5</span>),alpha<span class="op">=</span><span class="fl">0.5</span>,density<span class="op">=</span><span class="va">True</span>)</span>

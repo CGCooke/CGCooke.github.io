@@ -124,6 +124,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-submit-button-title": "Submit"
   }
 }</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-9MFEPRN75Y"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-9MFEPRN75Y', { 'anonymize_ip': true});
+</script>
 
 
 <link rel="stylesheet" href="../styles.css">
@@ -218,15 +227,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="the-context" class="level2">
 <h2 class="anchored" data-anchor-id="the-context">The Context</h2>
 <p>Finding the geometric relationship between two images is a common problem in computer vision.</p>
-<p>In our case, if we can find the relationship between the mini-map in one frame and the mini-map in another frame, we will understand how the player is moving around the map.</p>
-<p>One method that can be highly effective, if only a translation exists between two images, is to perform a 2D cross-correlation. This is rarely the case when we try to compare the mini-map between two frames because the play is free to rotate. However, I will adapt this technique in later posts to solve the problem of rotation.</p>
+<p>In our case, if we can find the relationship between the mini-map in one frame and the mini-map in another, we will understand how the player moves around the map.</p>
+<p>One method that can be highly effective, if only a translation exists between two images, is to perform a 2D cross-correlation. This is rarely the case when we compare the mini-map between two frames because the play is free to rotate. However, I will adapt this technique in later posts to solve the rotation problem.</p>
 <p><img src="https://cgcooke.github.io/Blog//images/2020-12-22-The-Log-Polar-Transform-In-Practice/homographies.png" class="img-fluid"></p>
 <p>When there is alignment between the two images, the correlation value will be maximum. While this is simple and effective, it has the potential to be computationally expensive, given the large number of operations required.</p>
 <p>However, it’s possible to solve this problem more efficiently using the Fast Fourier Transform (FFT).</p>
 </section>
 <section id="the-algorithm" class="level2">
 <h2 class="anchored" data-anchor-id="the-algorithm">The Algorithm</h2>
-<p>In particular, we can take advantage of <a href="https://en.wikipedia.org/wiki/Convolution_theorem">convolution theorm</a>. In particular, <em>The Fourier transform of a convolution of two signals is the pointwise product of their Fourier transforms</em>. In other words, convolution in the spatial domain is multiplication in the frequency domain.</p>
+<p>In particular, we can take advantage of <a href="https://en.wikipedia.org/wiki/Convolution_theorem">convolution theorem</a>. In particular, <em>The Fourier transform of a convolution of two signals is the pointwise product of their Fourier transforms</em>. In other words, convolution in the spatial domain is multiplication in the frequency domain.</p>
 <p>Wikipedia has a great <a href="https://en.wikipedia.org/wiki/Phase_correlation">page</a> that goes into more detail, but let’s step through implementation in Python.</p>
 <section id="creating-test-data" class="level3">
 <h3 class="anchored" data-anchor-id="creating-test-data">Creating test data</h3>
@@ -244,7 +253,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">'figure.figsize'</span>] <span class="op">=</span> [<span class="dv">10</span>, <span class="dv">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>As a test, I will be using an image from the popular video game <em>Call of Duty: Black Ops Cold War</em>.</p>
+<p>As a test, I will use an image from the popular video game <em>Call of Duty: Black Ops Cold War</em>.</p>
 <div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>frame <span class="op">=</span> skimage.io.imread(<span class="st">'data/2020-12-19-FFT-Phase-Correlation/Frame.jpg'</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -347,8 +356,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <p>Voilà!</p>
-<p>We can now measure the shift between two images with only a 2D translation between them.</p>
-<p>In a future post, I’m going to look at what to do if there is a rotation and a translation.</p>
+<p>We can now measure the shift between two images with only a 2D translation.</p>
+<p>In a future post, I will look at what to do if there is a rotation and a translation.</p>
 
 
 </section>

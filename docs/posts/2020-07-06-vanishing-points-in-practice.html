@@ -124,6 +124,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-submit-button-title": "Submit"
   }
 }</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-9MFEPRN75Y"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-9MFEPRN75Y', { 'anonymize_ip': true});
+</script>
 
 
 <link rel="stylesheet" href="../styles.css">
@@ -227,16 +236,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="the-context" class="level2">
 <h2 class="anchored" data-anchor-id="the-context">The Context</h2>
 <p>In a <a href="https://cgcooke.github.io/Blog/computer%20vision/optimisation/linear%20algebra/2020/02/23/An-Adventure-In-Camera-Calibration.html">previous post</a>, I used optimisation to try to calibrate a camera. Ultimately, while we arrived at a plausible solution, I was left with some questions.</p>
-<p>In particular, I wasn’t sure how much I could trust this solution. The image’s principal point is usually located near the centre of the image. In this case, it was located far from it.</p>
-<p>This is of itself isn’t fatal. The image could have been a crop of a photo; however, it’s extremely unusual.</p>
-<p>If we want a more accurate answer, we can break this down into a two-step process, firstly, computing estimates of the attitude and the camera calibration matrix.</p>
-<p>We can then combine these estimates with the points we have measured previously to produce a new estimate of the position and attitude of the camera. I will cover this in the <a href="https://cgcooke.github.io/Blog/bayesian/pymc3/computer%20vision/2020/07/07/Bayesian-Camera-Calibration.html">next post</a>.</p>
-<p>We can compute the attitude and camera matrix using the method shown in a couple of previous blog posts.</p>
+<p>In particular, I needed to figure out how much I could trust this solution. The image’s principal point is usually located near the centre of the image. In this case, it was located far from it.</p>
+<p>This in itself isn’t fatal. The image could have been a crop of a photo; however, it’s highly unusual.</p>
+<p>If we want a more accurate answer, we can break this down into a two-step process: first, computing the attitude and camera calibration matrix estimates.</p>
+<p>We can then combine these estimates with the previously measured points to produce a new estimate of the position and attitude of the camera. I will cover this in the <a href="https://cgcooke.github.io/Blog/bayesian/pymc3/computer%20vision/2020/07/07/Bayesian-Camera-Calibration.html">next post</a>.</p>
+<p>We can compute the attitude and camera matrix using the method shown in previous blog posts.</p>
 <section id="finding-vanishing-points." class="level3">
 <h3 class="anchored" data-anchor-id="finding-vanishing-points.">Finding vanishing points.</h3>
 <p>Firstly, let’s start by finding the vanishing points in the image. I’ve described how this happens in more detail in this [post] (https://cgcooke.github.io/Blog/computer%20vision/linear%20algebra/monte%20carlo%20simulation/2020/04/10/Finding-Vanishing-Points.html).</p>
-<p>Let’s start by loading in the libraries we will need.</p>
-<div class="cell" data-execution_count="1">
+<p>Let’s start by loading the libraries we will need.</p>
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> PIL <span class="im">import</span> Image</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
@@ -248,7 +257,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">'figure.figsize'</span>] <span class="op">=</span> [<span class="dv">15</span>, <span class="dv">15</span>]</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="2">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> Image.<span class="bu">open</span>(<span class="st">'data/2020-02-23-An-Adventure-In-Camera-Calibration/A300.jpg'</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -258,11 +267,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <section id="maximum-likelihood-estimate" class="level4">
 <h4 class="anchored" data-anchor-id="maximum-likelihood-estimate">Maximum Likelihood Estimate</h4>
-<p>Let’s now load in the annotations I have made to this image.</p>
-<div class="cell" data-execution_count="3">
+<p>Let’s now load the annotations I have made to this image.</p>
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>JSON <span class="op">=</span> json.loads(<span class="bu">open</span>(<span class="st">'data/2020-07-06-Vanishing-Points-In-Practice/A300.json'</span>,<span class="st">'r'</span>).read())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="4">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> intersect_multiple_lines(P0,P1):</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""P0 and P1 are NxD arrays defining N lines.</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">    D is the dimension of the space. This function </span></span>
@@ -287,7 +296,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(p)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="5">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_line_data(point_name):</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    P0 <span class="op">=</span> []</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    P1 <span class="op">=</span> []</span>
@@ -306,8 +315,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    p <span class="op">=</span> intersect_multiple_lines(P0,P1).ravel()</span>
 <span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(p)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>There are an infinite set of parallel lines in any image, thus vanishing points; however, we typically live in a <em>manhattan</em> world of orthogonal 90-degree angles. Hence in most scenes, there are typically three different vanishing points. Using the annotations I manually created of the parallel lines in the images, Let’s compute three different vanishing points.&nbsp;</p>
-<div class="cell" data-execution_count="6">
+<p>There are infinite parallel lines in any image, thus vanishing points; however, we typically live in a <em>manhattan</em> world of orthogonal 90-degree angles. Hence in most scenes, there are typically three different vanishing points. Let’s compute three other vanishing points using the annotations I manually created of the parallel lines in the images.</p>
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>vanishing_points <span class="op">=</span> {}</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> point_name <span class="kw">in</span> [<span class="st">'VP1'</span>,<span class="st">'VP2'</span>,<span class="st">'VP3'</span>]:</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    vanishing_points[point_name] <span class="op">=</span> find_vanishing_point(point_name)</span>
@@ -340,9 +349,9 @@ VP3 [2.45111941e+01 2.60455689e+04]</code></pre>
 </section>
 <section id="monte-carlo-simulation" class="level4">
 <h4 class="anchored" data-anchor-id="monte-carlo-simulation">Monte Carlo Simulation</h4>
-<p>Ok, so this is a good start; we can find the MLE estimate for the location of the vanishing points. However, I’m also interested in the distribution of possible locations, given that I most likely made mistakes when annotating the points.</p>
-<p>I’m not sure exactly how significant the mistakes could be, but let’s start by assuming that the standard deviation of the error was 1 pixel and then perform a <em>Monte Carlo simulation</em>.</p>
-<div class="cell" data-execution_count="7">
+<p>Ok, this is a good start; we can find the MLE estimate for the location of the vanishing points. However, I’m also interested in the distribution of possible locations since I most likely made mistakes when annotating the points.</p>
+<p>I’m still determining exactly how significant the mistakes could be, but let’s start by assuming that the standard deviation of the error was 1 pixel and then perform a <em>Monte Carlo simulation</em>.</p>
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> monte_carlo_simulation(point_name,num_samples<span class="op">=</span><span class="dv">1_000</span>):</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    P0,P1 <span class="op">=</span> load_line_data(point_name)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    point_error_magnitude <span class="op">=</span> <span class="dv">1</span> <span class="co">#px</span></span>
@@ -355,7 +364,7 @@ VP3 [2.45111941e+01 2.60455689e+04]</code></pre>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    vanishing_points <span class="op">=</span> np.asarray(vanishing_points)</span>
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(vanishing_points)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="8">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>plt.imshow(img)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> point_name,color <span class="kw">in</span> [(<span class="st">'VP1'</span>,<span class="st">'g'</span>),(<span class="st">'VP2'</span>,<span class="st">'r'</span>),(<span class="st">'VP3'</span>,<span class="st">'b'</span>)]:</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    vanishing_points <span class="op">=</span> monte_carlo_simulation(point_name)</span>
@@ -372,7 +381,7 @@ VP3 [2.45111941e+01 2.60455689e+04]</code></pre>
 </section>
 <section id="finding-the-intrinsic-matrix" class="level2">
 <h2 class="anchored" data-anchor-id="finding-the-intrinsic-matrix">Finding the Intrinsic Matrix</h2>
-<div class="cell" data-execution_count="9">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generate_A(vanishing_points):</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    A <span class="op">=</span> []</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (point_name_1, point_name_2) <span class="kw">in</span> [(<span class="st">'VP1'</span>,<span class="st">'VP2'</span>),(<span class="st">'VP2'</span>,<span class="st">'VP3'</span>),(<span class="st">'VP3'</span>,<span class="st">'VP1'</span>)]:    </span>
@@ -408,7 +417,7 @@ VP3 [2.45111941e+01 2.60455689e+04]</code></pre>
 </div>
 <section id="finding-the-rotation-matrix" class="level3">
 <h3 class="anchored" data-anchor-id="finding-the-rotation-matrix">Finding the Rotation Matrix</h3>
-<div class="cell" data-execution_count="10">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> make_homogeneous(x):</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    x_homogeneous <span class="op">=</span> np.array([x[<span class="dv">0</span>],x[<span class="dv">1</span>],<span class="dv">1</span>])</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(x_homogeneous)</span>
@@ -428,7 +437,7 @@ VP3 [2.45111941e+01 2.60455689e+04]</code></pre>
 <span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span>(R)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Ok, now let’s visualize the results from 1,000 iterations of the <em>Monte Carlo simulation</em>.</p>
-<div class="cell" data-execution_count="11">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> mpl_toolkits.mplot3d <span class="im">import</span> Axes3D</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>PTS1  <span class="op">=</span> monte_carlo_simulation(point_name<span class="op">=</span><span class="st">'VP1'</span>)</span>
@@ -467,9 +476,9 @@ VP3 [2.45111941e+01 2.60455689e+04]</code></pre>
 <section id="quaternions" class="level3">
 <h3 class="anchored" data-anchor-id="quaternions">Quaternions</h3>
 <p>From the above visualisation, we can see that we have a distribution of attitudes. Let’s make a subtle change and find the <em>quaternion</em> representation of the angles.</p>
-<p><em>Quaternions</em> are an elegant way to represent a rotation in 3 dimensions, using four numbers. Without going into details, they have many valuable properties. If you want to learn more, <a href="https://www.youtube.com/watch?v=zjMuIxRvygQ">3Blue1Brown</a> has done some incredible videos explaining them in more detail.</p>
-<p>Let’s do a <em>Monte Carlo simulation</em>and compute both the means, <em>and</em> variances of the attitudes.</p>
-<div class="cell" data-execution_count="12">
+<p><em>Quaternions</em> are an elegant way to represent a rotation in 3 dimensions using four numbers. Without going into details, they have many valuable properties. If you want to learn more, <a href="https://www.youtube.com/watch?v=zjMuIxRvygQ">3Blue1Brown</a> has done some incredible videos explaining them in more detail.</p>
+<p>Let’s do a <em>Monte Carlo simulation</em> and compute both the means, <em>and</em> variances of the attitudes.</p>
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>quats <span class="op">=</span> []</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>Ks <span class="op">=</span> []</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>PTS1  <span class="op">=</span> monte_carlo_simulation(point_name<span class="op">=</span><span class="st">'VP1'</span>,num_samples <span class="op">=</span> <span class="dv">10_000</span>)</span>
@@ -498,7 +507,7 @@ VP3 [2.45111941e+01 2.60455689e+04]</code></pre>
 <span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>Ks <span class="op">=</span> np.vstack(Ks)</span>
 <span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>quats <span class="op">=</span> np.vstack(quats)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="13">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>sns.distplot(quats[:,<span class="dv">0</span>],kde<span class="op">=</span><span class="va">False</span>,fit<span class="op">=</span>scipy.stats.t,norm_hist<span class="op">=</span><span class="va">True</span>,bins<span class="op">=</span><span class="dv">100</span>,label<span class="op">=</span><span class="st">'X'</span>)<span class="op">;</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>sns.distplot(quats[:,<span class="dv">1</span>],kde<span class="op">=</span><span class="va">False</span>,fit<span class="op">=</span>scipy.stats.t,norm_hist<span class="op">=</span><span class="va">True</span>,bins<span class="op">=</span><span class="dv">100</span>,label<span class="op">=</span><span class="st">'Y'</span>)<span class="op">;</span></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>sns.distplot(quats[:,<span class="dv">2</span>],kde<span class="op">=</span><span class="va">False</span>,fit<span class="op">=</span>scipy.stats.t,norm_hist<span class="op">=</span><span class="va">True</span>,bins<span class="op">=</span><span class="dv">100</span>,label<span class="op">=</span><span class="st">'Z'</span>)<span class="op">;</span></span>
@@ -510,8 +519,8 @@ VP3 [2.45111941e+01 2.60455689e+04]</code></pre>
 <p><img src="2020-07-06-Vanishing-Points-In-Practice_files/figure-html/cell-14-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>Ok, now let’s fit Student’s T distribution to each quaternion component:</p>
-<div class="cell" data-execution_count="14">
+<p>Let’s fit Student’s T distribution to each quaternion component:</p>
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>component_names <span class="op">=</span> [<span class="st">'X'</span>,<span class="st">'Y'</span>,<span class="st">'Z'</span>,<span class="st">'W'</span>]</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">0</span>,<span class="dv">4</span>):</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    nu, mu, sigma <span class="op">=</span>  scipy.stats.distributions.t.fit(quats[:,i])</span>
@@ -528,7 +537,7 @@ W: nu: 0.970, mu: 0.590, sigma: 0.019</code></pre>
 <section id="focal-length" class="level3">
 <h3 class="anchored" data-anchor-id="focal-length">Focal Length</h3>
 <p>Now let’s do the same for the focal length:</p>
-<div class="cell" data-execution_count="15">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>sns.distplot(Ks[:,<span class="dv">0</span>],kde<span class="op">=</span><span class="va">False</span>,fit<span class="op">=</span>scipy.stats.norm,label<span class="op">=</span><span class="st">'Focal length'</span>)<span class="op">;</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
@@ -546,7 +555,7 @@ W: nu: 0.970, mu: 0.590, sigma: 0.019</code></pre>
 <section id="principle-point" class="level3">
 <h3 class="anchored" data-anchor-id="principle-point">Principle Point</h3>
 <p>Finally, let’s see what we think the principal point of the camera might be:</p>
-<div class="cell" data-execution_count="16">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="16">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>sns.distplot(Ks[:,<span class="dv">2</span>],kde<span class="op">=</span><span class="va">False</span>,fit<span class="op">=</span>scipy.stats.norm,label<span class="op">=</span><span class="st">'cx'</span>)<span class="op">;</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
@@ -574,7 +583,7 @@ W: nu: 0.970, mu: 0.590, sigma: 0.019</code></pre>
 </div>
 </div>
 <p>Now let’s plot the joint distribution of the principal point in 2D space.</p>
-<div class="cell" data-execution_count="17">
+<div class="cell" data-vscode="{&quot;languageId&quot;:&quot;python&quot;}" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>sns.jointplot(Ks[:,<span class="dv">2</span>],Ks[:,<span class="dv">5</span>], kind<span class="op">=</span><span class="st">"hex"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img src="2020-07-06-Vanishing-Points-In-Practice_files/figure-html/cell-18-output-1.png" class="img-fluid"></p>

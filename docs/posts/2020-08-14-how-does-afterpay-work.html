@@ -124,6 +124,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-submit-button-title": "Submit"
   }
 }</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-9MFEPRN75Y"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-9MFEPRN75Y', { 'anonymize_ip': true});
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
 <script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
@@ -219,8 +228,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2 class="anchored" data-anchor-id="the-context">The Context</h2>
 <p><a href="https://www.afterpay.com/index">Afterpay’s</a> business model is pretty simple. Afterpay allows customers to pay for products in 4 separate payments every two weeks and charges stores a margin for this. At a high level, <em>Afterpays</em> revenues are a function of how many customers they have and how often they use Afterpay.</p>
 <p>Sometimes things don’t go to plan, and customers default on their payments, and this is where things get a bit more complex.</p>
-<p>It’s also an area that I feel, in my opinion, that <em>Afterpay</em> has been somewhat nebulous. Even if <em>Afterpay</em> doesn’t tell us directly, it might be possible to infer and gain more clarity about what we have not been directly told.</p>
-<p>However, I think there are many positive aspects to <em>Afterpay’s</em> business model compared to credit cards.</p>
+<p>It’s also an area that I believe that <em>Afterpay</em> has been somewhat nebulous. Even if <em>Afterpay</em> doesn’t tell us directly, it might be possible to infer and gain more clarity about what we have not been directly told.</p>
+<p>However, there are many positive aspects to <em>Afterpay’s</em> business model compared to credit cards.</p>
 <div class="callout-important callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -237,14 +246,14 @@ Important
 </section>
 <section id="why-create-synthetic-data" class="level2">
 <h2 class="anchored" data-anchor-id="why-create-synthetic-data">Why create synthetic data?</h2>
-<p>Before we try and infer based on what <em>Afterpay</em> has told us, a great first step might be to build a model to generate synthetic data. IE, let’s simulate <em>Afterpay</em>, then generate some synthetic outcomes. From these outcomes, we can try and infer “hidden” parameters in our model. Because this is a simulation, we can see how well we can infer based on what we can observe.</p>
-<p>While this might seem like a contrived toy example, I think it’s a compelling first step. If we can’t effectively infer from our synthetic data, we can’t hope to infer anything about reality either.</p>
+<p>Before we try and infer based on what <em>Afterpay</em> has told us, a significant first step might be to build a model to generate synthetic data. Let’s simulate <em>Afterpay</em>, then generate some artificial outcomes. We can try and infer “hidden” parameters from these outcomes in our model. Because this is a simulation, we can see how well we can infer based on what we observe.</p>
+<p>While this seems like a contrived toy example, it’s a compelling first step. If we can’t effectively infer from our synthetic data, we can’t hope to infer anything about reality.</p>
 </section>
 <section id="the-model" class="level2">
 <h2 class="anchored" data-anchor-id="the-model">The model</h2>
-<p>Ok, let’s keep things as simple as possible initially. We can always create a more sophisticated but wrong model later.</p>
-<p>Ok. So let’s assume that <em>Afterpay</em> does some number of transactions per year. These transactions have an average value; let’s assume 100 AUD. For each transaction, they are paid some margin by the merchant. Let’s assume 4%.</p>
-<p>For some of these transactions, let’s say 1% of the time, the customer defaults. This means that they make no repayments at all against the 100 AUD. &nbsp;</p>
+<p>Let’s keep things as simple as possible initially. We can always create a more sophisticated but wrong model later.</p>
+<p>Ok. So let’s assume that <em>Afterpay</em> does some number of transactions per year. These transactions have an average value; let’s take 100 AUD. For each transaction, they are paid some margin by the merchant. Let’s assume 4%.</p>
+<p>For some of these transactions, the customer defaults 1% of the time. This means that they make no repayments at all against the 100 AUD.</p>
 <p>Glossing over the <em>Afterpay</em> fee structure, let’s assume they pay <em>Afterpay</em> 25 AUD in fees, and Afterpay is liable for the transaction value (100 AUD).</p>
 <p>Let’s now model this out in code.</p>
 <div class="cell" data-execution_count="7">

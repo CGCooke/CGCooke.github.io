@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.251">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2022-05-16">
+<meta name="description" content="I do some electronics.">
+
+<title>Adventures with Numbers - Velodyne Interface Box</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../favicon.ico" rel="icon">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-9MFEPRN75Y"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-9MFEPRN75Y', { 'anonymize_ip': true});
+</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Adventures with Numbers</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/CGCooke"><i class="bi bi-github" role="img">
+</i> 
+ </a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/CGCooke"><i class="bi bi-twitter" role="img">
+</i> 
+ </a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Velodyne Interface Box</h1>
+                  <div>
+        <div class="description">
+          I do some electronics.
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">Electronics</div>
+                <div class="quarto-category">LiDAR</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">May 16, 2022</p>
+      </div>
+    </div>
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#requirements" id="toc-requirements" class="nav-link" data-scroll-target="#requirements">Requirements</a></li>
+  <li><a href="#design" id="toc-design" class="nav-link" data-scroll-target="#design">Design</a>
+  <ul class="collapse">
+  <li><a href="#schematic" id="toc-schematic" class="nav-link" data-scroll-target="#schematic">Schematic</a></li>
+  <li><a href="#layout" id="toc-layout" class="nav-link" data-scroll-target="#layout">Layout</a></li>
+  </ul></li>
+  <li><a href="#fabrication" id="toc-fabrication" class="nav-link" data-scroll-target="#fabrication">Fabrication</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>I recently purchased a discount VLP-32 LiDAR sensor off eBay.</p>
+<p>Unfortunately, the sensor didn’t come with the <a href="https://velodynelidar.com/wp-content/uploads/2019/08/63-9259-REV-C-MANUALINTERFACE-BOXHDL-32EVLP-16VLP-32_Web-S.pdf">Interface box</a> required to communicate with the sensor.</p>
+<p>I could spend another USD 200 on a new one or design one of my own.</p>
+<p>While this was a relatively simple project, it’s helpful to talk through the steps I took to go from an idea to a working solution. The schematics and PCB layout are available <a href="https://github.com/CGCooke/VLP-LiDAR-Interface-Box">here</a>.</p>
+</section>
+<section id="requirements" class="level1">
+<h1>Requirements</h1>
+<p>Starting with the <a href="(https://velodynelidar.com/wp-content/uploads/2019/08/63-9259-REV-C-MANUALINTERFACE-BOXHDL-32EVLP-16VLP-32_Web-S.pdf)">documentation</a> provided by Velodyne, I identified the critical components, which I needed, in order of priority.</p>
+<p>Protect the LiDAR using a fuse and a Transient Voltage Suppression (TVS) Diode. Provide power to the LiDAR. Connect the LiDAR to Ethernet.</p>
+<p>Velodyne’s circuit design includes a 5V voltage regulator so that a GPS receiver can easily be integrated to provide precision timing. I removed this functionality to reduce complexity and risk.</p>
+<p>Before starting, I laid out a potential circuit with wires and plywood as a sanity check.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://cgcooke.github.io//images/2023-01-12-Velodyne-Interface-Box/Wiring.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">_config.yml</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="design" class="level1">
+<h1>Design</h1>
+<section id="schematic" class="level2">
+<h2 class="anchored" data-anchor-id="schematic">Schematic</h2>
+<p>I used the open source <a href="https://www.kicad.org/">KiCAD</a> to sketch a schematic, a logical representation of how all the different components are connected.</p>
+<p>At this stage, I used <a href="https://www.mouser.fr/electronic-components/">Mouser</a> to find components that suited my needs, and then <a href="https://www.snapeda.com/">SnapEDA</a> to download the symbols, footprint and 3D model of the component. <img src="https://cgcooke.github.io//images/2023-01-12-Velodyne-Interface-Box/Schematic.png" class="img-fluid" alt="_config.yml"></p>
+</section>
+<section id="layout" class="level2">
+<h2 class="anchored" data-anchor-id="layout">Layout</h2>
+<p>Now that we have a completed logical circuit with components, we have to lay them out on a PCB. The PCB is the physical manifestation of our schematic, physically connecting our components.</p>
+<p>This is a fascinating exercise because we are simultaneously balancing many different constraints. If you want to learn more, the [Routing(https://en.wikipedia.org/wiki/Routing_(electronic_design_automation)) page on Wikipedia is a great place to start. Once the layout is completed, we can visualise the layout of all the different physical components.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://cgcooke.github.io//images/2023-01-12-Velodyne-Interface-Box/PCB.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">_config.yml</figcaption><p></p>
+</figure>
+</div>
+<p><img src="https://cgcooke.github.io//images/2023-01-12-Velodyne-Interface-Box/Rendering.png" class="img-fluid" alt="_config.yml">]</p>
+</section>
+</section>
+<section id="fabrication" class="level1">
+<h1>Fabrication</h1>
+<p>Now that we have a design for our PCB, it’s time to get it fabricated. I chose <a href="https://jlcpcb.com/">JLCPCB</a>. Total cost ±2 euros per PCB, shipping and taxes included.</p>
+<p>For components, I used <a href="https://www.mouser.fr/electronic-components/">Mouser</a>. The total cost for the components was approximately ±10 euros per PCB.</p>
+<p>Finally, it’s time to solder the components to the board, giving us our finished product.</p>
+<p><img src="https://cgcooke.github.io//images/2023-01-12-Velodyne-Interface-Box/Completed.png" class="img-fluid" alt="_config.yml">]</p>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>The PCB was a success, but I want to reflect on what I got wrong.</p>
+<p>The size of the PCB: I should have targeted a standard enclosure size. The size of the text on the PCB. It’s too small, an error I have now fixed. Using different-sized wiring blocks. It was an accident that bugs me, which I am now fixing.</p>
+<p>The PCB and Components are available <a href="https://github.com/CGCooke/VLP-LiDAR-Interface-Box">here</a>; if you have a VLP series LiDAR, you feel very trusting, please go ahead and make your own interface circuits.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
