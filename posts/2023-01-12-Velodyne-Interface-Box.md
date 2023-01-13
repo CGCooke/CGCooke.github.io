@@ -6,7 +6,7 @@ categories:
 - Electronics
 - LiDAR
 date: '2022-05-16'
-description: I do some electronics.
+description: Designing a replacement for the Velodyne Interface Box.
 image: images/2023-01-12-Velodyne-Interface-Box/header.png
 layout: post
 toc: true
@@ -36,7 +36,7 @@ Velodyne's circuit design includes a 5V voltage regulator so that a GPS receiver
 
 Before starting, I laid out a potential circuit with wires and plywood as a sanity check.
 
-![_config.yml]({{< var baseurl >}}/images/2023-01-12-Velodyne-Interface-Box/Wiring.png)
+![]({{< var baseurl >}}/images/2023-01-12-Velodyne-Interface-Box/Wiring.png)
 
 # Design
 
@@ -44,7 +44,7 @@ Before starting, I laid out a potential circuit with wires and plywood as a sani
 I used the open source [KiCAD](https://www.kicad.org/) to sketch a schematic, a logical representation of how all the different components are connected.
 
 At this stage, I used [Mouser](https://www.mouser.fr/electronic-components/) to find components that suited my needs, and then [SnapEDA](https://www.snapeda.com/) to download the symbols, footprint and 3D model of the component.
-![_config.yml]({{< var baseurl >}}/images/2023-01-12-Velodyne-Interface-Box/Schematic.png)
+![]({{< var baseurl >}}/images/2023-01-12-Velodyne-Interface-Box/Schematic.png)
 
 ## Layout
 Now that we have a completed logical circuit with components, we have to lay them out on a PCB. The PCB is the physical manifestation of our schematic, physically connecting our components. 
@@ -53,9 +53,9 @@ This is a fascinating exercise because we are simultaneously balancing many diff
 [Routing(https://en.wikipedia.org/wiki/Routing_(electronic_design_automation)) page on Wikipedia is a great place to start.
 Once the layout is completed, we can visualise the layout of all the different physical components. 
 
-![_config.yml]({{< var baseurl >}}/images/2023-01-12-Velodyne-Interface-Box/PCB.png)
+![]({{< var baseurl >}}/images/2023-01-12-Velodyne-Interface-Box/PCB.png)
 
-![_config.yml]({{< var baseurl >}}/images/2023-01-12-Velodyne-Interface-Box/Rendering.png)]
+![]({{< var baseurl >}}/images/2023-01-12-Velodyne-Interface-Box/Rendering.png)]
 
 # Fabrication
 Now that we have a design for our PCB, it's time to get it fabricated. I chose [JLCPCB](https://jlcpcb.com/). Total cost ±2 euros per PCB, shipping and taxes included. 
