@@ -5,7 +5,7 @@ aliases:
 categories:
 - Electronics
 - LiDAR
-date: '2022-05-16'
+date: '2023-01-12'
 description: Designing a replacement for the Velodyne Interface Box.
 image: images/2023-01-12-Velodyne-Interface-Box/header.png
 layout: post
@@ -47,15 +47,16 @@ At this stage, I used [Mouser](https://www.mouser.fr/electronic-components/) to 
 ![]({{< var baseurl >}}/images/2023-01-12-Velodyne-Interface-Box/Schematic.png)
 
 ## Layout
-Now that we have a completed logical circuit with components, we have to lay them out on a PCB. The PCB is the physical manifestation of our schematic, physically connecting our components. 
+Now that we have a completed logical circuit with components, we have to lay them out on a PCB. The PCB is the physical manifestation of our schematic, physically connecting the components. 
 
 This is a fascinating exercise because we are simultaneously balancing many different constraints. If you want to learn more, the 
-[Routing(https://en.wikipedia.org/wiki/Routing_(electronic_design_automation)) page on Wikipedia is a great place to start.
-Once the layout is completed, we can visualise the layout of all the different physical components. 
+[Routing](https://en.wikipedia.org/wiki/Routing_(electronic_design_automation)) page on Wikipedia is a great place to start.
 
 ![]({{< var baseurl >}}/images/2023-01-12-Velodyne-Interface-Box/PCB.png)
 
-![]({{< var baseurl >}}/images/2023-01-12-Velodyne-Interface-Box/Rendering.png)]
+Once the layout is completed, we can visualise the layout of all the different physical components. 
+
+![]({{< var baseurl >}}/images/2023-01-12-Velodyne-Interface-Box/Rendering.png)
 
 # Fabrication
 Now that we have a design for our PCB, it's time to get it fabricated. I chose [JLCPCB](https://jlcpcb.com/). Total cost ±2 euros per PCB, shipping and taxes included. 
@@ -64,13 +65,12 @@ For components, I used [Mouser](https://www.mouser.fr/electronic-components/). T
 
 Finally, it's time to solder the components to the board, giving us our finished product. 
 
-![_config.yml]({{< var baseurl >}}/images/2023-01-12-Velodyne-Interface-Box/Completed.png)]
+![]({{< var baseurl >}}/images/2023-01-12-Velodyne-Interface-Box/Completed.png)
 
 # Conclusion
-The PCB was a success, but I want to reflect on what I got wrong.
-
+The PCB was functionally a success, but I want to reflect on what I got wrong:
 The size of the PCB: I should have targeted a standard enclosure size.
 The size of the text on the PCB. It's too small, an error I have now fixed.
-Using different-sized wiring blocks. It was an accident that bugs me, which I am now fixing.
+Using different-sized wiring blocks.
 
 The PCB and Components are available [here](https://github.com/CGCooke/VLP-LiDAR-Interface-Box); if you have a VLP series LiDAR, you feel very trusting, please go ahead and make your own interface circuits. 
