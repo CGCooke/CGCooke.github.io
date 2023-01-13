@@ -15,7 +15,7 @@ toc: true
 
 # Introduction
 
-I recently purchased a discount VLP-32 LiDAR sensor off eBay.
+I recently purchased a discount [VLP-32 LiDAR](https://velodynelidar.com/products/ultra-puck/) sensor off eBay.
 
 Unfortunately, the sensor didn't come with the [Interface box](https://velodynelidar.com/wp-content/uploads/2019/08/63-9259-REV-C-MANUALINTERFACE-BOXHDL-32EVLP-16VLP-32_Web-S.pdf) required to communicate with the sensor.
 
