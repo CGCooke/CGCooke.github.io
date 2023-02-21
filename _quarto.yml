@@ -3,7 +3,7 @@ project:
   output-dir: docs
 
 website:
-  google-analytics: "G-9MFEPRN75Y"
+  google-analytics: "G-CPPL8FP3RS"
   title: "Adventures with Numbers"
   favicon: favicon.ico
   navbar:
